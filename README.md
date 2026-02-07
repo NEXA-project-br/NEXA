@@ -1,2 +1,4 @@
-# ProjetoIFSP
-PDS
+Lider:
+Programador:
+Tester:
+Estagiário: Adilson
