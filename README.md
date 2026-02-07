@@ -1,4 +1,2 @@
-Lider:
-Programador:
-Tester:
-Estagiário: Adilson
+Projeto IFSP para saber mais da equipe acesse equipe.md
+
