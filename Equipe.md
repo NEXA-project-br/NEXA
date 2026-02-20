@@ -1,56 +1,65 @@
- Equipe e Responsabilidades
+# **👨‍💻 Equipe e Responsabilidades**
 
- 
-🧭 Líder: Conrado
+## **🧭 Líder: Conrado**
+
 Responsabilidades:
 
-Definir escopo do sistema
+* Definir escopo do sistema
 
-Organizar o planejamento do projeto
+* Organizar o planejamento do projeto
 
-Coordenar a equipe
+* Coordenar a equipe
 
-Garantir que os prazos sejam cumpridos
+* Garantir que os prazos sejam cumpridos
 
-Validar a estrutura do sistema
+* Validar a estrutura do sistema
 
-🔎 Essa função está alinhada com aspirações em gestão de projetos e liderança técnica.
+🔎 Essa função está alinhada com aspirações em **gestão de projetos e liderança técnica**.
 
-⚙️ Programador: João Gabriel
+---
+
+## **⚙️ Programador: João Gabriel**
+
 Responsabilidades:
 
-Desenvolver as funcionalidades do sistema
+* Desenvolver as funcionalidades do sistema
 
-Implementar regras de negócio
+* Implementar regras de negócio
 
-Criar cálculos financeiros
+* Criar cálculos financeiros
 
-Implementar persistência de dados
+* Implementar persistência de dados
 
-🔎 Essa função está alinhada com aspirações em desenvolvimento de software e programação back-end.
+🔎 Essa função está alinhada com aspirações em **desenvolvimento de software e programação back-end**.
 
-🧪 Tester: Ruan Frazão
+---
+
+## **🧪 Tester: Ruan Frazão**
+
 Responsabilidades:
 
-Realizar testes de funcionamento
+* Realizar testes de funcionamento
 
-Identificar erros e falhas
+* Identificar erros e falhas
 
-Validar os cálculos financeiros
+* Validar os cálculos financeiros
 
-Garantir qualidade do sistema
+* Garantir qualidade do sistema
 
-🔎 Essa função está alinhada com aspirações em qualidade de software (QA) e testes.
+🔎 Essa função está alinhada com aspirações em **qualidade de software (QA)** e testes.
 
-🎨 Documentação de Uso e Interface Gráfica: Adilson
+---
+
+## **🎨 Documentação de Uso e Interface Gráfica: Adilson**
+
 Responsabilidades:
 
-Desenvolver a interface gráfica do sistema
+* Desenvolver a interface gráfica do sistema
 
-Criar telas intuitivas e organizadas
+* Criar telas intuitivas e organizadas
 
-Elaborar manual do usuário
+* Elaborar manual do usuário
 
-Documentar o código
+* Documentar o código
 
-🔎 Essa função está alinhada com aspirações em design de interface e documentação técnica, além de fortalecer a base em desenvolvimento.
+🔎 Essa função está alinhada com aspirações em **design de interface e documentação técnica**, além de fortalecer a base em desenvolvimento.
