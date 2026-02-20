@@ -54,8 +54,6 @@ Responsabilidades:
 
 **Função Atual:** Vendas e Relacionamento com Clientes  
 
----
-
 ### 🎯 Responsabilidades
 
 - Apresentar o Sistema Financeiro Pessoal a potenciais clientes  
