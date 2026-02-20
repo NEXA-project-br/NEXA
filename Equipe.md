@@ -16,6 +16,10 @@ Responsabilidades:
 
 🔎 Essa função está alinhada com aspirações em **gestão de projetos e liderança técnica**.
 
+Estudante de TI com interesse em **gestão de projetos** e **liderança técnica**.  
+**Áreas:** Engenharia de Software, Análise de Requisitos, Metodologias Ágeis.  
+**Tecnologias:** SQL Server, Git, Modelagem de Banco de Dados.
+
 ---
 
 ## **⚙️ Programador: João Gabriel**
@@ -32,6 +36,10 @@ Responsabilidades:
 
 🔎 Essa função está alinhada com aspirações em **desenvolvimento de software e programação back-end**.
 
+Estudante focado em **desenvolvimento back-end** e lógica de programação.  
+**Áreas:** Programação Orientada a Objetos, Banco de Dados.  
+**Tecnologias:** C#/Java, SQL Server, APIs REST, Git.
+
 ---
 
 ## **🧪 Tester: Ruan Frazão**
@@ -47,6 +55,10 @@ Responsabilidades:
 * Garantir qualidade do sistema
 
 🔎 Essa função está alinhada com aspirações em **qualidade de software (QA)** e testes.
+
+Estudante com interesse em **qualidade de software (QA)** e testes.  
+**Áreas:** Testes Funcionais, Validação de Sistemas.  
+**Tecnologias:** Testes Manuais, SQL para validação de dados, Documentação de Testes.
 
 ---
 
