@@ -16,6 +16,7 @@ Responsabilidades:
 
 🔎 Essa função está alinhada com aspirações em **gestão de projetos e liderança técnica**.
 
+
 Estudante de TI com interesse em **gestão de projetos** e **liderança técnica**.  
 **Áreas:** Engenharia de Software, Análise de Requisitos, Metodologias Ágeis.  
 **Tecnologias:** SQL Server, Git, Modelagem de Banco de Dados.
@@ -36,6 +37,7 @@ Responsabilidades:
 
 🔎 Essa função está alinhada com aspirações em **desenvolvimento de software e programação back-end**.
 
+
 Estudante focado em **desenvolvimento back-end** e lógica de programação.  
 **Áreas:** Programação Orientada a Objetos, Banco de Dados.  
 **Tecnologias:** C#/Java, SQL Server, APIs REST, Git.
@@ -55,6 +57,7 @@ Responsabilidades:
 * Garantir qualidade do sistema
 
 🔎 Essa função está alinhada com aspirações em **qualidade de software (QA)** e testes.
+
 
 Estudante com interesse em **qualidade de software (QA)** e testes.  
 **Áreas:** Testes Funcionais, Validação de Sistemas.  
@@ -82,3 +85,8 @@ Estudante com interesse em **qualidade de software (QA)** e testes.
 Essa função está alinhada com aspirações na área comercial, negociação, relacionamento com clientes e posicionamento de produto no mercado.
 
 Além disso, contribui para o desenvolvimento de visão estratégica sobre soluções tecnológicas e sua viabilidade comercial.
+
+
+Estudante com interesse na **área comercial**, negociação e relacionamento com clientes, com foco no posicionamento estratégico de soluções tecnológicas no mercado.  
+**Áreas:** Vendas, Negociação, Relacionamento com Clientes, Estratégia Comercial.  
+**Tecnologias/Conhecimentos:** Apresentações comerciais, elaboração de propostas, análise de mercado, CRM e atendimento ao cliente.
