@@ -64,7 +64,6 @@ Responsabilidades:
 - Identificar oportunidades de mercado  
 - Coletar feedback dos usuários para futuras melhorias  
 
----
 
 ### 🚀 Alinhamento Profissional
 
