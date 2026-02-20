@@ -50,16 +50,26 @@ Responsabilidades:
 
 ---
 
-## **🎨 Documentação de Uso e Interface Gráfica: Adilson**
+## 👔 Adilson – Representante Comercial do Produto
 
-Responsabilidades:
+**Função Atual:** Vendas e Relacionamento com Clientes  
 
-* Desenvolver a interface gráfica do sistema
+---
 
-* Criar telas intuitivas e organizadas
+### 🎯 Responsabilidades
 
-* Elaborar manual do usuário
+- Apresentar o Sistema Financeiro Pessoal a potenciais clientes  
+- Demonstrar funcionalidades e benefícios do sistema  
+- Elaborar propostas comerciais  
+- Negociar condições de venda  
+- Realizar atendimento pré e pós-venda  
+- Identificar oportunidades de mercado  
+- Coletar feedback dos usuários para futuras melhorias  
 
-* Documentar o código
+---
 
-🔎 Essa função está alinhada com aspirações em **design de interface e documentação técnica**, além de fortalecer a base em desenvolvimento.
+### 🚀 Alinhamento Profissional
+
+Essa função está alinhada com aspirações na área comercial, negociação, relacionamento com clientes e posicionamento de produto no mercado.
+
+Além disso, contribui para o desenvolvimento de visão estratégica sobre soluções tecnológicas e sua viabilidade comercial.
