@@ -1,4 +1,6 @@
  Equipe e Responsabilidades
+
+ 
 🧭 Líder: Conrado
 Responsabilidades:
 
