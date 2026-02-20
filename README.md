@@ -8,5 +8,5 @@ Projeto IFSP para saber mais do projeto só clicar nos links abaixo:
 
 [Orçamento](https://github.com/conradobr1/ProjetoIFSP/blob/main/Orcamento.md)<br>
 
-[PROJETO](https://github.com/conradobr1/ProjetoIFSP/blob/main/Projeto.md)<br>  
+[Projeto](https://github.com/conradobr1/ProjetoIFSP/blob/main/Projeto.md)<br>  
 
