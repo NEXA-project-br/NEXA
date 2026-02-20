@@ -133,7 +133,7 @@ Permite:
 | Levantamento de requisitos | Conrado | 8h |
 | Arquitetura do sistema | Conrado | 12h |
 | Desenvolvimento core | João Gabriel | 40h |
-| Interface gráfica | Adilson | 24h |
+| Representação comercial e apresentação do produto | Adilson | 24h |
 | Testes e validação | Ruan Frazão | 16h |
 | Documentação técnica | Equipe | 10h |
 
@@ -148,8 +148,8 @@ Permite:
 **Distribuição:**
 - Semana 1: Planejamento e estrutura
 - Semana 2: Implementação das funcionalidades principais
-- Semana 3: Interface e integração
-- Semana 4: Testes e ajustes finais
+- Semana 3: Integração e preparação comercial
+- Semana 4: Testes, validação e entrega final
 
 ---
 
@@ -160,8 +160,6 @@ Permite:
 Considerando:
 - 110 horas de desenvolvimento
 - Valor médio hora técnica: R$ 80,00
-
-**Cálculo estimado:**
 
 **Faixa comercial estimada:**  
 R$ 7.500,00 a R$ 9.000,00
