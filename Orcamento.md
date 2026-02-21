@@ -166,7 +166,7 @@ Permite:
 Considerando:
 
 - 110 horas de desenvolvimento
-- Valor projeto R$50
+- Valor Software R$50
 
 ---
 
