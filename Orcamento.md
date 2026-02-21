@@ -158,21 +158,25 @@ Permite:
 
 ---
 
+
 ## 6️⃣ Custo ao Cliente
 
 ### 💵 Valor estimado de mercado
 
 Considerando:
 
-- 110 horas de desenvolvimento  
-- Valor médio hora técnica: R$ 80,00  
+- 110 horas de desenvolvimento
+- Valor projeto R$50
 
-**Cálculo estimado:**
+---
 
-110 x 80 = R$ 8.800,00  
+### 🎓 Valor praticado neste projeto
 
-**Faixa comercial estimada:**  
-R$ 7.500,00 a R$ 9.000,00  
+Por se tratar de um **projeto acadêmico**, desenvolvido com finalidade de apresentação, aprendizado e validação prática:
+
+> **Valor do sistema: Gratuito (sem custo ao cliente).**
+
+Não haverá cobrança de licença, instalação ou utilização.
 
 ---
 
