@@ -3,12 +3,12 @@
 
 ---
 
-## 1️⃣ Dados do Cliente (Pessoa Física – Fictício)
+## 1️⃣ Dados do Cliente (Pessoa Física)
 
-**Nome:** Mariana Souza Oliveira  
-**Profissão:** Designer Gráfica Autônoma  
-**Idade:** 29 anos  
-**Localização:** São Paulo – SP  
+**Nome:** Euller Piloni de Grande  
+**Profissão:** Analista de Sistemas  
+**Idade:** 20 anos  
+**Localização:** São José do Rio Preto – SP  
 
 **Necessidade identificada:**  
 Controle financeiro simples, privado e offline para acompanhamento mensal de ganhos e gastos pessoais.
@@ -38,7 +38,6 @@ O sistema será instalado diretamente no computador pessoal da cliente.
 **Compatível com:**
 - Windows  
 - Linux  
-- MacOS  
 
 > Requisito: possuir o Java Runtime Environment (JRE) instalado.
 
