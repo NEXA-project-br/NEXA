@@ -150,5 +150,5 @@ Esse projeto contribui diretamente para o crescimento profissional na área de T
 
 # **A propriedade intelectual do código-fonte pertence aos desenvolvedores. É terminativamente proibida a engenharia reversa, a descompilação ou a revenda não autorizada deste software.**
 
-# ---
+# 
 
