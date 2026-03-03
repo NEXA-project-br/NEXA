@@ -37,7 +37,8 @@ O sistema será instalado diretamente no computador pessoal da cliente.
 
 **Compatível com:**
 - Windows  
-- Linux  
+- Linux
+- MacOs
 
 > Requisito: possuir o Java Runtime Environment (JRE) instalado.
 
