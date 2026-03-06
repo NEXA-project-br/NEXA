@@ -1,6 +1,6 @@
-# ** Equipe e Responsabilidades**
+# Equipe e Responsabilidades
 
-## ** Líder: Conrado**
+## Líder: Conrado
 
 Responsabilidades:
 
@@ -23,7 +23,7 @@ Estudante de TI com interesse em **gestão de projetos** e **liderança técnica
 
 ---
 
-## ** Programador: João Gabriel**
+##  Programador: João Gabriel
 
 Responsabilidades:
 
@@ -44,7 +44,7 @@ Estudante focado em **desenvolvimento back-end** e lógica de programação.
 
 ---
 
-## ** Tester: Ruan Frazão**
+## Tester: Ruan Frazão
 
 Responsabilidades:
 
