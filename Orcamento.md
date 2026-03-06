@@ -1,9 +1,9 @@
-# 📄 PRÉ-PROPOSTA COMERCIAL  
+# PRÉ-PROPOSTA COMERCIAL  
 ## Sistema Financeiro Pessoal Desktop (Java – Offline)
 
 ---
 
-## 1️⃣ Dados do Cliente (Pessoa Física)
+## Dados do Cliente (Pessoa Física)
 
 **Nome:** Euller Piloni de Grande  
 **Profissão:** Analista de Sistemas  
@@ -15,12 +15,12 @@ Controle financeiro simples, privado e offline para acompanhamento mensal de gan
 
 ---
 
-## 2️⃣ Arquitetura do Sistema
+## Arquitetura do Sistema
 
-### 📌 Tipo de Sistema
+### Tipo de Sistema
 Aplicação **Desktop Offline**, desenvolvida em **Java**, com armazenamento local.
 
-### 🏗️ Arquitetura Técnica
+### Arquitetura Técnica
 
 **Padrão arquitetural:**  
 - MVC (Model-View-Controller)
@@ -31,7 +31,7 @@ Aplicação **Desktop Offline**, desenvolvida em **Java**, com armazenamento loc
 - SQLite (banco de dados embarcado)
 - JRE (Java Runtime Environment)
 
-### 💾 Implantação
+### Implantação
 
 O sistema será instalado diretamente no computador pessoal da cliente.
 
@@ -42,7 +42,7 @@ O sistema será instalado diretamente no computador pessoal da cliente.
 
 > Requisito: possuir o Java Runtime Environment (JRE) instalado.
 
-### 🔐 Privacidade e Segurança
+### Privacidade e Segurança
 
 - Funcionamento 100% offline  
 - Nenhum envio de dados para servidores externos  
@@ -51,9 +51,9 @@ O sistema será instalado diretamente no computador pessoal da cliente.
 
 ---
 
-## 3️⃣ Esboços de Telas e Funcionalidades
+## Esboços de Telas e Funcionalidades
 
-### 🏠 Tela Principal (Dashboard)
+### Tela Principal (Dashboard)
 
 **Exibe:**
 - Saldo atual (Receitas – Despesas)
@@ -69,7 +69,7 @@ O sistema será instalado diretamente no computador pessoal da cliente.
 
 ---
 
-### 💰 Tela de Cadastro de Receitas
+### Tela de Cadastro de Receitas
 
 **Campos:**
 - Descrição
@@ -84,7 +84,7 @@ O sistema será instalado diretamente no computador pessoal da cliente.
 
 ---
 
-### 💸 Tela de Cadastro de Despesas
+### Tela de Cadastro de Despesas
 
 **Campos:**
 - Descrição
@@ -98,7 +98,7 @@ O sistema será instalado diretamente no computador pessoal da cliente.
 
 ---
 
-### 🗂️ Tela de Categorias
+### Tela de Categorias
 
 **Funcionalidades:**
 - Criar categoria
@@ -114,7 +114,7 @@ O sistema será instalado diretamente no computador pessoal da cliente.
 
 ---
 
-### 📊 Tela de Relatórios
+### Tela de Relatórios
 
 Permite:
 - Filtrar por período (data inicial e final)
@@ -131,7 +131,7 @@ Permite:
 
 ---
 
-## 4️⃣ Quantidade de Horas Investidas pela Equipe
+## Quantidade de Horas Investidas pela Equipe
 
 | Atividade | Responsável | Horas |
 |------------|-------------|-------|
@@ -146,7 +146,7 @@ Permite:
 
 ---
 
-## 5️⃣ Prazo de Entrega
+## Prazo de Entrega
 
 **Prazo estimado:** 30 dias corridos
 
@@ -159,9 +159,9 @@ Permite:
 ---
 
 
-## 6️⃣ Custo ao Cliente
+## Custo ao Cliente
 
-### 💵 Valor estimado de mercado
+### Valor estimado de mercado
 
 Considerando:
 
@@ -170,7 +170,7 @@ Considerando:
 
 ---
 
-### 🎓 Valor praticado neste projeto
+### Valor praticado neste projeto
 
 Por se tratar de um **projeto acadêmico**, desenvolvido com finalidade de apresentação, aprendizado e validação prática:
 
@@ -180,7 +180,7 @@ Não haverá cobrança de licença, instalação ou utilização.
 
 ---
 
-### 💰 Valor praticado neste projeto
+### Valor praticado neste projeto
 
 Por se tratar de um projeto acadêmico com finalidade de apresentação e validação prática:
 
@@ -189,7 +189,7 @@ Por se tratar de um projeto acadêmico com finalidade de apresentação e valida
 Esse valor representa apenas a licença de uso do sistema, sem inclusão de suporte técnico, atualizações futuras ou customizações.
 ---
 
-### 🎓 Custo real ao cliente
+### Custo real ao cliente
 
 Este projeto possui finalidade acadêmica.
 
@@ -201,7 +201,7 @@ Caso fosse comercializado individualmente:
 
 ---
 
-# ✅ Conclusão
+# Conclusão
 
 O Sistema Financeiro Pessoal Desktop é uma solução:
 
