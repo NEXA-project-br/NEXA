@@ -1,4 +1,4 @@
-# **📌 Definição do Tema – Sistema Financeiro Pessoal**
+# ** Definição do Tema – Sistema Financeiro Pessoal**
 
 ## **💻 Qual será o software a ser desenvolvido?**
 
