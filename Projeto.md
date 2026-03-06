@@ -1,12 +1,12 @@
-# ** Definição do Tema – Sistema Financeiro Pessoal**
+# Definição do Tema – Sistema Financeiro Pessoal
 
-## **💻 Qual será o software a ser desenvolvido?**
+##  Qual será o software a ser desenvolvido?
 
 O software a ser desenvolvido será um **Sistema Financeiro Pessoal Desktop**, criado em Java, com funcionamento **100% offline**.
 
 O objetivo do sistema é permitir que usuários controlem suas finanças de forma simples, organizada e segura.
 
-### **🔧 Funcionalidades principais:**
+###  Funcionalidades principais:
 
 * Cadastro de receitas
 
@@ -26,7 +26,7 @@ O sistema seguirá uma organização estruturada para garantir clareza, manuten�
 
 ---
 
-## **🏢 Onde será implantado?**
+## Onde será implantado?
 
 O sistema será implantado em **computadores pessoais (Desktop)**, podendo funcionar em:
 
@@ -42,7 +42,7 @@ O sistema funcionará totalmente offline, armazenando os dados localmente na má
 
 ---
 
-## **\*\*👥 Quem são os usuários?**
+## Quem são os usuários?
 
 O público-alvo do sistema são:
 
@@ -60,7 +60,7 @@ O sistema é ideal para quem busca simplicidade e controle financeiro sem depend
 
 ---
 
-## **🏢 Quem são os concorrentes?**
+## Quem são os concorrentes?
 
 Alguns concorrentes diretos e indiretos incluem:
 
@@ -70,7 +70,7 @@ Alguns concorrentes diretos e indiretos incluem:
 
 * **Organizze** – Sistema de organização financeira online.
 
-### **🎯 Diferencial do projeto:**
+### Diferencial do projeto:
 
 * Funcionamento totalmente offline
 
@@ -82,7 +82,7 @@ Alguns concorrentes diretos e indiretos incluem:
 
 ---
 
-## **\*\*🚀 O projeto vai de encontro com suas aspirações profissionais?**
+## O projeto vai de encontro com suas aspirações profissionais?
 
 Sim. O desenvolvimento deste sistema permite aplicar conhecimentos importantes como:
 
@@ -104,7 +104,7 @@ Esse projeto contribui diretamente para o crescimento profissional na área de T
 
 
 
-# **\*\* 📄 TERMO DE LICENÇA DE USO DE SOFTWARE (EULA)**
+#📄 TERMO DE LICENÇA DE USO DE SOFTWARE (EULA)
 
 # **PROJETO: SISTEMA FINANCEIRO PESSOAL JAVA (OFFLINE)**
 
