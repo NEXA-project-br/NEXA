@@ -126,7 +126,7 @@ Permite:
 
 ---
 
-<img width="1536" height="1024" alt="EsbocoFigma" src="https://github.com/conradobr1/ProjetoIFSP_FINANCE/blob/main/img/EsbocoFigma.png" />
+<img width="1536" height="1024" alt="EsbocoFigma" src="https://github.com/conradobr1/ProjetoIFSP_FINANCE/blob/main/public/Telas%20Do%20Aplicativo.png" />
 
 
 ---
