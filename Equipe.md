@@ -1,6 +1,6 @@
-# **👨‍💻 Equipe e Responsabilidades**
+# ** Equipe e Responsabilidades**
 
-## **🧭 Líder: Conrado**
+## ** Líder: Conrado**
 
 Responsabilidades:
 
@@ -14,7 +14,7 @@ Responsabilidades:
 
 * Validar a estrutura do sistema
 
-🔎 Essa função está alinhada com aspirações em **gestão de projetos e liderança técnica**.
+ Essa função está alinhada com aspirações em **gestão de projetos e liderança técnica**.
 
 
 Estudante de TI com interesse em **gestão de projetos** e **liderança técnica**.  
@@ -23,7 +23,7 @@ Estudante de TI com interesse em **gestão de projetos** e **liderança técnica
 
 ---
 
-## **⚙️ Programador: João Gabriel**
+## ** Programador: João Gabriel**
 
 Responsabilidades:
 
@@ -35,7 +35,7 @@ Responsabilidades:
 
 * Implementar persistência de dados
 
-🔎 Essa função está alinhada com aspirações em **desenvolvimento de software e programação back-end**.
+ Essa função está alinhada com aspirações em **desenvolvimento de software e programação back-end**.
 
 
 Estudante focado em **desenvolvimento back-end** e lógica de programação.  
@@ -44,7 +44,7 @@ Estudante focado em **desenvolvimento back-end** e lógica de programação.
 
 ---
 
-## **🧪 Tester: Ruan Frazão**
+## ** Tester: Ruan Frazão**
 
 Responsabilidades:
 
@@ -56,7 +56,7 @@ Responsabilidades:
 
 * Garantir qualidade do sistema
 
-🔎 Essa função está alinhada com aspirações em **qualidade de software (QA)** e testes.
+ Essa função está alinhada com aspirações em **qualidade de software (QA)** e testes.
 
 
 Estudante com interesse em **qualidade de software (QA)** e testes.  
@@ -65,11 +65,11 @@ Estudante com interesse em **qualidade de software (QA)** e testes.
 
 ---
 
-## 👔 Adilson – Representante Comercial do Produto
+##  Adilson – Representante Comercial do Produto
 
 **Função Atual:** Vendas e Relacionamento com Clientes  
 
-### 🎯 Responsabilidades
+###  Responsabilidades
 
 - Apresentar o Sistema Financeiro Pessoal a potenciais clientes  
 - Demonstrar funcionalidades e benefícios do sistema  
@@ -80,7 +80,7 @@ Estudante com interesse em **qualidade de software (QA)** e testes.
 - Coletar feedback dos usuários para futuras melhorias  
 
 
-### 🚀 Alinhamento Profissional
+###  Alinhamento Profissional
 
 Essa função está alinhada com aspirações na área comercial, negociação, relacionamento com clientes e posicionamento de produto no mercado.
 
