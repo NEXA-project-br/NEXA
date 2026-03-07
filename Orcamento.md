@@ -46,7 +46,7 @@ O sistema será instalado diretamente no computador pessoal da cliente.
 
 - Funcionamento 100% offline  
 - Nenhum envio de dados para servidores externos  
-- Dados armazenados exclusivamente no computador da usuária  
+- Dados armazenados exclusivamente no computador do usuário  
 - Backup sob responsabilidade da cliente  
 
 ---
@@ -137,7 +137,8 @@ Permite:
 |------------|-------------|-------|
 | Levantamento de requisitos | Conrado | 8h |
 | Arquitetura do sistema | Conrado | 12h |
-| Desenvolvimento core | João Gabriel | 40h |
+| Desenvolvimento Back-End | João Gabriel | 30h |
+| Desenvolvimento Front-end | Ruan Frazão | 10h |
 | Representação comercial e apresentação do produto | Adilson | 24h |
 | Testes e validação | Ruan Frazão | 16h |
 | Documentação técnica | Equipe | 10h |
@@ -170,34 +171,13 @@ Considerando:
 
 ---
 
-### Valor praticado neste projeto
+### Valor estimado neste projeto
 
 Por se tratar de um **projeto acadêmico**, desenvolvido com finalidade de apresentação, aprendizado e validação prática:
 
 > **Valor do sistema: Gratuito (sem custo ao cliente).**
 
 Não haverá cobrança de licença, instalação ou utilização.
-
----
-
-### Valor praticado neste projeto
-
-Por se tratar de um projeto acadêmico com finalidade de apresentação e validação prática:
-
-> **Custo simbólico ao cliente: R$ 50,00**
-
-Esse valor representa apenas a licença de uso do sistema, sem inclusão de suporte técnico, atualizações futuras ou customizações.
----
-
-### Custo real ao cliente
-
-Este projeto possui finalidade acadêmica.
-
-> **Não haverá custo real à cliente.**
-
-Caso fosse comercializado individualmente:
-
-**Licença unitária estimada:** R$ 49,99
 
 ---
 
