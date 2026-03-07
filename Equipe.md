@@ -19,7 +19,7 @@ Responsabilidades:
 
 Estudante de TI com interesse em **gestão de projetos** e **liderança técnica**.  
 **Áreas:** Engenharia de Software, Análise de Requisitos, Metodologias Ágeis.  
-**Tecnologias:** SQL Server, Git, Modelagem de Banco de Dados.
+**Tecnologias:** SQLite, Git, Modelagem de Banco de Dados.
 
 ---
 
@@ -40,7 +40,7 @@ Responsabilidades:
 
 Estudante focado em **desenvolvimento back-end** e lógica de programação.  
 **Áreas:** Programação Orientada a Objetos, Banco de Dados.  
-**Tecnologias:** C#/Java, SQL Server, APIs REST, Git.
+**Tecnologias:** Java, SQLite, APIs REST, Git.
 
 ---
 
