@@ -122,7 +122,7 @@ Esse projeto contribui diretamente para o crescimento profissional na área de T
 
 * # **Ruan Frazão: Validação de Entrega e Testes de Qualidade.**
 
-* # **Adilson: Documentação de Uso e Interface Gráfica.**
+* # **Adilson:Representante Comercial**
 
 ### **3\. CLÁUSULA DE ENTREGA "COMO ESTÁ" (AS-IS)**
 
