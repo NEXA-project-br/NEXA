@@ -104,7 +104,7 @@ Esse projeto contribui diretamente para o crescimento profissional na área de T
 
 
 
-#📄 TERMO DE LICENÇA DE USO DE SOFTWARE (EULA)
+# TERMO DE LICENÇA DE USO DE SOFTWARE (EULA)
 
 # **PROJETO: SISTEMA FINANCEIRO PESSOAL JAVA (OFFLINE)**
 
@@ -118,9 +118,9 @@ Esse projeto contribui diretamente para o crescimento profissional na área de T
 
 * # **Conrado: Gestão de Projeto e Arquitetura.**
 
-* # **João Gabriel: Desenvolvimento e Codificação Core.**
+* # **João Gabriel: Desenvolvimento Back-End.**
 
-* # **Ruan Frazão: Validação de Entrega e Testes de Qualidade.**
+* # **Ruan Frazão: Desenvolvimento Front-End, Validação de Entrega e Testes de Qualidade.**
 
 * # **Adilson: Representante Comercial**
 
@@ -148,7 +148,7 @@ Esse projeto contribui diretamente para o crescimento profissional na área de T
 
 ### **6\. PROPRIEDADE E REPRODUÇÃO**
 
-# **A propriedade intelectual do código-fonte pertence aos desenvolvedores. É terminativamente proibida a engenharia reversa, a descompilação ou a revenda não autorizada deste software.**
+# **A propriedade intelectual do código-fonte pertence aos desenvolvedores. É proibida a revenda não autorizada deste software.**
 
 # 
 
