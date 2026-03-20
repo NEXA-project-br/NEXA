@@ -11,3 +11,35 @@ Projeto IFSP para saber mais do projeto só clicar nos links abaixo:
 
 
 
+---
+
+# dc.md
+```md
+# Diagrama de Classes – Sistema Nexa
+
+```mermaid
+classDiagram
+
+class Usuario {
+id
+nome
+email
+senha
+}
+
+class Categoria {
+id
+nome
+tipo
+}
+
+class Transacao {
+id
+descricao
+valor
+data
+tipo
+}
+
+Usuario "1" --> "many" Transacao
+Categoria "1" --> "many" Transacao
