@@ -134,16 +134,16 @@ Permite:
 ## Quantidade de Horas Investidas pela Equipe
 
 | Atividade | Responsável | Horas |
-|------------|-------------|-------|
+|---|---|---|
 | Levantamento de requisitos | Conrado | 8h |
 | Arquitetura do sistema | Conrado | 12h |
 | Desenvolvimento Back-End | João Gabriel | 30h |
 | Desenvolvimento Front-end | Ruan Frazão | 10h |
-
 | Testes e validação | Ruan Frazão | 16h |
+| Correção de Bugs e Ajustes | João e Ruan | 14h |
 | Documentação técnica | Equipe | 10h |
-
-**Total estimado:** 110 horas
+| Reuniões de Alinhamento | Equipe | 10h |
+| **Total estimado** | | **110 horas** |
 
 ---
 
