@@ -1,0 +1,15 @@
+sequenceDiagram
+  actor U as Usuário
+  participant T as TelaReceita
+  participant S as SistemaFinanceiro
+  participant D as ArquivoDados
+
+  U->>T: 1: clica "Nova Receita"
+  T-->>U: 2: exibe formulário
+  U->>T: 3: preenche descrição, valor, data, categoria
+  T->>S: 4: adicionarReceita(receita)
+  S->>S: 5: valida dados
+  S->>D: 6: salvarDados()
+  D-->>S: 7: confirmação de gravação
+  S-->>T: 8: retorna sucesso
+  T-->>U: 9: exibe saldo atualizado
