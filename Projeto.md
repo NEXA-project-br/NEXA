@@ -122,7 +122,7 @@ Esse projeto contribui diretamente para o crescimento profissional na área de T
 
 * # **Ruan Frazão: Desenvolvimento Front-End, Validação de Entrega e Testes de Qualidade.**
 
-* # **Adilson: Representante Comercial**
+
 
 ### **3\. CLÁUSULA DE ENTREGA "COMO ESTÁ" (AS-IS)**
 
