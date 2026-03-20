@@ -65,19 +65,6 @@ Estudante com interesse em **qualidade de software (QA)** e testes.
 
 ---
 
-##  Adilson – Representante Comercial do Produto
-
-**Função Atual:** Vendas e Relacionamento com Clientes  
-
-###  Responsabilidades
-
-- Apresentar o Sistema Financeiro Pessoal a potenciais clientes  
-- Demonstrar funcionalidades e benefícios do sistema  
-- Elaborar propostas comerciais  
-- Negociar condições de venda  
-- Realizar atendimento pré e pós-venda  
-- Identificar oportunidades de mercado  
-- Coletar feedback dos usuários para futuras melhorias  
 
 
 ###  Alinhamento Profissional
