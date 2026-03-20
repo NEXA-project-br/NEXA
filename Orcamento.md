@@ -139,7 +139,7 @@ Permite:
 | Arquitetura do sistema | Conrado | 12h |
 | Desenvolvimento Back-End | João Gabriel | 30h |
 | Desenvolvimento Front-end | Ruan Frazão | 10h |
-| Representação comercial e apresentação do produto | Adilson | 24h |
+
 | Testes e validação | Ruan Frazão | 16h |
 | Documentação técnica | Equipe | 10h |
 
