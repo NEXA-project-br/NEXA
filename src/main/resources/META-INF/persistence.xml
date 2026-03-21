@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+             https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="sistemaFinanceiroPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Entidades gerenciadas -->
+        <class>com.sistema.model.Categoria</class>
+        <class>com.sistema.model.Transacao</class>
+
+        <properties>
+            <!-- SQLite JDBC -->
+            <property name="jakarta.persistence.jdbc.driver"
+                      value="org.sqlite.JDBC"/>
+            <property name="jakarta.persistence.jdbc.url"
+                      value="jdbc:sqlite:financeiro.db"/>
+
+            <!-- Dialeto SQLite (hibernate-community-dialects) -->
+            <property name="hibernate.dialect"
+                      value="org.hibernate.community.dialect.SQLiteDialect"/>
+
+            <!-- DDL automático: update mantém dados entre execuções -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <!-- Log de SQL (desabilite em produção) -->
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="true"/>
+
+            <!-- Pool de conexões básico -->
+            <property name="hibernate.connection.pool_size" value="5"/>
+
+            <!-- Evita lazy loading fora de sessão -->
+            <property name="hibernate.enable_lazy_load_no_trans" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>
