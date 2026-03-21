@@ -44,6 +44,18 @@ public class CategoriaDAO extends BaseDAOImpl<Categoria> {
     }
 
     /**
+     * Lista categorias filtradas por tipo (RECEITA ou DESPESA), em ordem alfabética.
+     */
+    public List<Categoria> listarPorTipo(com.sistema.model.TipoTransacao tipo) {
+        return executarLeitura(em ->
+                em.createQuery(
+                        "SELECT c FROM Categoria c WHERE c.tipo = :tipo ORDER BY c.nome ASC",
+                        Categoria.class)
+                  .setParameter("tipo", tipo)
+                  .getResultList());
+    }
+
+    /**
      * Verifica se uma categoria possui transações vinculadas.
      * Usado para impedir exclusão de categorias em uso.
      *

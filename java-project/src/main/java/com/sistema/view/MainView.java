@@ -8,50 +8,43 @@ import com.sistema.util.HibernateUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/**
- * View principal do sistema — Dashboard financeiro.
- * Exibe saldo atual, totais de receita/despesa e últimas movimentações.
- */
 public class MainView extends JFrame {
 
-    // ── Paleta de cores ───────────────────────────────────────────────────────
-    private static final Color COR_FUNDO        = new Color(15, 23, 42);
-    private static final Color COR_CARD         = new Color(30, 41, 59);
-    private static final Color COR_BORDA        = new Color(51, 65, 85);
-    private static final Color COR_VERDE        = new Color(34, 197, 94);
-    private static final Color COR_VERMELHO     = new Color(239, 68, 68);
-    private static final Color COR_AZUL         = new Color(59, 130, 246);
-    private static final Color COR_TEXTO        = new Color(241, 245, 249);
-    private static final Color COR_TEXTO_MUTED  = new Color(148, 163, 184);
-    private static final Color COR_HEADER_TABLE = new Color(51, 65, 85);
-    private static final Color COR_ROW_ALT      = new Color(30, 41, 59);
+    private static final Color COR_FUNDO       = new Color(15, 23, 42);
+    private static final Color COR_CARD        = new Color(30, 41, 59);
+    private static final Color COR_BORDA       = new Color(51, 65, 85);
+    private static final Color COR_VERDE       = new Color(34, 197, 94);
+    private static final Color COR_VERMELHO    = new Color(220, 60, 60);
+    private static final Color COR_AZUL_ESCURO = new Color(29, 78, 150);
+    private static final Color COR_AZUL_CLARO  = new Color(59, 130, 246);
+    private static final Color COR_GRAFITE     = new Color(71, 85, 105);
+    private static final Color COR_TEXTO       = new Color(241, 245, 249);
+    private static final Color COR_MUTED       = new Color(148, 163, 184);
 
     private static final Font FONTE_TITULO   = new Font("Segoe UI", Font.BOLD, 22);
     private static final Font FONTE_CARD_VAL = new Font("Segoe UI", Font.BOLD, 26);
     private static final Font FONTE_CARD_LBL = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font FONTE_TABELA   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font FONTE_HEADER   = new Font("Segoe UI", Font.BOLD, 13);
+    private static final Font FONTE_BTN      = new Font("Segoe UI", Font.BOLD, 13);
 
-    private static final DateTimeFormatter FMT_DATA =
-            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter FMT_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    // ── Componentes dinâmicos ─────────────────────────────────────────────────
     private JLabel lblSaldo;
     private JLabel lblTotalReceitas;
     private JLabel lblTotalDespesas;
     private DefaultTableModel tableModel;
     private JTable tabela;
+    private List<Transacao> listaAtual = List.of();
 
     private final TransacaoController transacaoController;
-
-    // ── Construtor ────────────────────────────────────────────────────────────
 
     public MainView() {
         this.transacaoController = new TransacaoController();
@@ -60,72 +53,56 @@ public class MainView extends JFrame {
         atualizarDashboard();
     }
 
-    // ── Configuração da janela ────────────────────────────────────────────────
-
     private void configurarJanela() {
-        setTitle("💰 Sistema Financeiro Pessoal");
+        setTitle("Sistema Financeiro Pessoal");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(1100, 720);
         setMinimumSize(new Dimension(900, 600));
         setLocationRelativeTo(null);
         getContentPane().setBackground(COR_FUNDO);
-
         addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
+            @Override public void windowClosing(java.awt.event.WindowEvent e) {
                 encerrarAplicacao();
             }
         });
     }
 
-    // ── Construção da interface ───────────────────────────────────────────────
-
     private void construirInterface() {
         setLayout(new BorderLayout());
-
-        add(criarPainelTopo(), BorderLayout.NORTH);
+        add(criarPainelTopo(),    BorderLayout.NORTH);
         add(criarPainelCentral(), BorderLayout.CENTER);
     }
 
-    /** Barra superior com título e botões de navegação */
     private JPanel criarPainelTopo() {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setBackground(COR_CARD);
         painel.setBorder(new EmptyBorder(16, 24, 16, 24));
 
-        // Título
-        JLabel titulo = new JLabel("💰 Painel Financeiro");
+        JLabel titulo = new JLabel("Painel Financeiro");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(COR_TEXTO);
 
-        // Botões de ação
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         btnPanel.setOpaque(false);
 
-        JButton btnNovaTransacao = criarBotao("+ Nova Transação", COR_AZUL);
-        JButton btnCategorias    = criarBotao("📂 Categorias",     COR_CARD);
-        JButton btnRelatorios    = criarBotao("📊 Relatórios",     COR_CARD);
+        JButton btnReceita = criarBotao("Nova Receita", COR_VERDE);
+        JButton btnDespesa = criarBotao("Nova Despesa", COR_VERMELHO);
+        JButton btnCats    = criarBotao("Categorias",   COR_GRAFITE);
+        JButton btnRelat   = criarBotao("Relatorios",   COR_AZUL_ESCURO);
 
-        // Estilo diferenciado nos botões secundários
-        btnCategorias.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COR_BORDA, 1),
-                new EmptyBorder(6, 14, 6, 14)));
-        btnRelatorios.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COR_BORDA, 1),
-                new EmptyBorder(6, 14, 6, 14)));
+        btnReceita.addActionListener(e -> abrirFormularioNovaTransacao(TipoTransacao.RECEITA));
+        btnDespesa.addActionListener(e -> abrirFormularioNovaTransacao(TipoTransacao.DESPESA));
+        btnCats.addActionListener(e    -> abrirCategorias());
+        btnRelat.addActionListener(e   -> abrirRelatorios());
 
-        btnNovaTransacao.addActionListener(e -> abrirFormularioTransacao(null));
-        btnCategorias.addActionListener(e -> abrirCategorias());
-        btnRelatorios.addActionListener(e -> abrirRelatorios());
-
-        btnPanel.add(btnRelatorios);
-        btnPanel.add(btnCategorias);
-        btnPanel.add(btnNovaTransacao);
+        btnPanel.add(btnRelat);
+        btnPanel.add(btnCats);
+        btnPanel.add(btnDespesa);
+        btnPanel.add(btnReceita);
 
         painel.add(titulo,   BorderLayout.WEST);
         painel.add(btnPanel, BorderLayout.EAST);
 
-        // Linha separadora inferior
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setBackground(COR_FUNDO);
         wrapper.add(painel, BorderLayout.CENTER);
@@ -135,40 +112,32 @@ public class MainView extends JFrame {
         return wrapper;
     }
 
-    /** Área central com cards de resumo e tabela de movimentações */
     private JPanel criarPainelCentral() {
         JPanel painel = new JPanel(new BorderLayout(0, 0));
         painel.setBackground(COR_FUNDO);
         painel.setBorder(new EmptyBorder(20, 24, 20, 24));
-
         painel.add(criarPainelCards(),  BorderLayout.NORTH);
         painel.add(criarPainelTabela(), BorderLayout.CENTER);
-
         return painel;
     }
 
-    /** Linha de cards: saldo, receitas, despesas */
     private JPanel criarPainelCards() {
         JPanel painel = new JPanel(new GridLayout(1, 3, 16, 0));
         painel.setBackground(COR_FUNDO);
         painel.setBorder(new EmptyBorder(0, 0, 20, 0));
 
-        // Card Saldo
         lblSaldo = new JLabel("R$ 0,00");
-        painel.add(criarCard("💳 Saldo Atual", lblSaldo, COR_VERDE));
+        painel.add(criarCard("Saldo Atual",    lblSaldo,         COR_VERDE));
 
-        // Card Receitas
         lblTotalReceitas = new JLabel("R$ 0,00");
-        painel.add(criarCard("📈 Total Receitas", lblTotalReceitas, COR_VERDE));
+        painel.add(criarCard("Total Receitas", lblTotalReceitas, COR_VERDE));
 
-        // Card Despesas
         lblTotalDespesas = new JLabel("R$ 0,00");
-        painel.add(criarCard("📉 Total Despesas", lblTotalDespesas, COR_VERMELHO));
+        painel.add(criarCard("Total Despesas", lblTotalDespesas, COR_VERMELHO));
 
         return painel;
     }
 
-    /** Cria um card individual de resumo financeiro */
     private JPanel criarCard(String titulo, JLabel valorLabel, Color corValor) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(COR_CARD);
@@ -178,7 +147,7 @@ public class MainView extends JFrame {
 
         JLabel lblTitulo = new JLabel(titulo);
         lblTitulo.setFont(FONTE_CARD_LBL);
-        lblTitulo.setForeground(COR_TEXTO_MUTED);
+        lblTitulo.setForeground(COR_MUTED);
 
         valorLabel.setFont(FONTE_CARD_VAL);
         valorLabel.setForeground(corValor);
@@ -189,37 +158,26 @@ public class MainView extends JFrame {
         return card;
     }
 
-    /** Painel com tabela de últimas movimentações */
     private JPanel criarPainelTabela() {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setBackground(COR_CARD);
-        painel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COR_BORDA, 1),
-                new EmptyBorder(0, 0, 0, 0)));
+        painel.setBorder(BorderFactory.createLineBorder(COR_BORDA, 1));
 
-        // Cabeçalho da seção
         JPanel cabecalho = new JPanel(new BorderLayout());
         cabecalho.setBackground(COR_CARD);
         cabecalho.setBorder(new EmptyBorder(16, 20, 12, 20));
 
-        JLabel lblTitulo = new JLabel("🕐 Últimas Movimentações");
+        JLabel lblTitulo = new JLabel("Ultimas Movimentacoes  (duplo clique para editar)");
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 15));
         lblTitulo.setForeground(COR_TEXTO);
 
-        JButton btnAtualizar = new JButton("↻ Atualizar");
-        btnAtualizar.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        btnAtualizar.setForeground(COR_TEXTO_MUTED);
-        btnAtualizar.setBackground(COR_FUNDO);
-        btnAtualizar.setBorder(new EmptyBorder(4, 10, 4, 10));
-        btnAtualizar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnAtualizar.setFocusPainted(false);
+        JButton btnAtualizar = criarBotao("Atualizar", COR_AZUL_CLARO);
         btnAtualizar.addActionListener(e -> atualizarDashboard());
 
         cabecalho.add(lblTitulo,    BorderLayout.WEST);
         cabecalho.add(btnAtualizar, BorderLayout.EAST);
 
-        // Tabela
-        String[] colunas = {"Data", "Descrição", "Categoria", "Tipo", "Valor"};
+        String[] colunas = {"Data", "Descricao", "Categoria", "Tipo", "Valor"};
         tableModel = new DefaultTableModel(colunas, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -236,30 +194,29 @@ public class MainView extends JFrame {
         tabela.setFocusable(false);
         tabela.setIntercellSpacing(new Dimension(0, 1));
 
-        // Cabeçalho da tabela
         tabela.getTableHeader().setFont(FONTE_HEADER);
-        tabela.getTableHeader().setBackground(COR_HEADER_TABLE);
-        tabela.getTableHeader().setForeground(COR_TEXTO_MUTED);
+        tabela.getTableHeader().setBackground(new Color(51, 65, 85));
+        tabela.getTableHeader().setForeground(COR_MUTED);
         tabela.getTableHeader().setPreferredSize(new Dimension(0, 38));
         tabela.getTableHeader().setReorderingAllowed(false);
 
-        // Larguras de coluna
         tabela.getColumnModel().getColumn(0).setPreferredWidth(100);
         tabela.getColumnModel().getColumn(1).setPreferredWidth(300);
         tabela.getColumnModel().getColumn(2).setPreferredWidth(150);
         tabela.getColumnModel().getColumn(3).setPreferredWidth(100);
         tabela.getColumnModel().getColumn(4).setPreferredWidth(120);
 
-        // Renderer para colorir a coluna Tipo e Valor
         tabela.getColumnModel().getColumn(3).setCellRenderer(new TipoRenderer());
         tabela.getColumnModel().getColumn(4).setCellRenderer(new ValorRenderer());
 
-        // Duplo clique → editar transação
         tabela.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    editarTransacaoSelecionada();
+                    int linha = tabela.getSelectedRow();
+                    if (linha >= 0 && linha < listaAtual.size()) {
+                        abrirFormularioEdicao(listaAtual.get(linha));
+                    }
                 }
             }
         });
@@ -274,35 +231,25 @@ public class MainView extends JFrame {
         return painel;
     }
 
-    // ── Atualização de dados ──────────────────────────────────────────────────
-
-    /**
-     * Recarrega todos os dados do dashboard a partir do banco.
-     * Deve ser chamado após qualquer operação de escrita.
-     */
     public void atualizarDashboard() {
         SwingUtilities.invokeLater(() -> {
             try {
-                // Saldo e totais
                 BigDecimal saldo    = transacaoController.calcularSaldoAtual();
                 BigDecimal receitas = transacaoController.totalReceitas();
                 BigDecimal despesas = transacaoController.totalDespesas();
 
                 lblSaldo.setText(CurrencyUtil.formatar(saldo));
-                lblSaldo.setForeground(saldo.compareTo(BigDecimal.ZERO) >= 0
-                        ? COR_VERDE : COR_VERMELHO);
-
+                lblSaldo.setForeground(saldo.compareTo(BigDecimal.ZERO) >= 0 ? COR_VERDE : COR_VERMELHO);
                 lblTotalReceitas.setText(CurrencyUtil.formatar(receitas));
                 lblTotalDespesas.setText(CurrencyUtil.formatar(despesas));
 
-                // Últimas 50 transações
-                List<Transacao> lista = transacaoController.listarUltimas(50);
+                listaAtual = transacaoController.listarUltimas(50);
                 tableModel.setRowCount(0);
-                for (Transacao t : lista) {
+                for (Transacao t : listaAtual) {
                     tableModel.addRow(new Object[]{
                             t.getData().format(FMT_DATA),
                             t.getDescricao(),
-                            t.getCategoria() != null ? t.getCategoria().getNome() : "—",
+                            t.getCategoria() != null ? t.getCategoria().getNome() : "-",
                             t.getTipo(),
                             CurrencyUtil.formatar(t.getValor())
                     });
@@ -313,19 +260,16 @@ public class MainView extends JFrame {
         });
     }
 
-    // ── Navegação ─────────────────────────────────────────────────────────────
-
-    private void abrirFormularioTransacao(Transacao transacaoParaEditar) {
-        TransactionFormView form = new TransactionFormView(this, transacaoParaEditar);
+    private void abrirFormularioNovaTransacao(TipoTransacao tipoInicial) {
+        TransactionFormView form = new TransactionFormView(this, null, tipoInicial);
         form.setVisible(true);
         atualizarDashboard();
     }
 
-    private void editarTransacaoSelecionada() {
-        int linha = tabela.getSelectedRow();
-        if (linha < 0) return;
-        // Para edição, recarregamos pelo índice da lista (simplificado via listarUltimas)
-        abrirFormularioTransacao(null);
+    private void abrirFormularioEdicao(Transacao transacao) {
+        TransactionFormView form = new TransactionFormView(this, transacao, transacao.getTipo());
+        form.setVisible(true);
+        atualizarDashboard();
     }
 
     private void abrirCategorias() {
@@ -339,12 +283,10 @@ public class MainView extends JFrame {
         view.setVisible(true);
     }
 
-    // ── Utilitários ───────────────────────────────────────────────────────────
-
     private JButton criarBotao(String texto, Color fundo) {
         JButton btn = new JButton(texto);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btn.setForeground(COR_TEXTO);
+        btn.setFont(FONTE_BTN);
+        btn.setForeground(Color.WHITE);
         btn.setBackground(fundo);
         btn.setBorder(new EmptyBorder(8, 16, 8, 16));
         btn.setFocusPainted(false);
@@ -358,16 +300,14 @@ public class MainView extends JFrame {
     }
 
     private void encerrarAplicacao() {
-        int resposta = JOptionPane.showConfirmDialog(this,
-                "Deseja sair do sistema?", "Confirmar saída",
+        int r = JOptionPane.showConfirmDialog(this,
+                "Deseja sair do sistema?", "Confirmar saida",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (resposta == JOptionPane.YES_OPTION) {
+        if (r == JOptionPane.YES_OPTION) {
             HibernateUtil.shutdown();
             System.exit(0);
         }
     }
-
-    // ── Renderers personalizados ──────────────────────────────────────────────
 
     private static class TipoRenderer extends DefaultTableCellRenderer {
         @Override
@@ -379,10 +319,10 @@ public class MainView extends JFrame {
             if (val instanceof TipoTransacao tipo) {
                 if (tipo == TipoTransacao.RECEITA) {
                     setForeground(new Color(34, 197, 94));
-                    setText("▲ " + tipo.getDescricao());
+                    setText("Receita");
                 } else {
-                    setForeground(new Color(239, 68, 68));
-                    setText("▼ " + tipo.getDescricao());
+                    setForeground(new Color(220, 60, 60));
+                    setText("Despesa");
                 }
             }
             setBackground(sel ? new Color(51, 65, 85) : new Color(30, 41, 59));

@@ -2,6 +2,7 @@ package com.sistema.controller;
 
 import com.sistema.dao.CategoriaDAO;
 import com.sistema.model.Categoria;
+import com.sistema.model.TipoTransacao;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,13 +82,29 @@ public class CategoriaController implements GenericController<Categoria> {
     // ── Métodos específicos ───────────────────────────────────────────────────
 
     /**
+     * Lista categorias de um tipo específico em ordem alfabética.
+     */
+    public List<Categoria> listarPorTipo(TipoTransacao tipo) {
+        return categoriaDAO.listarPorTipo(tipo);
+    }
+
+    /**
+     * Salva apenas pelo nome e tipo, criando um objeto Categoria internamente.
+     */
+    public Categoria salvarPorNome(String nome, TipoTransacao tipo) {
+        return salvar(new Categoria(nome != null ? nome.trim() : null, tipo));
+    }
+
+    /**
      * Salva apenas pelo nome, criando um objeto Categoria internamente.
      *
      * @param nome nome da nova categoria
      * @return categoria persistida
+     * @deprecated Use {@link #salvarPorNome(String, TipoTransacao)} para informar o tipo.
      */
+    @Deprecated
     public Categoria salvarPorNome(String nome) {
-        return salvar(new Categoria(nome != null ? nome.trim() : null));
+        return salvar(new Categoria(nome != null ? nome.trim() : null, TipoTransacao.DESPESA));
     }
 
     // ── Validação ─────────────────────────────────────────────────────────────
@@ -97,10 +114,13 @@ public class CategoriaController implements GenericController<Categoria> {
             throw new IllegalArgumentException("Categoria não pode ser nula.");
         }
         if (categoria.getNome() == null || categoria.getNome().isBlank()) {
-            throw new IllegalArgumentException("O nome da categoria é obrigatório.");
+            throw new IllegalArgumentException("O nome da categoria e obrigatorio.");
         }
         if (categoria.getNome().length() > 100) {
-            throw new IllegalArgumentException("O nome da categoria não pode ter mais de 100 caracteres.");
+            throw new IllegalArgumentException("O nome da categoria nao pode ter mais de 100 caracteres.");
+        }
+        if (categoria.getTipo() == null) {
+            throw new IllegalArgumentException("O tipo da categoria (RECEITA/DESPESA) e obrigatorio.");
         }
     }
 }

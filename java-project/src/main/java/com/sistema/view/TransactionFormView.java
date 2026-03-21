@@ -17,55 +17,51 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
- * Diálogo de formulário para cadastro e edição de transações financeiras.
- * Suporta modo de criação (transacao == null) e modo de edição.
+ * Dialogo de formulario para cadastro e edicao de transacoes financeiras.
+ * O combo de categorias e filtrado automaticamente pelo TipoTransacao selecionado.
  */
 public class TransactionFormView extends JDialog {
 
-    // ── Paleta ────────────────────────────────────────────────────────────────
-    private static final Color COR_FUNDO   = new Color(15, 23, 42);
-    private static final Color COR_CARD    = new Color(30, 41, 59);
-    private static final Color COR_BORDA   = new Color(51, 65, 85);
-    private static final Color COR_VERDE   = new Color(34, 197, 94);
-    private static final Color COR_AZUL    = new Color(59, 130, 246);
-    private static final Color COR_TEXTO   = new Color(241, 245, 249);
-    private static final Color COR_MUTED   = new Color(148, 163, 184);
-    private static final Color COR_INPUT   = new Color(15, 23, 42);
-    private static final Color COR_CANCELAR = new Color(71, 85, 105);
+    private static final Color COR_FUNDO    = new Color(15, 23, 42);
+    private static final Color COR_CARD     = new Color(30, 41, 59);
+    private static final Color COR_BORDA    = new Color(51, 65, 85);
+    private static final Color COR_VERDE    = new Color(34, 197, 94);
+    private static final Color COR_VERMELHO = new Color(220, 60, 60);
+    private static final Color COR_AZUL     = new Color(59, 130, 246);
+    private static final Color COR_GRAFITE  = new Color(71, 85, 105);
+    private static final Color COR_TEXTO    = new Color(241, 245, 249);
+    private static final Color COR_MUTED    = new Color(148, 163, 184);
+    private static final Color COR_INPUT    = new Color(15, 23, 42);
 
-    private static final Font FONTE_LABEL  = new Font("Segoe UI", Font.BOLD, 13);
-    private static final Font FONTE_INPUT  = new Font("Segoe UI", Font.PLAIN, 13);
-    private static final Font FONTE_BTN    = new Font("Segoe UI", Font.BOLD, 14);
+    private static final Font FONTE_LABEL = new Font("Segoe UI", Font.BOLD, 13);
+    private static final Font FONTE_INPUT = new Font("Segoe UI", Font.PLAIN, 13);
+    private static final Font FONTE_BTN   = new Font("Segoe UI", Font.BOLD, 14);
+
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    // ── Componentes ───────────────────────────────────────────────────────────
-    private JTextField txtDescricao;
-    private JTextField txtValor;
-    private JTextField txtData;
+    private JTextField           txtDescricao;
+    private JTextField           txtValor;
+    private JTextField           txtData;
     private JComboBox<TipoTransacao> cmbTipo;
     private JComboBox<Categoria>     cmbCategoria;
 
-    // ── Estado ────────────────────────────────────────────────────────────────
-    private final Transacao transacaoParaEditar;
-    private final TransacaoController transacaoController;
-    private final CategoriaController categoriaController;
+    private final Transacao            transacaoParaEditar;
+    private final TipoTransacao        tipoInicial;
+    private final TransacaoController  transacaoController;
+    private final CategoriaController  categoriaController;
 
-    // ── Construtor ────────────────────────────────────────────────────────────
-
-    public TransactionFormView(Frame owner, Transacao transacaoParaEditar) {
-        super(owner, transacaoParaEditar == null
-                ? "Nova Transação" : "Editar Transação", true);
-        this.transacaoParaEditar  = transacaoParaEditar;
-        this.transacaoController  = new TransacaoController();
-        this.categoriaController  = new CategoriaController();
+    public TransactionFormView(Frame owner, Transacao transacaoParaEditar, TipoTransacao tipoInicial) {
+        super(owner, transacaoParaEditar == null ? "Nova Transacao" : "Editar Transacao", true);
+        this.transacaoParaEditar = transacaoParaEditar;
+        this.tipoInicial         = tipoInicial != null ? tipoInicial : TipoTransacao.DESPESA;
+        this.transacaoController = new TransacaoController();
+        this.categoriaController = new CategoriaController();
         construirInterface();
         if (transacaoParaEditar != null) preencherFormulario();
     }
 
-    // ── Construção ────────────────────────────────────────────────────────────
-
     private void construirInterface() {
-        setSize(480, 480);
+        setSize(480, 500);
         setResizable(false);
         setLocationRelativeTo(getOwner());
         getContentPane().setBackground(COR_FUNDO);
@@ -81,10 +77,8 @@ public class TransactionFormView extends JDialog {
         p.setBackground(COR_CARD);
         p.setBorder(new EmptyBorder(20, 24, 16, 24));
 
-        String icone = transacaoParaEditar == null ? "➕" : "✏️";
-        String titulo = transacaoParaEditar == null ? "Nova Transação" : "Editar Transação";
-
-        JLabel lbl = new JLabel(icone + "  " + titulo);
+        String titulo = transacaoParaEditar == null ? "Nova Transacao" : "Editar Transacao";
+        JLabel lbl = new JLabel(titulo);
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 18));
         lbl.setForeground(COR_TEXTO);
         p.add(lbl, BorderLayout.WEST);
@@ -102,32 +96,35 @@ public class TransactionFormView extends JDialog {
         gbc.weightx   = 1.0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
 
-        // Descrição
-        adicionarLabel(p, gbc, "Descrição *");
-        txtDescricao = criarTextField("Ex.: Supermercado, Salário...");
+        // Tipo — acima de tudo para filtrar categorias
+        adicionarLabel(p, gbc, "Tipo");
+        cmbTipo = new JComboBox<>(TipoTransacao.values());
+        cmbTipo.setSelectedItem(tipoInicial);
+        estilizarComboBox(cmbTipo);
+        // Ao mudar o tipo, recarrega o combo de categorias
+        cmbTipo.addActionListener(e -> recarregarCategorias());
+        p.add(cmbTipo, gbc);
+
+        // Descricao
+        adicionarLabel(p, gbc, "Descricao");
+        txtDescricao = criarTextField("Ex.: Supermercado, Salario...");
         p.add(txtDescricao, gbc);
 
         // Valor
-        adicionarLabel(p, gbc, "Valor (R$) *");
+        adicionarLabel(p, gbc, "Valor (R$)");
         txtValor = criarTextField("0,00");
         p.add(txtValor, gbc);
 
         // Data
-        adicionarLabel(p, gbc, "Data *");
+        adicionarLabel(p, gbc, "Data (dd/MM/yyyy)");
         txtData = criarTextField(LocalDate.now().format(FMT));
         p.add(txtData, gbc);
 
-        // Tipo - linha dividida
-        adicionarLabel(p, gbc, "Tipo *");
-        cmbTipo = new JComboBox<>(TipoTransacao.values());
-        estilizarComboBox(cmbTipo);
-        p.add(cmbTipo, gbc);
-
-        // Categoria
+        // Categoria — filtrada pelo tipo selecionado
         adicionarLabel(p, gbc, "Categoria");
         cmbCategoria = new JComboBox<>();
         estilizarComboBox(cmbCategoria);
-        carregarCategorias();
+        recarregarCategorias();
         p.add(cmbCategoria, gbc);
 
         return p;
@@ -138,7 +135,7 @@ public class TransactionFormView extends JDialog {
         p.setBackground(COR_FUNDO);
         p.setBorder(new EmptyBorder(0, 24, 24, 24));
 
-        JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
+        JButton btnCancelar = criarBotao("Cancelar", COR_GRAFITE);
         JButton btnSalvar   = criarBotao(
                 transacaoParaEditar == null ? "Salvar" : "Atualizar", COR_AZUL);
 
@@ -150,20 +147,27 @@ public class TransactionFormView extends JDialog {
         return p;
     }
 
-    // ── Lógica ───────────────────────────────────────────────────────────────
+    // ── Logica ────────────────────────────────────────────────────────────────
 
-    private void carregarCategorias() {
+    /** Recarrega o combo de categorias filtrando pelo tipo atualmente selecionado. */
+    private void recarregarCategorias() {
+        TipoTransacao tipoSelecionado = (TipoTransacao) cmbTipo.getSelectedItem();
         cmbCategoria.removeAllItems();
-        cmbCategoria.addItem(null); // opção "sem categoria"
-        List<Categoria> cats = categoriaController.listarTodos();
-        for (Categoria c : cats) cmbCategoria.addItem(c);
+        cmbCategoria.addItem(null); // opcao "sem categoria"
+
+        if (tipoSelecionado != null) {
+            List<Categoria> cats = categoriaController.listarPorTipo(tipoSelecionado);
+            cats.forEach(cmbCategoria::addItem);
+        }
     }
 
     private void preencherFormulario() {
+        cmbTipo.setSelectedItem(transacaoParaEditar.getTipo());
+        recarregarCategorias(); // garante que a lista esta correta antes de selecionar
         txtDescricao.setText(transacaoParaEditar.getDescricao());
         txtValor.setText(transacaoParaEditar.getValor().toPlainString().replace(".", ","));
         txtData.setText(transacaoParaEditar.getData().format(FMT));
-        cmbTipo.setSelectedItem(transacaoParaEditar.getTipo());
+
         if (transacaoParaEditar.getCategoria() != null) {
             for (int i = 0; i < cmbCategoria.getItemCount(); i++) {
                 Categoria c = cmbCategoria.getItemAt(i);
@@ -177,17 +181,16 @@ public class TransactionFormView extends JDialog {
 
     private void salvarTransacao() {
         try {
-            String descricao = txtDescricao.getText().trim();
-            BigDecimal valor = CurrencyUtil.parsear(txtValor.getText());
-            LocalDate data   = LocalDate.parse(txtData.getText().trim(), FMT);
-            TipoTransacao tipo       = (TipoTransacao) cmbTipo.getSelectedItem();
-            Categoria     categoria  = (Categoria) cmbCategoria.getSelectedItem();
+            String        descricao = txtDescricao.getText().trim();
+            BigDecimal    valor     = CurrencyUtil.parsear(txtValor.getText());
+            LocalDate     data      = LocalDate.parse(txtData.getText().trim(), FMT);
+            TipoTransacao tipo      = (TipoTransacao) cmbTipo.getSelectedItem();
+            Categoria     categoria = (Categoria) cmbCategoria.getSelectedItem();
 
             if (transacaoParaEditar == null) {
                 Transacao nova = new Transacao(descricao, valor, data, tipo, categoria);
                 transacaoController.salvar(nova);
-                JOptionPane.showMessageDialog(this,
-                        "✅ Transação salva com sucesso!",
+                JOptionPane.showMessageDialog(this, "Transacao salva com sucesso!",
                         "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 transacaoParaEditar.setDescricao(descricao);
@@ -196,14 +199,13 @@ public class TransactionFormView extends JDialog {
                 transacaoParaEditar.setTipo(tipo);
                 transacaoParaEditar.setCategoria(categoria);
                 transacaoController.atualizar(transacaoParaEditar);
-                JOptionPane.showMessageDialog(this,
-                        "✅ Transação atualizada com sucesso!",
+                JOptionPane.showMessageDialog(this, "Transacao atualizada com sucesso!",
                         "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             }
             dispose();
 
         } catch (DateTimeParseException e) {
-            mostrarErro("Data inválida. Use o formato dd/MM/yyyy.");
+            mostrarErro("Data invalida. Use o formato dd/MM/yyyy.");
         } catch (IllegalArgumentException e) {
             mostrarErro(e.getMessage());
         } catch (Exception e) {
@@ -222,7 +224,7 @@ public class TransactionFormView extends JDialog {
         gbc.insets = new Insets(0, 0, 14, 0);
     }
 
-    private JTextField criarTextField(String placeholder) {
+    private JTextField criarTextField(String toolTip) {
         JTextField tf = new JTextField();
         tf.setFont(FONTE_INPUT);
         tf.setForeground(COR_TEXTO);
@@ -231,7 +233,7 @@ public class TransactionFormView extends JDialog {
         tf.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COR_BORDA, 1),
                 new EmptyBorder(8, 12, 8, 12)));
-        tf.setToolTipText(placeholder);
+        tf.setToolTipText(toolTip);
         return tf;
     }
 
@@ -246,7 +248,7 @@ public class TransactionFormView extends JDialog {
     private JButton criarBotao(String texto, Color cor) {
         JButton btn = new JButton(texto);
         btn.setFont(FONTE_BTN);
-        btn.setForeground(COR_TEXTO);
+        btn.setForeground(Color.WHITE);
         btn.setBackground(cor);
         btn.setBorder(new EmptyBorder(10, 0, 10, 0));
         btn.setFocusPainted(false);
@@ -256,7 +258,7 @@ public class TransactionFormView extends JDialog {
     }
 
     private void mostrarErro(String msg) {
-        JOptionPane.showMessageDialog(this, msg, "Erro de Validação",
+        JOptionPane.showMessageDialog(this, msg, "Erro de Validacao",
                 JOptionPane.ERROR_MESSAGE);
     }
 }
