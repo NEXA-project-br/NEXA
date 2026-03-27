@@ -1,6 +1,7 @@
-# Diagramas de Sequência — Sistema Financeiro Pessoal
+# Diagramas de Sequência — Sistema Financeiro Pessoal (NEXA)
 
 > Um diagrama por Requisito Funcional (RF), conforme solicitado.
+> Os participantes refletem as classes reais do projeto Java.
 
 ---
 
@@ -9,19 +10,22 @@
 ```mermaid
 sequenceDiagram
   actor U as Usuário
-  participant T as TelaReceita
-  participant S as SistemaFinanceiro
-  participant D as ArquivoDados
+  participant V as TransactionFormView
+  participant C as TransacaoController
+  participant D as TransacaoDAO
+  participant DB as financeiro.db (SQLite)
 
-  U->>T: 1: clica "Nova Receita"
-  T-->>U: 2: exibe formulário
-  U->>T: 3: preenche descrição, valor, data, categoria
-  T->>S: 4: adicionarReceita(receita)
-  S->>S: 5: valida dados
-  S->>D: 6: salvarDados()
-  D-->>S: 7: confirmação de gravação
-  S-->>T: 8: retorna sucesso
-  T-->>U: 9: exibe saldo atualizado
+  U->>V: 1: clica "Nova Receita" (MainView)
+  V-->>U: 2: exibe formulário (descrição, valor, data, categoria, tipo=RECEITA)
+  U->>V: 3: preenche campos e confirma
+  V->>C: 4: salvar(transacao)
+  C->>C: 5: validarTransacao(transacao)
+  C->>D: 6: salvar(transacao)
+  D->>DB: 7: INSERT INTO transacoes (...)
+  DB-->>D: 8: confirmação de inserção
+  D-->>C: 9: retorna Transacao com ID gerado
+  C-->>V: 10: retorna Transacao persistida
+  V-->>U: 11: fecha formulário e atualiza dashboard (atualizarDashboard)
 ```
 
 ---
@@ -31,19 +35,22 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
   actor U as Usuário
-  participant T as TelaDespesa
-  participant S as SistemaFinanceiro
-  participant D as ArquivoDados
+  participant V as TransactionFormView
+  participant C as TransacaoController
+  participant D as TransacaoDAO
+  participant DB as financeiro.db (SQLite)
 
-  U->>T: 1: clica "Nova Despesa"
-  T-->>U: 2: exibe formulário
-  U->>T: 3: preenche descrição, valor, data, categoria
-  T->>S: 4: adicionarDespesa(despesa)
-  S->>S: 5: valida dados
-  S->>D: 6: salvarDados()
-  D-->>S: 7: confirmação de gravação
-  S-->>T: 8: retorna sucesso
-  T-->>U: 9: exibe saldo atualizado
+  U->>V: 1: clica "Nova Despesa" (MainView)
+  V-->>U: 2: exibe formulário (descrição, valor, data, categoria, tipo=DESPESA)
+  U->>V: 3: preenche campos e confirma
+  V->>C: 4: salvar(transacao)
+  C->>C: 5: validarTransacao(transacao)
+  C->>D: 6: salvar(transacao)
+  D->>DB: 7: INSERT INTO transacoes (...)
+  DB-->>D: 8: confirmação de inserção
+  D-->>C: 9: retorna Transacao com ID gerado
+  C-->>V: 10: retorna Transacao persistida
+  V-->>U: 11: fecha formulário e atualiza dashboard (atualizarDashboard)
 ```
 
 ---
@@ -53,20 +60,47 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
   actor U as Usuário
-  participant T as TelaCategorias
-  participant S as SistemaFinanceiro
-  participant D as ArquivoDados
+  participant V as CategoryView
+  participant C as CategoriaController
+  participant D as CategoriaDAO
+  participant DB as financeiro.db (SQLite)
 
-  U->>T: 1: clica "Categorias"
-  T->>S: 2: listarCategorias()
-  S-->>T: 3: lista de categorias
-  T-->>U: 4: exibe categorias cadastradas
-  U->>T: 5: adiciona / edita / exclui categoria
-  T->>S: 6: atualizarCategoria(categoria)
-  S->>D: 7: salvarDados()
-  D-->>S: 8: confirmação de gravação
-  S-->>T: 9: lista atualizada
-  T-->>U: 10: exibe lista atualizada
+  U->>V: 1: abre tela "Categorias"
+  V->>C: 2: listarTodos()
+  C->>D: 3: listarOrdenadoPorNome()
+  D->>DB: 4: SELECT * FROM categorias ORDER BY nome
+  DB-->>D: 5: lista de categorias
+  D-->>C: 6: List~Categoria~
+  C-->>V: 7: lista de categorias
+  V-->>U: 8: exibe categorias cadastradas
+
+  alt Criar nova categoria
+    U->>V: 9a: informa nome e tipo, clica "Salvar"
+    V->>C: 10a: salvarPorNome(nome, tipo)
+    C->>C: 11a: validarCategoria() + verifica duplicidade
+    C->>D: 12a: salvar(categoria)
+    D->>DB: 13a: INSERT INTO categorias (...)
+    DB-->>D: 14a: confirmação
+    D-->>C: 15a: Categoria persistida
+    C-->>V: 16a: retorna Categoria com ID
+  else Excluir categoria
+    U->>V: 9b: seleciona categoria, clica "Excluir"
+    V->>C: 10b: excluir(id)
+    C->>D: 11b: possuiTransacoes(id)
+    D->>DB: 12b: SELECT COUNT(*) FROM transacoes WHERE categoria_id = ?
+    DB-->>D: 13b: count
+    D-->>C: 14b: boolean
+    alt Sem transações vinculadas
+      C->>D: 15b: excluir(id)
+      D->>DB: 16b: DELETE FROM categorias WHERE id = ?
+      DB-->>D: 17b: confirmação
+    else Com transações vinculadas
+      C-->>V: 15b: lança IllegalStateException
+      V-->>U: 16b: exibe mensagem de erro
+    end
+  end
+
+  V-->>U: atualiza lista de categorias
 ```
 
 ---
@@ -76,38 +110,47 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
   actor U as Usuário
-  participant T as TelaPrincipal
-  participant S as SistemaFinanceiro
+  participant V as MainView
+  participant C as TransacaoController
+  participant D as TransacaoDAO
+  participant DB as financeiro.db (SQLite)
 
-  U->>T: 1: abre o sistema
-  T->>S: 2: calcularSaldo()
-  S->>S: 3: soma todas as receitas
-  S->>S: 4: soma todas as despesas
-  S->>S: 5: saldo = totalReceitas - totalDespesas
-  S-->>T: 6: retorna saldo, totalReceitas, totalDespesas
-  T-->>U: 7: exibe Saldo Atual, Total Receitas, Total Despesas
+  U->>V: 1: inicia o sistema (ou retorna ao dashboard)
+  V->>C: 2: calcularSaldoAtual()
+  C->>D: 3: totalReceitas()
+  D->>DB: 4: SELECT SUM(valor) FROM transacoes WHERE tipo = 'RECEITA'
+  DB-->>D: 5: BigDecimal totalReceitas
+  D-->>C: 6: totalReceitas
+  C->>D: 7: totalDespesas()
+  D->>DB: 8: SELECT SUM(valor) FROM transacoes WHERE tipo = 'DESPESA'
+  DB-->>D: 9: BigDecimal totalDespesas
+  D-->>C: 10: totalDespesas
+  C->>C: 11: saldo = totalReceitas.subtract(totalDespesas)
+  C-->>V: 12: retorna saldo, totalReceitas, totalDespesas
+  V-->>U: 13: exibe cards "Saldo Atual", "Total Receitas", "Total Despesas"
 ```
 
 ---
 
-## RF05 — Filtrar por Período
+## RF05 — Filtrar Transações por Período
 
 ```mermaid
 sequenceDiagram
   actor U as Usuário
-  participant T as TelaPrincipal
-  participant R as RelatorioFinanceiro
-  participant S as SistemaFinanceiro
+  participant V as MainView
+  participant C as TransacaoController
+  participant D as TransacaoDAO
+  participant DB as financeiro.db (SQLite)
 
-  U->>T: 1: clica "Filtrar por Período"
-  T-->>U: 2: exibe campos data início e data fim
-  U->>T: 3: informa datas
-  T->>R: 4: filtrarPorPeriodo(dataInicio, dataFim)
-  R->>S: 5: buscarTransacoes(dataInicio, dataFim)
-  S-->>R: 6: lista de transações filtradas
-  R->>R: 7: calcularTotais()
-  R-->>T: 8: resultado filtrado com totais
-  T-->>U: 9: exibe movimentações do período selecionado
+  U->>V: 1: informa data início e data fim, clica "Filtrar"
+  V->>C: 2: filtrarPorPeriodo(inicio, fim)
+  C->>C: 3: validarPeriodo(inicio, fim)
+  C->>D: 4: filtrarPorPeriodo(inicio, fim)
+  D->>DB: 5: SELECT * FROM transacoes WHERE data BETWEEN ? AND ? ORDER BY data DESC
+  DB-->>D: 6: lista de transações
+  D-->>C: 7: List~Transacao~
+  C-->>V: 8: lista filtrada
+  V-->>U: 9: exibe transações do período na tabela
 ```
 
 ---
@@ -117,22 +160,31 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
   actor U as Usuário
-  participant T as TelaRelatorio
-  participant R as RelatorioFinanceiro
-  participant S as SistemaFinanceiro
-  participant D as ArquivoDados
+  participant MV as MainView
+  participant RV as ReportView
+  participant C as TransacaoController
+  participant D as TransacaoDAO
+  participant DB as financeiro.db (SQLite)
 
-  U->>T: 1: clica "Relatórios"
-  T-->>U: 2: exibe opções de período e categoria
-  U->>T: 3: define parâmetros do relatório
-  T->>R: 4: gerarRelatorio()
-  R->>S: 5: buscarTransacoes()
-  S->>D: 6: carregarDados()
-  D-->>S: 7: dados carregados
-  S-->>R: 8: lista de transações
-  R->>R: 9: calcularTotais()
-  R-->>T: 10: relatório completo
-  T-->>U: 11: exibe tabela com data, descrição e valor
+  U->>MV: 1: clica "Relatórios"
+  MV->>RV: 2: abre ReportView (dialog modal)
+  RV-->>U: 3: exibe campos data início e data fim (padrão: mês atual)
+  U->>RV: 4: confirma período e clica "Gerar Relatório"
+  RV->>C: 5: gerarResumo(inicio, fim)
+  C->>C: 6: validarPeriodo(inicio, fim)
+  C->>D: 7: somarPorTipoEPeriodo(RECEITA, inicio, fim)
+  D->>DB: 8: SELECT SUM(valor) ... WHERE tipo='RECEITA' AND data BETWEEN ? AND ?
+  DB-->>D: 9: BigDecimal totalReceitas
+  C->>D: 10: somarPorTipoEPeriodo(DESPESA, inicio, fim)
+  D->>DB: 11: SELECT SUM(valor) ... WHERE tipo='DESPESA' AND data BETWEEN ? AND ?
+  DB-->>D: 12: BigDecimal totalDespesas
+  C->>D: 13: filtrarPorPeriodo(inicio, fim)
+  D->>DB: 14: SELECT * FROM transacoes WHERE data BETWEEN ? AND ?
+  DB-->>D: 15: lista de transações
+  D-->>C: 16: List~Transacao~
+  C->>C: 17: cria ResumoFinanceiro(inicio, fim, receitas, despesas, saldo, transacoes)
+  C-->>RV: 18: ResumoFinanceiro
+  RV-->>U: 19: exibe tabela com transações + cards de totais (Receitas, Despesas, Saldo)
 ```
 
 ---
@@ -142,13 +194,27 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
   actor U as Usuário
-  participant S as SistemaFinanceiro
-  participant D as ArquivoDados
+  participant Main as Main (inicialização)
+  participant HU as HibernateUtil
+  participant DB as financeiro.db (SQLite)
 
-  U->>S: 1: realiza qualquer operação (receita, despesa, categoria)
-  S->>S: 2: processa operação
-  S->>D: 3: salvarDados()
-  D-->>S: 4: confirmação de gravação local
-  S-->>U: 5: operação concluída com sucesso
-  Note over D: Dados armazenados localmente na máquina do usuário (100% offline)
+  U->>Main: 1: inicia a aplicação
+  Main->>Main: 2: executarMigracoes() via JDBC direto
+  Main->>DB: 3: PRAGMA table_info(categorias) — verifica schema
+  DB-->>Main: 4: estrutura atual da tabela
+  alt Coluna 'tipo' ausente
+    Main->>DB: 5a: ALTER TABLE categorias ADD COLUMN tipo VARCHAR(10)
+    Main->>DB: 6a: UPDATE categorias SET tipo = 'DESPESA' WHERE tipo IS NULL
+    DB-->>Main: 7a: migrações aplicadas
+  end
+  Main->>HU: 8: getEntityManagerFactory()
+  HU->>DB: 9: conecta via Hibernate (hbm2ddl.auto = update)
+  DB-->>HU: 10: EntityManagerFactory criado
+  HU-->>Main: 11: factory pronto
+
+  Note over DB: Todas as operações subsequentes (salvar, atualizar, excluir)<br/>são persistidas automaticamente no financeiro.db via JPA/Hibernate
+
+  U->>Main: 12: encerra a aplicação
+  Main->>HU: 13: ShutdownHook → HibernateUtil.shutdown()
+  HU->>DB: 14: fecha conexões e EntityManagerFactory
 ```

@@ -1,4 +1,4 @@
-# Diagramas de Casos de Uso — Sistema Financeiro Pessoal
+# Diagramas de Casos de Uso — Sistema Financeiro Pessoal (NEXA)
 
 > Um diagrama por Requisito Funcional (RF), conforme solicitado.
 
@@ -9,7 +9,7 @@
 ```mermaid
 graph LR
   U((Usuário))
-  RF01([RF01 - Cadastrar receita])
+  RF01([RF01 - Cadastrar Receita])
   U --> RF01
 ```
 
@@ -20,7 +20,7 @@ graph LR
 ```mermaid
 graph LR
   U((Usuário))
-  RF02([RF02 - Cadastrar despesa])
+  RF02([RF02 - Cadastrar Despesa])
   U --> RF02
 ```
 
@@ -28,10 +28,12 @@ graph LR
 
 ## RF03 — Gerenciar Categorias
 
+> Engloba criar, listar, editar e excluir categorias.
+
 ```mermaid
 graph LR
   U((Usuário))
-  RF03([RF03 - Gerenciar categorias])
+  RF03([RF03 - Gerenciar Categorias])
   U --> RF03
 ```
 
@@ -39,14 +41,14 @@ graph LR
 
 ## RF04 — Calcular Saldo Automático
 
-> `«include»` RF01 e RF02 — o cálculo depende de receitas e despesas cadastradas.
+> `«include»` RF01 e RF02 — o saldo depende das receitas e despesas cadastradas.
 
 ```mermaid
 graph LR
   U((Usuário))
-  RF04([RF04 - Calcular saldo automático])
-  RF01([RF01 - Cadastrar receita])
-  RF02([RF02 - Cadastrar despesa])
+  RF04([RF04 - Calcular Saldo Automático])
+  RF01([RF01 - Cadastrar Receita])
+  RF02([RF02 - Cadastrar Despesa])
 
   U --> RF04
   RF04 -.->|«include»| RF01
@@ -55,12 +57,12 @@ graph LR
 
 ---
 
-## RF05 — Filtrar por Período
+## RF05 — Filtrar Transações por Período
 
 ```mermaid
 graph LR
   U((Usuário))
-  RF05([RF05 - Filtrar por período])
+  RF05([RF05 - Filtrar por Período])
   U --> RF05
 ```
 
@@ -73,8 +75,8 @@ graph LR
 ```mermaid
 graph LR
   U((Usuário))
-  RF06([RF06 - Gerar relatório financeiro])
-  RF05([RF05 - Filtrar por período])
+  RF06([RF06 - Gerar Relatório Financeiro])
+  RF05([RF05 - Filtrar por Período])
 
   U --> RF06
   RF06 -.->|«include»| RF05
@@ -84,11 +86,20 @@ graph LR
 
 ## RF07 — Armazenar Dados Localmente
 
+> `«include»` RF01 e RF02 — o armazenamento ocorre a cada operação de escrita.
+
 ```mermaid
 graph LR
   U((Usuário))
-  RF07([RF07 - Armazenar dados localmente])
+  RF07([RF07 - Armazenar Dados Localmente])
+  RF01([RF01 - Cadastrar Receita])
+  RF02([RF02 - Cadastrar Despesa])
+  RF03([RF03 - Gerenciar Categorias])
+
   U --> RF07
+  RF07 -.->|«include»| RF01
+  RF07 -.->|«include»| RF02
+  RF07 -.->|«include»| RF03
 ```
 
 ---
@@ -99,13 +110,13 @@ graph LR
 graph LR
   U((Usuário))
 
-  RF01([RF01 - Cadastrar receita])
-  RF02([RF02 - Cadastrar despesa])
-  RF03([RF03 - Gerenciar categorias])
-  RF04([RF04 - Calcular saldo automático])
-  RF05([RF05 - Filtrar por período])
-  RF06([RF06 - Gerar relatório financeiro])
-  RF07([RF07 - Armazenar dados localmente])
+  RF01([RF01 - Cadastrar Receita])
+  RF02([RF02 - Cadastrar Despesa])
+  RF03([RF03 - Gerenciar Categorias])
+  RF04([RF04 - Calcular Saldo Automático])
+  RF05([RF05 - Filtrar por Período])
+  RF06([RF06 - Gerar Relatório Financeiro])
+  RF07([RF07 - Armazenar Dados Localmente])
 
   U --> RF01
   U --> RF02
@@ -118,4 +129,7 @@ graph LR
   RF04 -.->|«include»| RF01
   RF04 -.->|«include»| RF02
   RF06 -.->|«include»| RF05
+  RF07 -.->|«include»| RF01
+  RF07 -.->|«include»| RF02
+  RF07 -.->|«include»| RF03
 ```
