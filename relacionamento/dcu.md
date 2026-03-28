@@ -10,21 +10,20 @@
 
 ```mermaid
 graph LR
-  U((Usuário))
-
+  U((Usuario))
   RF01([RF01 - Cadastrar Receita])
-  A1([Preencher Descrição])
+  A1([Preencher Descricao])
   A2([Informar Valor])
   A3([Selecionar Data])
   A4([Selecionar Categoria])
   A5([Confirmar Cadastro])
 
   U --> RF01
-  RF01 -.->|«include»| A1
-  RF01 -.->|«include»| A2
-  RF01 -.->|«include»| A3
-  RF01 -.->|«extend»|  A4
-  RF01 -.->|«include»| A5
+  RF01 -.->|include| A1
+  RF01 -.->|include| A2
+  RF01 -.->|include| A3
+  RF01 -.->|extend| A4
+  RF01 -.->|include| A5
 ```
 
 ---
@@ -35,21 +34,20 @@ graph LR
 
 ```mermaid
 graph LR
-  U((Usuário))
-
+  U((Usuario))
   RF02([RF02 - Cadastrar Despesa])
-  A1([Preencher Descrição])
+  A1([Preencher Descricao])
   A2([Informar Valor])
   A3([Selecionar Data])
   A4([Selecionar Categoria])
   A5([Confirmar Cadastro])
 
   U --> RF02
-  RF02 -.->|«include»| A1
-  RF02 -.->|«include»| A2
-  RF02 -.->|«include»| A3
-  RF02 -.->|«extend»|  A4
-  RF02 -.->|«include»| A5
+  RF02 -.->|include| A1
+  RF02 -.->|include| A2
+  RF02 -.->|include| A3
+  RF02 -.->|extend| A4
+  RF02 -.->|include| A5
 ```
 
 ---
@@ -60,21 +58,20 @@ graph LR
 
 ```mermaid
 graph LR
-  U((Usuário))
-
+  U((Usuario))
   RF03([RF03 - Gerenciar Categorias])
   A1([Criar Categoria])
   A2([Editar Categoria])
   A3([Excluir Categoria])
   A4([Listar Categorias])
-  A5([Validar Vínculo com Transações])
+  A5([Validar Vinculo com Transacoes])
 
   U --> RF03
-  RF03 -.->|«include»| A4
-  RF03 -.->|«extend»|  A1
-  RF03 -.->|«extend»|  A2
-  RF03 -.->|«extend»|  A3
-  A3  -.->|«include»|  A5
+  RF03 -.->|include| A4
+  RF03 -.->|extend| A1
+  RF03 -.->|extend| A2
+  RF03 -.->|extend| A3
+  A3 -.->|include| A5
 ```
 
 ---
@@ -85,9 +82,8 @@ graph LR
 
 ```mermaid
 graph LR
-  U((Usuário))
-
-  RF04([RF04 - Calcular Saldo Automático])
+  U((Usuario))
+  RF04([RF04 - Calcular Saldo Automatico])
   RF01([RF01 - Cadastrar Receita])
   RF02([RF02 - Cadastrar Despesa])
   A1([Somar Total de Receitas])
@@ -95,11 +91,11 @@ graph LR
   A3([Exibir Saldo no Dashboard])
 
   U --> RF04
-  RF04 -.->|«include»| RF01
-  RF04 -.->|«include»| RF02
-  RF04 -.->|«include»| A1
-  RF04 -.->|«include»| A2
-  RF04 -.->|«include»| A3
+  RF04 -.->|include| RF01
+  RF04 -.->|include| RF02
+  RF04 -.->|include| A1
+  RF04 -.->|include| A2
+  RF04 -.->|include| A3
 ```
 
 ---
@@ -110,21 +106,20 @@ graph LR
 
 ```mermaid
 graph LR
-  U((Usuário))
-
-  RF05([RF05 - Filtrar por Período])
-  A1([Informar Data de Início])
+  U((Usuario))
+  RF05([RF05 - Filtrar por Periodo])
+  A1([Informar Data de Inicio])
   A2([Informar Data de Fim])
   A3([Aplicar Filtro])
-  A4([Exibir Transações Filtradas])
-  A5([Recalcular Totais do Período])
+  A4([Exibir Transacoes Filtradas])
+  A5([Recalcular Totais do Periodo])
 
   U --> RF05
-  RF05 -.->|«include»| A1
-  RF05 -.->|«include»| A2
-  RF05 -.->|«include»| A3
-  A3  -.->|«include»| A4
-  A3  -.->|«include»| A5
+  RF05 -.->|include| A1
+  RF05 -.->|include| A2
+  RF05 -.->|include| A3
+  A3 -.->|include| A4
+  A3 -.->|include| A5
 ```
 
 ---
@@ -135,21 +130,20 @@ graph LR
 
 ```mermaid
 graph LR
-  U((Usuário))
-
-  RF06([RF06 - Gerar Relatório Financeiro])
-  RF05([RF05 - Filtrar por Período])
-  A1([Definir Parâmetros do Relatório])
-  A2([Exibir Tabela de Transações])
+  U((Usuario))
+  RF06([RF06 - Gerar Relatorio Financeiro])
+  RF05([RF05 - Filtrar por Periodo])
+  A1([Definir Parametros do Relatorio])
+  A2([Exibir Tabela de Transacoes])
   A3([Exibir Total Receitas e Despesas])
-  A4([Exibir Saldo do Período])
+  A4([Exibir Saldo do Periodo])
 
   U --> RF06
-  RF06 -.->|«include»| A1
-  RF06 -.->|«include»| RF05
-  RF06 -.->|«include»| A2
-  RF06 -.->|«include»| A3
-  RF06 -.->|«include»| A4
+  RF06 -.->|include| A1
+  RF06 -.->|include| RF05
+  RF06 -.->|include| A2
+  RF06 -.->|include| A3
+  RF06 -.->|include| A4
 ```
 
 ---
@@ -160,23 +154,22 @@ graph LR
 
 ```mermaid
 graph LR
-  U((Usuário))
-
+  U((Usuario))
   RF07([RF07 - Armazenar Dados Localmente])
   RF01([RF01 - Cadastrar Receita])
   RF02([RF02 - Cadastrar Despesa])
   RF03([RF03 - Gerenciar Categorias])
   A1([Persistir no Banco SQLite])
-  A2([Executar Migração de Schema])
-  A3([Encerrar Conexão com Segurança])
+  A2([Executar Migracao de Schema])
+  A3([Encerrar Conexao com Seguranca])
 
   U --> RF07
-  RF07 -.->|«include»| RF01
-  RF07 -.->|«include»| RF02
-  RF07 -.->|«include»| RF03
-  RF07 -.->|«include»| A1
-  RF07 -.->|«include»| A2
-  RF07 -.->|«extend»|  A3
+  RF07 -.->|include| RF01
+  RF07 -.->|include| RF02
+  RF07 -.->|include| RF03
+  RF07 -.->|include| A1
+  RF07 -.->|include| A2
+  RF07 -.->|extend| A3
 ```
 
 ---
@@ -185,14 +178,13 @@ graph LR
 
 ```mermaid
 graph LR
-  U((Usuário))
-
+  U((Usuario))
   RF01([RF01 - Cadastrar Receita])
   RF02([RF02 - Cadastrar Despesa])
   RF03([RF03 - Gerenciar Categorias])
-  RF04([RF04 - Calcular Saldo Automático])
-  RF05([RF05 - Filtrar por Período])
-  RF06([RF06 - Gerar Relatório Financeiro])
+  RF04([RF04 - Calcular Saldo Automatico])
+  RF05([RF05 - Filtrar por Periodo])
+  RF06([RF06 - Gerar Relatorio Financeiro])
   RF07([RF07 - Armazenar Dados Localmente])
 
   U --> RF01
@@ -203,10 +195,10 @@ graph LR
   U --> RF06
   U --> RF07
 
-  RF04 -.->|«include»| RF01
-  RF04 -.->|«include»| RF02
-  RF06 -.->|«include»| RF05
-  RF07 -.->|«include»| RF01
-  RF07 -.->|«include»| RF02
-  RF07 -.->|«include»| RF03
+  RF04 -.->|include| RF01
+  RF04 -.->|include| RF02
+  RF06 -.->|include| RF05
+  RF07 -.->|include| RF01
+  RF07 -.->|include| RF02
+  RF07 -.->|include| RF03
 ```
