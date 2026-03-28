@@ -39,16 +39,19 @@ graph LR
 ```mermaid
 graph LR
   U((Usuário))
+  RF03([Gerenciar Categorias])
 
   A1([Criar Categoria])
   A2([Editar Categoria])
   A3([Excluir Categoria])
   A4([Listar Categorias])
 
-  U --> A1
-  U --> A2
-  U --> A3
-  U --> A4
+  U --> RF03
+
+  RF03 -.->|include| A1
+  RF03 -.->|include| A2
+  RF03 -.->|include| A3
+  RF03 -.->|include| A4
 ```
 
 ---
@@ -105,6 +108,7 @@ graph LR
 
   RF01([Cadastrar Receita])
   RF02([Cadastrar Despesa])
+  RF03([Gerenciar Categorias])
   A1([Criar Categoria])
   A2([Editar Categoria])
   A3([Excluir Categoria])
@@ -115,13 +119,15 @@ graph LR
 
   U --> RF01
   U --> RF02
-  U --> A1
-  U --> A2
-  U --> A3
-  U --> A4
+  U --> RF03
   U --> RF04
   U --> RF05
   U --> RF06
+
+  RF03 -.->|include| A1
+  RF03 -.->|include| A2
+  RF03 -.->|include| A3
+  RF03 -.->|include| A4
 
   RF06 -.->|include| RF05
 ```
