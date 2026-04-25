@@ -90,13 +90,19 @@ public class MainView extends JFrame {
         JButton btnCats    = criarBotao("Categorias",   COR_GRAFITE);
         JButton btnRelat   = criarBotao("Relatorios",   COR_AZUL_ESCURO);
         JButton btnCalc    = criarBotao("Calculadora",  COR_AZUL_CLARO);
+        JButton btnGrafRec = criarBotao("Receita Mensal", COR_VERDE);
+        JButton btnGrafDes = criarBotao("Despesa Mensal", COR_VERMELHO);
 
         btnReceita.addActionListener(e -> abrirFormularioNovaTransacao(TipoTransacao.RECEITA));
         btnDespesa.addActionListener(e -> abrirFormularioNovaTransacao(TipoTransacao.DESPESA));
         btnCats.addActionListener(e    -> abrirCategorias());
         btnRelat.addActionListener(e   -> abrirRelatorios());
         btnCalc.addActionListener(e    -> abrirCalculadora());
+        btnGrafRec.addActionListener(e -> abrirGraficoMensal(TipoTransacao.RECEITA));
+        btnGrafDes.addActionListener(e -> abrirGraficoMensal(TipoTransacao.DESPESA));
 
+        btnPanel.add(btnGrafDes);
+        btnPanel.add(btnGrafRec);
         btnPanel.add(btnCalc);
         btnPanel.add(btnRelat);
         btnPanel.add(btnCats);
@@ -288,6 +294,11 @@ public class MainView extends JFrame {
 
     private void abrirCalculadora() {
         CompoundInterestCalculatorView view = new CompoundInterestCalculatorView(this);
+        view.setVisible(true);
+    }
+
+    private void abrirGraficoMensal(TipoTransacao tipo) {
+        MonthlyChartView view = new MonthlyChartView(this, tipo);
         view.setVisible(true);
     }
 
