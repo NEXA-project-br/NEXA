@@ -15,16 +15,16 @@ import java.util.List;
  */
 public class CategoryView extends JDialog {
 
-    private static final Color COR_FUNDO    = new Color(15, 23, 42);
-    private static final Color COR_CARD     = new Color(30, 41, 59);
-    private static final Color COR_BORDA    = new Color(51, 65, 85);
+    private static final Color COR_FUNDO    = new Color(248, 250, 252);
+    private static final Color COR_CARD     = new Color(255, 255, 255);
+    private static final Color COR_BORDA    = new Color(203, 213, 225);
     private static final Color COR_VERDE    = new Color(34, 197, 94);
     private static final Color COR_VERMELHO = new Color(220, 60, 60);
-    private static final Color COR_GRAFITE  = new Color(71, 85, 105);
-    private static final Color COR_TEXTO    = new Color(241, 245, 249);
-    private static final Color COR_MUTED    = new Color(148, 163, 184);
-    private static final Color COR_INPUT    = new Color(15, 23, 42);
-    private static final Color COR_SELECAO  = new Color(51, 65, 85);
+    private static final Color COR_GRAFITE  = new Color(100, 116, 139);
+    private static final Color COR_TEXTO    = new Color(15, 23, 42);
+    private static final Color COR_MUTED    = new Color(71, 85, 105);
+    private static final Color COR_INPUT    = new Color(255, 255, 255);
+    private static final Color COR_SELECAO  = new Color(219, 234, 254);
 
     private static final Font FONTE_TITULO = new Font("Segoe UI", Font.BOLD, 18);
     private static final Font FONTE_ITEM   = new Font("Segoe UI", Font.PLAIN, 14);
@@ -217,6 +217,7 @@ public class CategoryView extends JDialog {
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setOpaque(true);
+        btn.setBorderPainted(false);
         return btn;
     }
 
@@ -242,11 +243,11 @@ public class CategoryView extends JDialog {
                         + "</font></b>  " + c.getNome() + "</html>");
             }
 
-            setBackground(isSelected ? new Color(51, 65, 85) : new Color(30, 41, 59));
-            setForeground(new Color(241, 245, 249));
+            setBackground(isSelected ? new Color(219, 234, 254) : Color.WHITE);
+            setForeground(new Color(15, 23, 42));
             setFont(new Font("Segoe UI", Font.PLAIN, 14));
             setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(51, 65, 85)),
+                    BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(226, 232, 240)),
                     new EmptyBorder(0, 12, 0, 8)));
             return this;
         }

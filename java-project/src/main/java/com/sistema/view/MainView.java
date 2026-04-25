@@ -17,16 +17,16 @@ import java.util.List;
 
 public class MainView extends JFrame {
 
-    private static final Color COR_FUNDO       = new Color(15, 23, 42);
-    private static final Color COR_CARD        = new Color(30, 41, 59);
-    private static final Color COR_BORDA       = new Color(51, 65, 85);
+    private static final Color COR_FUNDO       = new Color(248, 250, 252);
+    private static final Color COR_CARD        = new Color(255, 255, 255);
+    private static final Color COR_BORDA       = new Color(203, 213, 225);
     private static final Color COR_VERDE       = new Color(34, 197, 94);
     private static final Color COR_VERMELHO    = new Color(220, 60, 60);
     private static final Color COR_AZUL_ESCURO = new Color(29, 78, 150);
     private static final Color COR_AZUL_CLARO  = new Color(59, 130, 246);
-    private static final Color COR_GRAFITE     = new Color(71, 85, 105);
-    private static final Color COR_TEXTO       = new Color(241, 245, 249);
-    private static final Color COR_MUTED       = new Color(148, 163, 184);
+    private static final Color COR_GRAFITE     = new Color(100, 116, 139);
+    private static final Color COR_TEXTO       = new Color(15, 23, 42);
+    private static final Color COR_MUTED       = new Color(71, 85, 105);
 
     private static final Font FONTE_TITULO   = new Font("Segoe UI", Font.BOLD, 22);
     private static final Font FONTE_CARD_VAL = new Font("Segoe UI", Font.BOLD, 26);
@@ -89,12 +89,15 @@ public class MainView extends JFrame {
         JButton btnDespesa = criarBotao("Nova Despesa", COR_VERMELHO);
         JButton btnCats    = criarBotao("Categorias",   COR_GRAFITE);
         JButton btnRelat   = criarBotao("Relatorios",   COR_AZUL_ESCURO);
+        JButton btnCalc    = criarBotao("Calculadora",  COR_AZUL_CLARO);
 
         btnReceita.addActionListener(e -> abrirFormularioNovaTransacao(TipoTransacao.RECEITA));
         btnDespesa.addActionListener(e -> abrirFormularioNovaTransacao(TipoTransacao.DESPESA));
         btnCats.addActionListener(e    -> abrirCategorias());
         btnRelat.addActionListener(e   -> abrirRelatorios());
+        btnCalc.addActionListener(e    -> abrirCalculadora());
 
+        btnPanel.add(btnCalc);
         btnPanel.add(btnRelat);
         btnPanel.add(btnCats);
         btnPanel.add(btnDespesa);
@@ -187,7 +190,7 @@ public class MainView extends JFrame {
         tabela.setRowHeight(36);
         tabela.setBackground(COR_CARD);
         tabela.setForeground(COR_TEXTO);
-        tabela.setSelectionBackground(new Color(51, 65, 85));
+        tabela.setSelectionBackground(new Color(219, 234, 254));
         tabela.setSelectionForeground(COR_TEXTO);
         tabela.setGridColor(COR_BORDA);
         tabela.setShowGrid(true);
@@ -195,8 +198,8 @@ public class MainView extends JFrame {
         tabela.setIntercellSpacing(new Dimension(0, 1));
 
         tabela.getTableHeader().setFont(FONTE_HEADER);
-        tabela.getTableHeader().setBackground(new Color(51, 65, 85));
-        tabela.getTableHeader().setForeground(COR_MUTED);
+        tabela.getTableHeader().setBackground(new Color(241, 245, 249));
+        tabela.getTableHeader().setForeground(COR_TEXTO);
         tabela.getTableHeader().setPreferredSize(new Dimension(0, 38));
         tabela.getTableHeader().setReorderingAllowed(false);
 
@@ -283,6 +286,11 @@ public class MainView extends JFrame {
         view.setVisible(true);
     }
 
+    private void abrirCalculadora() {
+        CompoundInterestCalculatorView view = new CompoundInterestCalculatorView(this);
+        view.setVisible(true);
+    }
+
     private JButton criarBotao(String texto, Color fundo) {
         JButton btn = new JButton(texto);
         btn.setFont(FONTE_BTN);
@@ -292,6 +300,7 @@ public class MainView extends JFrame {
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setOpaque(true);
+        btn.setBorderPainted(false);
         return btn;
     }
 
@@ -325,7 +334,7 @@ public class MainView extends JFrame {
                     setText("Despesa");
                 }
             }
-            setBackground(sel ? new Color(51, 65, 85) : new Color(30, 41, 59));
+            setBackground(sel ? new Color(219, 234, 254) : Color.WHITE);
             return this;
         }
     }
@@ -337,8 +346,8 @@ public class MainView extends JFrame {
             super.getTableCellRendererComponent(t, val, sel, foc, row, col);
             setHorizontalAlignment(RIGHT);
             setFont(new Font("Segoe UI", Font.BOLD, 13));
-            setForeground(new Color(241, 245, 249));
-            setBackground(sel ? new Color(51, 65, 85) : new Color(30, 41, 59));
+            setForeground(new Color(15, 23, 42));
+            setBackground(sel ? new Color(219, 234, 254) : Color.WHITE);
             return this;
         }
     }

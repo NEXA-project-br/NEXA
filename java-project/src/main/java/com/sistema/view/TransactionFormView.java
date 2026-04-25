@@ -9,6 +9,7 @@ import com.sistema.util.CurrencyUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,16 +23,16 @@ import java.util.List;
  */
 public class TransactionFormView extends JDialog {
 
-    private static final Color COR_FUNDO    = new Color(15, 23, 42);
-    private static final Color COR_CARD     = new Color(30, 41, 59);
-    private static final Color COR_BORDA    = new Color(51, 65, 85);
+    private static final Color COR_FUNDO    = new Color(248, 250, 252);
+    private static final Color COR_CARD     = new Color(255, 255, 255);
+    private static final Color COR_BORDA    = new Color(203, 213, 225);
     private static final Color COR_VERDE    = new Color(34, 197, 94);
     private static final Color COR_VERMELHO = new Color(220, 60, 60);
     private static final Color COR_AZUL     = new Color(59, 130, 246);
-    private static final Color COR_GRAFITE  = new Color(71, 85, 105);
-    private static final Color COR_TEXTO    = new Color(241, 245, 249);
-    private static final Color COR_MUTED    = new Color(148, 163, 184);
-    private static final Color COR_INPUT    = new Color(15, 23, 42);
+    private static final Color COR_GRAFITE  = new Color(100, 116, 139);
+    private static final Color COR_TEXTO    = new Color(15, 23, 42);
+    private static final Color COR_MUTED    = new Color(71, 85, 105);
+    private static final Color COR_INPUT    = new Color(255, 255, 255);
 
     private static final Font FONTE_LABEL = new Font("Segoe UI", Font.BOLD, 13);
     private static final Font FONTE_INPUT = new Font("Segoe UI", Font.PLAIN, 13);
@@ -118,6 +119,7 @@ public class TransactionFormView extends JDialog {
         // Data
         adicionarLabel(p, gbc, "Data (dd/MM/yyyy)");
         txtData = criarTextField(LocalDate.now().format(FMT));
+        aplicarMascaraData(txtData);
         p.add(txtData, gbc);
 
         // Categoria — filtrada pelo tipo selecionado
@@ -254,11 +256,16 @@ public class TransactionFormView extends JDialog {
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setOpaque(true);
+        btn.setBorderPainted(false);
         return btn;
     }
 
     private void mostrarErro(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Erro de Validacao",
                 JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void aplicarMascaraData(JTextField campo) {
+        ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DateDocumentFilter());
     }
 }
