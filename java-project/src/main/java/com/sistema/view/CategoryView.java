@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Dialogo para gerenciamento de categorias financeiras.
@@ -168,10 +169,23 @@ public class CategoryView extends JDialog {
     // ── Logica ────────────────────────────────────────────────────────────────
 
     private void carregarCategorias() {
-        listModel.clear();
         TipoTransacao tipoSelecionado = obterTipoSelecionado();
-        List<Categoria> cats = categoriaController.listarPorTipo(tipoSelecionado);
-        cats.forEach(listModel::addElement);
+        new SwingWorker<List<Categoria>, Void>() {
+            @Override
+            protected List<Categoria> doInBackground() {
+                return categoriaController.listarPorTipo(tipoSelecionado);
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    listModel.clear();
+                    get().forEach(listModel::addElement);
+                } catch (Exception e) {
+                    mostrarAviso("Erro ao carregar categorias: " + mensagemErroWorker(e));
+                }
+            }
+        }.execute();
     }
 
     private void adicionarCategoria() {
@@ -182,16 +196,27 @@ public class CategoryView extends JDialog {
             mostrarAviso("Digite um nome para a categoria.");
             return;
         }
-        try {
-            categoriaController.salvarPorNome(nome, tipo);
-            txtNome.setText("");
-            carregarCategorias();
-            JOptionPane.showMessageDialog(this,
-                    "Categoria \"" + nome + "\" adicionada com sucesso!",
-                    "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IllegalArgumentException e) {
-            mostrarAviso(e.getMessage());
-        }
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() {
+                categoriaController.salvarPorNome(nome, tipo);
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    get();
+                    txtNome.setText("");
+                    carregarCategorias();
+                    JOptionPane.showMessageDialog(CategoryView.this,
+                            "Categoria \"" + nome + "\" adicionada com sucesso!",
+                            "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception e) {
+                    mostrarAviso(mensagemErroWorker(e));
+                }
+            }
+        }.execute();
     }
 
     private void excluirCategoriaSelecionada() {
@@ -205,12 +230,23 @@ public class CategoryView extends JDialog {
                 "Confirmar exclusao", JOptionPane.YES_NO_OPTION);
         if (confirm != JOptionPane.YES_OPTION) return;
 
-        try {
-            categoriaController.excluir(selecionada.getId());
-            carregarCategorias();
-        } catch (IllegalStateException e) {
-            mostrarAviso(e.getMessage());
-        }
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() {
+                categoriaController.excluir(selecionada.getId());
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    get();
+                    carregarCategorias();
+                } catch (Exception e) {
+                    mostrarAviso(mensagemErroWorker(e));
+                }
+            }
+        }.execute();
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -245,6 +281,14 @@ public class CategoryView extends JDialog {
 
     private void mostrarAviso(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Atencao", JOptionPane.WARNING_MESSAGE);
+    }
+
+    private String mensagemErroWorker(Exception ex) {
+        Throwable causa = ex instanceof ExecutionException ? ex.getCause() : ex;
+        if (causa instanceof IllegalArgumentException || causa instanceof IllegalStateException) {
+            return causa.getMessage();
+        }
+        return "Nao foi possivel concluir a operacao.";
     }
 
     // ── Renderer customizado ──────────────────────────────────────────────────

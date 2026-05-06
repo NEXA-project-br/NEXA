@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class MonthlyChartView extends JDialog {
 
@@ -34,6 +35,7 @@ public class MonthlyChartView extends JDialog {
     private final TransacaoController transacaoController;
     private final TipoTransacao tipo;
     private JLabel lblResumo;
+    private JPanel corpoWrapper;
 
     public MonthlyChartView(Frame owner, TipoTransacao tipo) {
         super(owner, tipo == TipoTransacao.RECEITA ? "Grafico de Receita Mensal" : "Grafico de Despesa Mensal", true);
@@ -49,11 +51,12 @@ public class MonthlyChartView extends JDialog {
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
 
-        Map<YearMonth, BigDecimal> dados = carregarDados();
-
         add(criarCabecalho(), BorderLayout.NORTH);
-        add(criarCorpo(dados), BorderLayout.CENTER);
+        corpoWrapper = new JPanel(new BorderLayout());
+        corpoWrapper.setBackground(COR_FUNDO);
+        add(corpoWrapper, BorderLayout.CENTER);
         add(criarRodape(), BorderLayout.SOUTH);
+        carregarDadosAsync();
     }
 
     private JPanel criarCabecalho() {
@@ -142,6 +145,38 @@ public class MonthlyChartView extends JDialog {
                 .collect(LinkedHashMap::new,
                         (map, entry) -> map.put(entry.getKey(), entry.getValue()),
                         LinkedHashMap::putAll);
+    }
+
+    private void carregarDadosAsync() {
+        new SwingWorker<Map<YearMonth, BigDecimal>, Void>() {
+            @Override
+            protected Map<YearMonth, BigDecimal> doInBackground() {
+                return carregarDados();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    corpoWrapper.removeAll();
+                    corpoWrapper.add(criarCorpo(get()), BorderLayout.CENTER);
+                    corpoWrapper.revalidate();
+                    corpoWrapper.repaint();
+                } catch (Exception e) {
+                    lblResumo.setText("Erro ao carregar dados");
+                    JOptionPane.showMessageDialog(MonthlyChartView.this,
+                            "Erro ao carregar grafico: " + mensagemErroWorker(e),
+                            "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }.execute();
+    }
+
+    private String mensagemErroWorker(Exception ex) {
+        Throwable causa = ex instanceof ExecutionException ? ex.getCause() : ex;
+        if (causa instanceof IllegalArgumentException) {
+            return causa.getMessage();
+        }
+        return "Nao foi possivel concluir a operacao.";
     }
 
     private static class ChartPanel extends JPanel {

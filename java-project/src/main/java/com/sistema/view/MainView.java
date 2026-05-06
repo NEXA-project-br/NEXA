@@ -14,6 +14,7 @@ import java.awt.*;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MainView extends JFrame {
 
@@ -85,7 +86,7 @@ public class MainView extends JFrame {
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         btnPanel.setOpaque(false);
 
-        JButton btnNovo = criarBotaoMenu("Novo", COR_VERDE, UiIcons.plus(Color.WHITE));
+        JButton btnNovo = criarBotaoMenu("Novo", UiColors.COR_NOVO, UiIcons.plus(Color.WHITE));
         JPopupMenu menuNovo = criarMenuSuspenso();
         menuNovo.add(criarItemMenu("Nova Receita", COR_VERDE, UiIcons.plus(COR_VERDE),
                 () -> abrirFormularioNovaTransacao(TipoTransacao.RECEITA)));
@@ -93,7 +94,7 @@ public class MainView extends JFrame {
                 () -> abrirFormularioNovaTransacao(TipoTransacao.DESPESA)));
         btnNovo.addActionListener(e -> exibirMenu(btnNovo, menuNovo));
 
-        JButton btnGraficos = criarBotaoMenu("Gr\u00e1ficos", COR_AZUL_ESCURO, UiIcons.chart(Color.WHITE));
+        JButton btnGraficos = criarBotaoMenu("Gr\u00e1ficos", UiColors.COR_GRAFICOS, UiIcons.chart(Color.WHITE));
         JPopupMenu menuGraficos = criarMenuSuspenso();
         menuGraficos.add(criarItemMenu("Despesa Mensal", COR_VERMELHO, UiIcons.chart(COR_VERMELHO),
                 () -> abrirGraficoMensal(TipoTransacao.DESPESA)));
@@ -101,9 +102,9 @@ public class MainView extends JFrame {
                 () -> abrirGraficoMensal(TipoTransacao.RECEITA)));
         btnGraficos.addActionListener(e -> exibirMenu(btnGraficos, menuGraficos));
 
-        JButton btnCats    = criarBotao("Categorias", COR_GRAFITE, UiIcons.category(Color.WHITE));
-        JButton btnRelat   = criarBotao("Relat\u00f3rios", COR_AZUL_ESCURO, UiIcons.report(Color.WHITE));
-        JButton btnCalc    = criarBotao("Calculadora", COR_AZUL_CLARO, UiIcons.calculator(Color.WHITE));
+        JButton btnCats    = criarBotao("Categorias", UiColors.COR_CATEGORIAS, UiIcons.category(Color.WHITE));
+        JButton btnRelat   = criarBotao("Relat\u00f3rios", UiColors.COR_RELATORIOS, UiIcons.report(Color.WHITE));
+        JButton btnCalc    = criarBotao("Calculadoras", UiColors.COR_CALCULADORAS, UiIcons.calculator(Color.WHITE));
 
         btnCats.addActionListener(e  -> abrirCategorias());
         btnRelat.addActionListener(e -> abrirRelatorios());
@@ -259,32 +260,41 @@ public class MainView extends JFrame {
     }
 
     public void atualizarDashboard() {
-        SwingUtilities.invokeLater(() -> {
-            try {
+        new SwingWorker<DashboardData, Void>() {
+            @Override
+            protected DashboardData doInBackground() {
                 BigDecimal saldo    = transacaoController.calcularSaldoAtual();
                 BigDecimal receitas = transacaoController.totalReceitas();
                 BigDecimal despesas = transacaoController.totalDespesas();
-
-                lblSaldo.setText(CurrencyUtil.formatar(saldo));
-                lblSaldo.setForeground(saldo.compareTo(BigDecimal.ZERO) >= 0 ? COR_VERDE : COR_VERMELHO);
-                lblTotalReceitas.setText(CurrencyUtil.formatar(receitas));
-                lblTotalDespesas.setText(CurrencyUtil.formatar(despesas));
-
-                listaAtual = transacaoController.listarUltimas(50);
-                tableModel.setRowCount(0);
-                for (Transacao t : listaAtual) {
-                    tableModel.addRow(new Object[]{
-                            t.getData().format(FMT_DATA),
-                            t.getDescricao(),
-                            t.getCategoria() != null ? t.getCategoria().getNome() : "-",
-                            t.getTipo(),
-                            CurrencyUtil.formatar(t.getValor())
-                    });
-                }
-            } catch (Exception ex) {
-                mostrarErro("Erro ao atualizar painel: " + ex.getMessage());
+                List<Transacao> transacoes = transacaoController.listarUltimas(50);
+                return new DashboardData(saldo, receitas, despesas, transacoes);
             }
-        });
+
+            @Override
+            protected void done() {
+                try {
+                    DashboardData dados = get();
+                    lblSaldo.setText(CurrencyUtil.formatar(dados.saldo()));
+                    lblSaldo.setForeground(dados.saldo().compareTo(BigDecimal.ZERO) >= 0 ? COR_VERDE : COR_VERMELHO);
+                    lblTotalReceitas.setText(CurrencyUtil.formatar(dados.receitas()));
+                    lblTotalDespesas.setText(CurrencyUtil.formatar(dados.despesas()));
+
+                    listaAtual = dados.transacoes();
+                    tableModel.setRowCount(0);
+                    for (Transacao t : listaAtual) {
+                        tableModel.addRow(new Object[]{
+                                t.getData().format(FMT_DATA),
+                                t.getDescricao(),
+                                t.getCategoria() != null ? t.getCategoria().getNome() : "-",
+                                t.getTipo(),
+                                CurrencyUtil.formatar(t.getValor())
+                        });
+                    }
+                } catch (Exception ex) {
+                    mostrarErro("Erro ao atualizar painel: " + mensagemErroWorker(ex));
+                }
+            }
+        }.execute();
     }
 
     private void abrirFormularioNovaTransacao(TipoTransacao tipoInicial) {
@@ -311,7 +321,7 @@ public class MainView extends JFrame {
     }
 
     private void abrirCalculadora() {
-        CompoundInterestCalculatorView view = new CompoundInterestCalculatorView(this);
+        CalculatorMenuView view = new CalculatorMenuView(this);
         view.setVisible(true);
     }
 
@@ -373,6 +383,17 @@ public class MainView extends JFrame {
     private void mostrarErro(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Erro", JOptionPane.ERROR_MESSAGE);
     }
+
+    private String mensagemErroWorker(Exception ex) {
+        Throwable causa = ex instanceof ExecutionException ? ex.getCause() : ex;
+        if (causa instanceof IllegalArgumentException) {
+            return causa.getMessage();
+        }
+        return "Nao foi possivel concluir a operacao.";
+    }
+
+    private record DashboardData(BigDecimal saldo, BigDecimal receitas,
+                                 BigDecimal despesas, List<Transacao> transacoes) {}
 
     private void encerrarAplicacao() {
         int r = JOptionPane.showConfirmDialog(this,

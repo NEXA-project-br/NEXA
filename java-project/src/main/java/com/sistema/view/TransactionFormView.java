@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Dialogo de formulario para cadastro e edicao de transacoes financeiras.
@@ -46,6 +47,7 @@ public class TransactionFormView extends JDialog {
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final NumberFormat FMT_VALOR = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
+    private static final int MAX_DIGITOS_CENTAVOS = 15;
 
     static {
         FMT_VALOR.setMinimumFractionDigits(2);
@@ -64,6 +66,7 @@ public class TransactionFormView extends JDialog {
     private final CategoriaController  categoriaController;
     private long                       valorCentavos;
     private boolean                    atualizandoValor;
+    private boolean                    preenchendoFormulario;
 
     public TransactionFormView(Frame owner, Transacao transacaoParaEditar, TipoTransacao tipoInicial) {
         super(owner, transacaoParaEditar == null ? "Nova Transacao" : "Editar Transacao", true);
@@ -117,7 +120,11 @@ public class TransactionFormView extends JDialog {
         cmbTipo.setSelectedItem(tipoInicial);
         estilizarComboBox(cmbTipo);
         // Ao mudar o tipo, recarrega o combo de categorias
-        cmbTipo.addActionListener(e -> recarregarCategorias());
+        cmbTipo.addActionListener(e -> {
+            if (!preenchendoFormulario) {
+                recarregarCategorias();
+            }
+        });
         p.add(cmbTipo, gbc);
 
         // Descricao
@@ -142,7 +149,9 @@ public class TransactionFormView extends JDialog {
         adicionarLabel(p, gbc, "Categoria");
         cmbCategoria = new JComboBox<>();
         estilizarComboBox(cmbCategoria);
-        recarregarCategorias();
+        if (transacaoParaEditar == null) {
+            recarregarCategorias();
+        }
         p.add(cmbCategoria, gbc);
 
         return p;
@@ -175,32 +184,45 @@ public class TransactionFormView extends JDialog {
 
     /** Recarrega o combo de categorias filtrando pelo tipo atualmente selecionado. */
     private void recarregarCategorias() {
-        TipoTransacao tipoSelecionado = (TipoTransacao) cmbTipo.getSelectedItem();
-        cmbCategoria.removeAllItems();
-        cmbCategoria.addItem(null); // opcao "sem categoria"
+        recarregarCategorias(null);
+    }
 
-        if (tipoSelecionado != null) {
-            List<Categoria> cats = categoriaController.listarPorTipo(tipoSelecionado);
-            cats.forEach(cmbCategoria::addItem);
-        }
+    private void recarregarCategorias(Categoria categoriaParaSelecionar) {
+        TipoTransacao tipoSelecionado = (TipoTransacao) cmbTipo.getSelectedItem();
+        new SwingWorker<List<Categoria>, Void>() {
+            @Override
+            protected List<Categoria> doInBackground() {
+                return tipoSelecionado != null
+                        ? categoriaController.listarPorTipo(tipoSelecionado)
+                        : List.of();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    cmbCategoria.removeAllItems();
+                    cmbCategoria.addItem(null); // opcao "sem categoria"
+                    List<Categoria> cats = get();
+                    cats.forEach(cmbCategoria::addItem);
+                    selecionarCategoria(categoriaParaSelecionar);
+                } catch (Exception e) {
+                    mostrarErro("Erro ao carregar categorias: " + mensagemErroWorker(e));
+                }
+            }
+        }.execute();
     }
 
     private void preencherFormulario() {
-        cmbTipo.setSelectedItem(transacaoParaEditar.getTipo());
-        recarregarCategorias(); // garante que a lista esta correta antes de selecionar
-        txtDescricao.setText(transacaoParaEditar.getDescricao());
-        definirValorCampo(transacaoParaEditar.getValor());
-        txtData.setText(transacaoParaEditar.getData().format(FMT));
-
-        if (transacaoParaEditar.getCategoria() != null) {
-            for (int i = 0; i < cmbCategoria.getItemCount(); i++) {
-                Categoria c = cmbCategoria.getItemAt(i);
-                if (c != null && c.getId().equals(transacaoParaEditar.getCategoria().getId())) {
-                    cmbCategoria.setSelectedIndex(i);
-                    break;
-                }
-            }
+        preenchendoFormulario = true;
+        try {
+            cmbTipo.setSelectedItem(transacaoParaEditar.getTipo());
+            txtDescricao.setText(transacaoParaEditar.getDescricao());
+            definirValorCampo(transacaoParaEditar.getValor());
+            txtData.setText(transacaoParaEditar.getData().format(FMT));
+        } finally {
+            preenchendoFormulario = false;
         }
+        recarregarCategorias(transacaoParaEditar.getCategoria());
     }
 
     private void salvarTransacao() {
@@ -212,22 +234,38 @@ public class TransactionFormView extends JDialog {
             TipoTransacao tipo      = (TipoTransacao) cmbTipo.getSelectedItem();
             Categoria     categoria = (Categoria) cmbCategoria.getSelectedItem();
 
-            if (transacaoParaEditar == null) {
-                Transacao nova = new Transacao(descricao, valor, data, tipo, categoria);
-                transacaoController.salvar(nova);
-                JOptionPane.showMessageDialog(this, "Transacao salva com sucesso!",
-                        "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                transacaoParaEditar.setDescricao(descricao);
-                transacaoParaEditar.setValor(valor);
-                transacaoParaEditar.setData(data);
-                transacaoParaEditar.setTipo(tipo);
-                transacaoParaEditar.setCategoria(categoria);
-                transacaoController.atualizar(transacaoParaEditar);
-                JOptionPane.showMessageDialog(this, "Transacao atualizada com sucesso!",
-                        "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            }
-            dispose();
+            new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() {
+                    if (transacaoParaEditar == null) {
+                        Transacao nova = new Transacao(descricao, valor, data, tipo, categoria);
+                        transacaoController.salvar(nova);
+                    } else {
+                        transacaoParaEditar.setDescricao(descricao);
+                        transacaoParaEditar.setValor(valor);
+                        transacaoParaEditar.setData(data);
+                        transacaoParaEditar.setTipo(tipo);
+                        transacaoParaEditar.setCategoria(categoria);
+                        transacaoController.atualizar(transacaoParaEditar);
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        get();
+                        JOptionPane.showMessageDialog(TransactionFormView.this,
+                                transacaoParaEditar == null
+                                        ? "Transacao salva com sucesso!"
+                                        : "Transacao atualizada com sucesso!",
+                                "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                        dispose();
+                    } catch (Exception e) {
+                        mostrarErro(mensagemErroWorker(e));
+                    }
+                }
+            }.execute();
 
         } catch (DateTimeParseException e) {
             mostrarErro("Data invalida. Use o formato dd/MM/yyyy.");
@@ -252,16 +290,25 @@ public class TransactionFormView extends JDialog {
             return;
         }
 
-        try {
-            transacaoController.excluir(transacaoParaEditar.getId());
-            JOptionPane.showMessageDialog(this, "Transacao excluida com sucesso!",
-                    "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            dispose();
-        } catch (IllegalArgumentException e) {
-            mostrarErro(e.getMessage());
-        } catch (Exception e) {
-            mostrarErro("Erro inesperado ao excluir: " + e.getMessage());
-        }
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() {
+                transacaoController.excluir(transacaoParaEditar.getId());
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    get();
+                    JOptionPane.showMessageDialog(TransactionFormView.this, "Transacao excluida com sucesso!",
+                            "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+                } catch (Exception e) {
+                    mostrarErro(mensagemErroWorker(e));
+                }
+            }
+        }.execute();
     }
 
     private void adicionarLabel(JPanel p, GridBagConstraints gbc, String texto) {
@@ -312,8 +359,29 @@ public class TransactionFormView extends JDialog {
                 JOptionPane.ERROR_MESSAGE);
     }
 
+    private String mensagemErroWorker(Exception ex) {
+        Throwable causa = ex instanceof ExecutionException ? ex.getCause() : ex;
+        if (causa instanceof IllegalArgumentException) {
+            return causa.getMessage();
+        }
+        return "Nao foi possivel concluir a operacao.";
+    }
+
     private void aplicarMascaraData(JTextField campo) {
         ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DateDocumentFilter());
+    }
+
+    private void selecionarCategoria(Categoria categoriaParaSelecionar) {
+        if (categoriaParaSelecionar == null) {
+            return;
+        }
+        for (int i = 0; i < cmbCategoria.getItemCount(); i++) {
+            Categoria c = cmbCategoria.getItemAt(i);
+            if (c != null && c.getId().equals(categoriaParaSelecionar.getId())) {
+                cmbCategoria.setSelectedIndex(i);
+                break;
+            }
+        }
     }
 
     private void aplicarMascaraMoeda(JTextField campo) {
@@ -330,7 +398,12 @@ public class TransactionFormView extends JDialog {
 
     private void definirValorCampo(BigDecimal valor) {
         BigDecimal valorSeguro = valor != null ? valor : BigDecimal.ZERO;
-        valorCentavos = valorSeguro.movePointRight(2).setScale(0, RoundingMode.HALF_UP).longValue();
+        try {
+            valorCentavos = valorSeguro.movePointRight(2).setScale(0, RoundingMode.HALF_UP).longValueExact();
+        } catch (ArithmeticException e) {
+            valorCentavos = 0L;
+            mostrarErro("Valor monetario invalido.");
+        }
         atualizarTextoValor();
     }
 
@@ -377,6 +450,9 @@ public class TransactionFormView extends JDialog {
             }
             for (char ch : texto.toCharArray()) {
                 if (Character.isDigit(ch)) {
+                    if (Long.toString(valorCentavos).length() >= MAX_DIGITOS_CENTAVOS) {
+                        continue;
+                    }
                     valorCentavos = (valorCentavos * 10) + Character.getNumericValue(ch);
                 }
             }

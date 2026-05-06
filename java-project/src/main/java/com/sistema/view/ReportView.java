@@ -9,7 +9,6 @@ import com.sistema.util.PdfReportExporter;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
@@ -20,6 +19,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.concurrent.ExecutionException;
 
 public class ReportView extends JDialog {
 
@@ -51,6 +51,7 @@ public class ReportView extends JDialog {
     private JLabel            lblSaldo;
     private DefaultTableModel tableModel;
     private ResumoFinanceiro  resumoAtual;
+    private JButton           btnExportar;
 
     private final TransacaoController transacaoController;
 
@@ -239,7 +240,8 @@ public class ReportView extends JDialog {
         p.setBackground(COR_FUNDO);
         p.setBorder(new EmptyBorder(4, 24, 16, 24));
 
-        JButton btnExportar = criarBotao("Exportar para PDF", COR_AZUL_ESCURO, UiIcons.pdf(Color.WHITE));
+        btnExportar = criarBotao("Exportar para PDF", COR_AZUL_ESCURO, UiIcons.pdf(Color.WHITE));
+        btnExportar.setEnabled(false);
         btnExportar.addActionListener(e -> exportarPdf());
 
         JButton btnFechar = criarBotao("Fechar", COR_GRAFITE, UiIcons.close(Color.WHITE));
@@ -256,25 +258,44 @@ public class ReportView extends JDialog {
         try {
             LocalDate inicio = LocalDate.parse(txtDataInicio.getText().trim(), FMT);
             LocalDate fim    = LocalDate.parse(txtDataFim.getText().trim(), FMT);
+            btnExportar.setEnabled(false);
+            resumoAtual = null;
 
-            ResumoFinanceiro resumo = transacaoController.gerarResumo(inicio, fim);
-            resumoAtual = resumo;
+            new SwingWorker<ResumoFinanceiro, Void>() {
+                @Override
+                protected ResumoFinanceiro doInBackground() {
+                    return transacaoController.gerarResumo(inicio, fim);
+                }
 
-            lblReceitas.setText(CurrencyUtil.formatar(resumo.totalReceitas()));
-            lblDespesas.setText(CurrencyUtil.formatar(resumo.totalDespesas()));
-            lblSaldo.setText(CurrencyUtil.formatar(resumo.saldo()));
-            lblSaldo.setForeground(resumo.saldo().signum() >= 0 ? COR_VERDE : COR_VERMELHO);
+                @Override
+                protected void done() {
+                    try {
+                        ResumoFinanceiro resumo = get();
+                        resumoAtual = resumo;
 
-            tableModel.setRowCount(0);
-            for (Transacao t : resumo.transacoes()) {
-                tableModel.addRow(new Object[]{
-                        t.getData().format(FMT),
-                        t.getDescricao(),
-                        t.getCategoria() != null ? t.getCategoria().getNome() : "-",
-                        t.getTipo(),
-                        CurrencyUtil.formatar(t.getValor())
-                });
-            }
+                        lblReceitas.setText(CurrencyUtil.formatar(resumo.totalReceitas()));
+                        lblDespesas.setText(CurrencyUtil.formatar(resumo.totalDespesas()));
+                        lblSaldo.setText(CurrencyUtil.formatar(resumo.saldo()));
+                        lblSaldo.setForeground(resumo.saldo().signum() >= 0 ? COR_VERDE : COR_VERMELHO);
+
+                        tableModel.setRowCount(0);
+                        for (Transacao t : resumo.transacoes()) {
+                            tableModel.addRow(new Object[]{
+                                    t.getData().format(FMT),
+                                    t.getDescricao(),
+                                    t.getCategoria() != null ? t.getCategoria().getNome() : "-",
+                                    t.getTipo(),
+                                    CurrencyUtil.formatar(t.getValor())
+                            });
+                        }
+                        btnExportar.setEnabled(true);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(ReportView.this,
+                                "Erro ao gerar relatorio: " + mensagemErroWorker(ex),
+                                "Erro", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }.execute();
 
         } catch (DateTimeParseException e) {
             JOptionPane.showMessageDialog(this,
@@ -290,23 +311,14 @@ public class ReportView extends JDialog {
 
     private void exportarPdf() {
         if (resumoAtual == null) {
-            gerarRelatorio();
-        }
-        if (resumoAtual == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Aguarde o relatorio terminar de carregar antes de exportar.",
+                    "Relatorio ainda carregando", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Exportar relatorio para PDF");
-        chooser.setFileFilter(new FileNameExtensionFilter("Arquivo PDF (*.pdf)", "pdf"));
-        chooser.setSelectedFile(new File(nomeArquivoPadrao()));
-
-        int escolha = chooser.showSaveDialog(this);
-        if (escolha != JFileChooser.APPROVE_OPTION) {
-            return;
-        }
-
-        Path destino = garantirExtensaoPdf(chooser.getSelectedFile()).toPath();
+        Path destino = new File(System.getProperty("user.home"),
+                "Downloads" + File.separator + nomeArquivoPadrao()).toPath();
         if (destino.toFile().exists()) {
             int sobrescrever = JOptionPane.showConfirmDialog(this,
                     "O arquivo ja existe. Deseja substituir?",
@@ -377,11 +389,11 @@ public class ReportView extends JDialog {
         return "relatorio-financeiro-" + inicio + "-a-" + fim + ".pdf";
     }
 
-    private File garantirExtensaoPdf(File arquivo) {
-        String nome = arquivo.getName().toLowerCase();
-        if (nome.endsWith(".pdf")) {
-            return arquivo;
+    private String mensagemErroWorker(Exception ex) {
+        Throwable causa = ex instanceof ExecutionException ? ex.getCause() : ex;
+        if (causa instanceof IllegalArgumentException) {
+            return causa.getMessage();
         }
-        return new File(arquivo.getParentFile(), arquivo.getName() + ".pdf");
+        return "Nao foi possivel concluir a operacao.";
     }
 }
