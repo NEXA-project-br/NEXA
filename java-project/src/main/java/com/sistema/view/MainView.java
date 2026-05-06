@@ -82,32 +82,38 @@ public class MainView extends JFrame {
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(COR_TEXTO);
 
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         btnPanel.setOpaque(false);
 
-        JButton btnReceita = criarBotao("Nova Receita", COR_VERDE);
-        JButton btnDespesa = criarBotao("Nova Despesa", COR_VERMELHO);
-        JButton btnCats    = criarBotao("Categorias",   COR_GRAFITE);
-        JButton btnRelat   = criarBotao("Relatorios",   COR_AZUL_ESCURO);
-        JButton btnCalc    = criarBotao("Calculadora",  COR_AZUL_CLARO);
-        JButton btnGrafRec = criarBotao("Receita Mensal", COR_VERDE);
-        JButton btnGrafDes = criarBotao("Despesa Mensal", COR_VERMELHO);
+        JButton btnNovo = criarBotaoMenu("Novo", COR_VERDE, UiIcons.plus(Color.WHITE));
+        JPopupMenu menuNovo = criarMenuSuspenso();
+        menuNovo.add(criarItemMenu("Nova Receita", COR_VERDE, UiIcons.plus(COR_VERDE),
+                () -> abrirFormularioNovaTransacao(TipoTransacao.RECEITA)));
+        menuNovo.add(criarItemMenu("Nova Despesa", COR_VERMELHO, UiIcons.plus(COR_VERMELHO),
+                () -> abrirFormularioNovaTransacao(TipoTransacao.DESPESA)));
+        btnNovo.addActionListener(e -> exibirMenu(btnNovo, menuNovo));
 
-        btnReceita.addActionListener(e -> abrirFormularioNovaTransacao(TipoTransacao.RECEITA));
-        btnDespesa.addActionListener(e -> abrirFormularioNovaTransacao(TipoTransacao.DESPESA));
-        btnCats.addActionListener(e    -> abrirCategorias());
-        btnRelat.addActionListener(e   -> abrirRelatorios());
-        btnCalc.addActionListener(e    -> abrirCalculadora());
-        btnGrafRec.addActionListener(e -> abrirGraficoMensal(TipoTransacao.RECEITA));
-        btnGrafDes.addActionListener(e -> abrirGraficoMensal(TipoTransacao.DESPESA));
+        JButton btnGraficos = criarBotaoMenu("Gr\u00e1ficos", COR_AZUL_ESCURO, UiIcons.chart(Color.WHITE));
+        JPopupMenu menuGraficos = criarMenuSuspenso();
+        menuGraficos.add(criarItemMenu("Despesa Mensal", COR_VERMELHO, UiIcons.chart(COR_VERMELHO),
+                () -> abrirGraficoMensal(TipoTransacao.DESPESA)));
+        menuGraficos.add(criarItemMenu("Receita Mensal", COR_VERDE, UiIcons.chart(COR_VERDE),
+                () -> abrirGraficoMensal(TipoTransacao.RECEITA)));
+        btnGraficos.addActionListener(e -> exibirMenu(btnGraficos, menuGraficos));
 
-        btnPanel.add(btnGrafDes);
-        btnPanel.add(btnGrafRec);
+        JButton btnCats    = criarBotao("Categorias", COR_GRAFITE, UiIcons.category(Color.WHITE));
+        JButton btnRelat   = criarBotao("Relat\u00f3rios", COR_AZUL_ESCURO, UiIcons.report(Color.WHITE));
+        JButton btnCalc    = criarBotao("Calculadora", COR_AZUL_CLARO, UiIcons.calculator(Color.WHITE));
+
+        btnCats.addActionListener(e  -> abrirCategorias());
+        btnRelat.addActionListener(e -> abrirRelatorios());
+        btnCalc.addActionListener(e  -> abrirCalculadora());
+
+        btnPanel.add(btnGraficos);
         btnPanel.add(btnCalc);
         btnPanel.add(btnRelat);
         btnPanel.add(btnCats);
-        btnPanel.add(btnDespesa);
-        btnPanel.add(btnReceita);
+        btnPanel.add(btnNovo);
 
         painel.add(titulo,   BorderLayout.WEST);
         painel.add(btnPanel, BorderLayout.EAST);
@@ -180,7 +186,7 @@ public class MainView extends JFrame {
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 15));
         lblTitulo.setForeground(COR_TEXTO);
 
-        JButton btnAtualizar = criarBotao("Atualizar", COR_AZUL_CLARO);
+        JButton btnAtualizar = criarBotao("Atualizar", COR_AZUL_CLARO, UiIcons.refresh(Color.WHITE));
         btnAtualizar.addActionListener(e -> atualizarDashboard());
 
         cabecalho.add(lblTitulo,    BorderLayout.WEST);
@@ -208,6 +214,8 @@ public class MainView extends JFrame {
         tabela.getTableHeader().setForeground(COR_TEXTO);
         tabela.getTableHeader().setPreferredSize(new Dimension(0, 38));
         tabela.getTableHeader().setReorderingAllowed(false);
+        ((DefaultTableCellRenderer) tabela.getTableHeader().getDefaultRenderer())
+                .setHorizontalAlignment(SwingConstants.CENTER);
 
         tabela.getColumnModel().getColumn(0).setPreferredWidth(100);
         tabela.getColumnModel().getColumn(1).setPreferredWidth(300);
@@ -215,6 +223,11 @@ public class MainView extends JFrame {
         tabela.getColumnModel().getColumn(3).setPreferredWidth(100);
         tabela.getColumnModel().getColumn(4).setPreferredWidth(120);
 
+        DefaultTableCellRenderer centroRenderer = new DefaultTableCellRenderer();
+        centroRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        tabela.getColumnModel().getColumn(0).setCellRenderer(centroRenderer);
+        tabela.getColumnModel().getColumn(1).setCellRenderer(centroRenderer);
+        tabela.getColumnModel().getColumn(2).setCellRenderer(centroRenderer);
         tabela.getColumnModel().getColumn(3).setCellRenderer(new TipoRenderer());
         tabela.getColumnModel().getColumn(4).setCellRenderer(new ValorRenderer());
 
@@ -235,8 +248,13 @@ public class MainView extends JFrame {
         scroll.getViewport().setBackground(COR_CARD);
         scroll.setBorder(BorderFactory.createEmptyBorder());
 
-        painel.add(cabecalho, BorderLayout.NORTH);
-        painel.add(scroll,    BorderLayout.CENTER);
+        JPanel tabelaWrapper = new JPanel(new BorderLayout());
+        tabelaWrapper.setBackground(COR_CARD);
+        tabelaWrapper.setBorder(new EmptyBorder(0, 20, 20, 20));
+        tabelaWrapper.add(scroll, BorderLayout.CENTER);
+
+        painel.add(cabecalho,     BorderLayout.NORTH);
+        painel.add(tabelaWrapper, BorderLayout.CENTER);
         return painel;
     }
 
@@ -303,16 +321,53 @@ public class MainView extends JFrame {
     }
 
     private JButton criarBotao(String texto, Color fundo) {
+        return criarBotao(texto, fundo, null);
+    }
+
+    private JButton criarBotao(String texto, Color fundo, Icon icone) {
         JButton btn = new JButton(texto);
         btn.setFont(FONTE_BTN);
         btn.setForeground(Color.WHITE);
         btn.setBackground(fundo);
-        btn.setBorder(new EmptyBorder(8, 16, 8, 16));
+        btn.setBorder(new EmptyBorder(9, 16, 9, 16));
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setOpaque(true);
         btn.setBorderPainted(false);
+        btn.setIcon(icone);
+        btn.setIconTextGap(8);
+        btn.setPreferredSize(new Dimension(Math.max(128, btn.getPreferredSize().width), 38));
         return btn;
+    }
+
+    private JButton criarBotaoMenu(String texto, Color fundo, Icon icone) {
+        JButton btn = criarBotao(texto, fundo, icone);
+        btn.setToolTipText("Abrir op\u00e7\u00f5es de " + texto);
+        return btn;
+    }
+
+    private JPopupMenu criarMenuSuspenso() {
+        JPopupMenu menu = new JPopupMenu();
+        menu.setBorder(BorderFactory.createLineBorder(COR_BORDA, 1));
+        return menu;
+    }
+
+    private JMenuItem criarItemMenu(String texto, Color cor, Icon icone, Runnable acao) {
+        JMenuItem item = new JMenuItem(texto, icone);
+        item.setFont(FONTE_BTN);
+        item.setForeground(COR_TEXTO);
+        item.setBackground(Color.WHITE);
+        item.setBorder(new EmptyBorder(8, 12, 8, 18));
+        item.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        item.addActionListener(e -> acao.run());
+        item.setIconTextGap(8);
+        item.setOpaque(true);
+        item.addChangeListener(e -> item.setForeground(item.isArmed() ? cor : COR_TEXTO));
+        return item;
+    }
+
+    private void exibirMenu(JButton origem, JPopupMenu menu) {
+        menu.show(origem, 0, origem.getHeight() + 4);
     }
 
     private void mostrarErro(String msg) {
@@ -355,7 +410,7 @@ public class MainView extends JFrame {
         public Component getTableCellRendererComponent(JTable t, Object val,
                 boolean sel, boolean foc, int row, int col) {
             super.getTableCellRendererComponent(t, val, sel, foc, row, col);
-            setHorizontalAlignment(RIGHT);
+            setHorizontalAlignment(CENTER);
             setFont(new Font("Segoe UI", Font.BOLD, 13));
             setForeground(new Color(15, 23, 42));
             setBackground(sel ? new Color(219, 234, 254) : Color.WHITE);

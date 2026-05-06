@@ -35,6 +35,7 @@ public class CategoryView extends JDialog {
     private JList<Categoria>            listaCategorias;
     private JTextField                  txtNome;
     private JComboBox<TipoTransacao>    cmbTipo;
+    private JButton                     btnAdicionar;
 
     private final CategoriaController categoriaController;
 
@@ -102,12 +103,17 @@ public class CategoryView extends JDialog {
         cmbTipo.setBackground(COR_INPUT);
         cmbTipo.setBorder(BorderFactory.createLineBorder(COR_BORDA, 1));
         cmbTipo.setPreferredSize(new Dimension(120, 38));
+        cmbTipo.addActionListener(e -> {
+            atualizarCorBotaoAdicionar();
+            carregarCategorias();
+        });
 
         inputRow.add(txtNome, BorderLayout.CENTER);
         inputRow.add(cmbTipo, BorderLayout.EAST);
 
-        JButton btnAdicionar = criarBotao("Adicionar", COR_VERDE);
+        btnAdicionar = criarBotao("Adicionar", COR_VERDE);
         btnAdicionar.addActionListener(e -> adicionarCategoria());
+        atualizarCorBotaoAdicionar();
 
         addPanel.add(lblSec,       BorderLayout.NORTH);
         addPanel.add(inputRow,     BorderLayout.CENTER);
@@ -163,13 +169,14 @@ public class CategoryView extends JDialog {
 
     private void carregarCategorias() {
         listModel.clear();
-        List<Categoria> cats = categoriaController.listarTodos();
+        TipoTransacao tipoSelecionado = obterTipoSelecionado();
+        List<Categoria> cats = categoriaController.listarPorTipo(tipoSelecionado);
         cats.forEach(listModel::addElement);
     }
 
     private void adicionarCategoria() {
         String nome = txtNome.getText().trim();
-        TipoTransacao tipo = (TipoTransacao) cmbTipo.getSelectedItem();
+        TipoTransacao tipo = obterTipoSelecionado();
 
         if (nome.isEmpty()) {
             mostrarAviso("Digite um nome para a categoria.");
@@ -219,6 +226,21 @@ public class CategoryView extends JDialog {
         btn.setOpaque(true);
         btn.setBorderPainted(false);
         return btn;
+    }
+
+    private void atualizarCorBotaoAdicionar() {
+        if (btnAdicionar == null || cmbTipo == null) {
+            return;
+        }
+        TipoTransacao tipoSelecionado = obterTipoSelecionado();
+        Color cor = tipoSelecionado == TipoTransacao.DESPESA ? COR_VERMELHO : COR_VERDE;
+        btnAdicionar.setBackground(cor);
+        btnAdicionar.repaint();
+    }
+
+    private TipoTransacao obterTipoSelecionado() {
+        TipoTransacao tipoSelecionado = (TipoTransacao) cmbTipo.getSelectedItem();
+        return tipoSelecionado != null ? tipoSelecionado : TipoTransacao.RECEITA;
     }
 
     private void mostrarAviso(String msg) {

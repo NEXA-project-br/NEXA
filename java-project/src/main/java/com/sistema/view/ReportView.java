@@ -5,13 +5,18 @@ import com.sistema.controller.TransacaoController.ResumoFinanceiro;
 import com.sistema.model.Transacao;
 import com.sistema.model.TipoTransacao;
 import com.sistema.util.CurrencyUtil;
+import com.sistema.util.PdfReportExporter;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -45,6 +50,7 @@ public class ReportView extends JDialog {
     private JLabel            lblDespesas;
     private JLabel            lblSaldo;
     private DefaultTableModel tableModel;
+    private ResumoFinanceiro  resumoAtual;
 
     private final TransacaoController transacaoController;
 
@@ -67,7 +73,7 @@ public class ReportView extends JDialog {
 
         add(criarCabecalho(),    BorderLayout.NORTH);
         add(criarCorpo(),        BorderLayout.CENTER);
-        add(criarBotaoFechar(),  BorderLayout.SOUTH);
+        add(criarPainelAcoes(),  BorderLayout.SOUTH);
     }
 
     private JPanel criarCabecalho() {
@@ -115,8 +121,7 @@ public class ReportView extends JDialog {
         aplicarMascaraData(txtDataFim);
         linha.add(txtDataFim);
 
-        // Botao Filtrar — Azul Claro
-        JButton btnGerar = criarBotao("Filtrar", COR_AZUL_CLARO);
+        JButton btnGerar = criarBotao("Filtrar", COR_AZUL_CLARO, UiIcons.report(Color.WHITE));
         btnGerar.addActionListener(e -> gerarRelatorio());
         linha.add(btnGerar);
 
@@ -229,13 +234,19 @@ public class ReportView extends JDialog {
         return c;
     }
 
-    private JPanel criarBotaoFechar() {
+    private JPanel criarPainelAcoes() {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         p.setBackground(COR_FUNDO);
-        p.setBorder(new EmptyBorder(0, 24, 16, 24));
-        JButton btn = criarBotao("Fechar", COR_GRAFITE);
-        btn.addActionListener(e -> dispose());
-        p.add(btn);
+        p.setBorder(new EmptyBorder(4, 24, 16, 24));
+
+        JButton btnExportar = criarBotao("Exportar para PDF", COR_AZUL_ESCURO, UiIcons.pdf(Color.WHITE));
+        btnExportar.addActionListener(e -> exportarPdf());
+
+        JButton btnFechar = criarBotao("Fechar", COR_GRAFITE, UiIcons.close(Color.WHITE));
+        btnFechar.addActionListener(e -> dispose());
+
+        p.add(btnExportar);
+        p.add(btnFechar);
         return p;
     }
 
@@ -247,6 +258,7 @@ public class ReportView extends JDialog {
             LocalDate fim    = LocalDate.parse(txtDataFim.getText().trim(), FMT);
 
             ResumoFinanceiro resumo = transacaoController.gerarResumo(inicio, fim);
+            resumoAtual = resumo;
 
             lblReceitas.setText(CurrencyUtil.formatar(resumo.totalReceitas()));
             lblDespesas.setText(CurrencyUtil.formatar(resumo.totalDespesas()));
@@ -276,6 +288,46 @@ public class ReportView extends JDialog {
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
+    private void exportarPdf() {
+        if (resumoAtual == null) {
+            gerarRelatorio();
+        }
+        if (resumoAtual == null) {
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Exportar relatorio para PDF");
+        chooser.setFileFilter(new FileNameExtensionFilter("Arquivo PDF (*.pdf)", "pdf"));
+        chooser.setSelectedFile(new File(nomeArquivoPadrao()));
+
+        int escolha = chooser.showSaveDialog(this);
+        if (escolha != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        Path destino = garantirExtensaoPdf(chooser.getSelectedFile()).toPath();
+        if (destino.toFile().exists()) {
+            int sobrescrever = JOptionPane.showConfirmDialog(this,
+                    "O arquivo ja existe. Deseja substituir?",
+                    "Confirmar exportacao", JOptionPane.YES_NO_OPTION);
+            if (sobrescrever != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+
+        try {
+            PdfReportExporter.exportar(resumoAtual, destino);
+            JOptionPane.showMessageDialog(this,
+                    "Relatorio exportado com sucesso:\n" + destino,
+                    "PDF gerado", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException | IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao exportar PDF:\n" + ex.getMessage(),
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private JLabel criarLabelInline(String texto) {
         JLabel lbl = new JLabel(texto);
         lbl.setFont(FONTE_LABEL);
@@ -296,19 +348,40 @@ public class ReportView extends JDialog {
     }
 
     private JButton criarBotao(String texto, Color cor) {
+        return criarBotao(texto, cor, null);
+    }
+
+    private JButton criarBotao(String texto, Color cor, Icon icone) {
         JButton btn = new JButton(texto);
         btn.setFont(FONTE_BTN);
         btn.setForeground(Color.WHITE);
         btn.setBackground(cor);
-        btn.setBorder(new EmptyBorder(8, 20, 8, 20));
+        btn.setBorder(new EmptyBorder(9, 18, 9, 18));
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setOpaque(true);
         btn.setBorderPainted(false);
+        btn.setIcon(icone);
+        btn.setIconTextGap(8);
+        btn.setPreferredSize(new Dimension(Math.max(120, btn.getPreferredSize().width), 38));
         return btn;
     }
 
     private void aplicarMascaraData(JTextField campo) {
         ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DateDocumentFilter());
+    }
+
+    private String nomeArquivoPadrao() {
+        String inicio = resumoAtual.inicio().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String fim = resumoAtual.fim().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return "relatorio-financeiro-" + inicio + "-a-" + fim + ".pdf";
+    }
+
+    private File garantirExtensaoPdf(File arquivo) {
+        String nome = arquivo.getName().toLowerCase();
+        if (nome.endsWith(".pdf")) {
+            return arquivo;
+        }
+        return new File(arquivo.getParentFile(), arquivo.getName() + ".pdf");
     }
 }
