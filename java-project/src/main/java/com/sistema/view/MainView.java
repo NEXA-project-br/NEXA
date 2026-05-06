@@ -3,6 +3,7 @@ package com.sistema.view;
 import com.sistema.controller.TransacaoController;
 import com.sistema.model.Transacao;
 import com.sistema.model.TipoTransacao;
+import com.sistema.util.AppIcon;
 import com.sistema.util.CurrencyUtil;
 import com.sistema.util.HibernateUtil;
 
@@ -55,6 +56,7 @@ public class MainView extends JFrame {
 
     private void configurarJanela() {
         setTitle("Sistema Financeiro Pessoal");
+        AppIcon.aplicar(this);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(1100, 720);
         setMinimumSize(new Dimension(900, 600));

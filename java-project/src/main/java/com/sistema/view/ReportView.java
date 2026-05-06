@@ -4,6 +4,7 @@ import com.sistema.controller.TransacaoController;
 import com.sistema.controller.TransacaoController.ResumoFinanceiro;
 import com.sistema.model.Transacao;
 import com.sistema.model.TipoTransacao;
+import com.sistema.util.AppIcon;
 import com.sistema.util.CurrencyUtil;
 
 import javax.swing.*;
@@ -49,6 +50,7 @@ public class ReportView extends JDialog {
 
     public ReportView(Frame owner) {
         super(owner, "Relatorio Financeiro", true);
+        AppIcon.aplicar(this);
         this.transacaoController = new TransacaoController();
         construirInterface();
         LocalDate hoje = LocalDate.now();

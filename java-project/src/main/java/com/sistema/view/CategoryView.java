@@ -3,6 +3,7 @@ package com.sistema.view;
 import com.sistema.controller.CategoriaController;
 import com.sistema.model.Categoria;
 import com.sistema.model.TipoTransacao;
+import com.sistema.util.AppIcon;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -40,6 +41,7 @@ public class CategoryView extends JDialog {
 
     public CategoryView(Frame owner) {
         super(owner, "Gerenciamento de Categorias", true);
+        AppIcon.aplicar(this);
         this.categoriaController = new CategoriaController();
         construirInterface();
         carregarCategorias();
@@ -193,15 +195,31 @@ public class CategoryView extends JDialog {
             mostrarAviso("Selecione uma categoria para excluir.");
             return;
         }
+
+        long transacoesVinculadas = categoriaController.contarTransacoesVinculadas(selecionada.getId());
+        String mensagem = "Excluir a categoria \"" + selecionada.getNome() + "\"?";
+        if (transacoesVinculadas > 0) {
+            mensagem += "\n\n" + transacoesVinculadas
+                    + (transacoesVinculadas == 1
+                    ? " transacao ficara sem categoria."
+                    : " transacoes ficarao sem categoria.");
+            mensagem += "\nAs transacoes nao serao apagadas.";
+        }
+
         int confirm = JOptionPane.showConfirmDialog(this,
-                "Excluir a categoria \"" + selecionada.getNome() + "\"?",
+                mensagem,
                 "Confirmar exclusao", JOptionPane.YES_NO_OPTION);
         if (confirm != JOptionPane.YES_OPTION) return;
 
         try {
             categoriaController.excluir(selecionada.getId());
             carregarCategorias();
+            JOptionPane.showMessageDialog(this,
+                    "Categoria excluida com sucesso.",
+                    "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         } catch (IllegalStateException e) {
+            mostrarAviso(e.getMessage());
+        } catch (IllegalArgumentException e) {
             mostrarAviso(e.getMessage());
         }
     }

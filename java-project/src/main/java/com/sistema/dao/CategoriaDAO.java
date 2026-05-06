@@ -63,13 +63,37 @@ public class CategoriaDAO extends BaseDAOImpl<Categoria> {
      * @return true se existirem transações associadas
      */
     public boolean possuiTransacoes(Long categoriaId) {
+        return contarTransacoes(categoriaId) > 0;
+    }
+
+    /**
+     * Conta quantas transacoes estao vinculadas a uma categoria.
+     */
+    public long contarTransacoes(Long categoriaId) {
         return executarLeitura(em -> {
             Long count = em.createQuery(
                             "SELECT COUNT(t) FROM Transacao t WHERE t.categoria.id = :id",
                             Long.class)
                     .setParameter("id", categoriaId)
                     .getSingleResult();
-            return count > 0;
+            return count != null ? count : 0;
+        });
+    }
+
+    /**
+     * Remove a categoria sem apagar transacoes: primeiro deixa as transacoes sem categoria.
+     */
+    public void excluirDesvinculandoTransacoes(Long categoriaId) {
+        executarEmTransacao(em -> {
+            em.createQuery("UPDATE Transacao t SET t.categoria = NULL WHERE t.categoria.id = :id")
+                    .setParameter("id", categoriaId)
+                    .executeUpdate();
+
+            Categoria categoria = em.find(Categoria.class, categoriaId);
+            if (categoria != null) {
+                em.remove(categoria);
+            }
+            return null;
         });
     }
 }

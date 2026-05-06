@@ -59,14 +59,7 @@ public class CategoriaController implements GenericController<Categoria> {
         if (id == null) {
             throw new IllegalArgumentException("ID não pode ser nulo.");
         }
-
-        // Regra de negócio: impede exclusão se houver transações vinculadas
-        if (categoriaDAO.possuiTransacoes(id)) {
-            throw new IllegalStateException(
-                    "Não é possível excluir uma categoria que possui transações vinculadas.");
-        }
-
-        categoriaDAO.excluir(id);
+        categoriaDAO.excluirDesvinculandoTransacoes(id);
     }
 
     @Override
@@ -86,6 +79,16 @@ public class CategoriaController implements GenericController<Categoria> {
      */
     public List<Categoria> listarPorTipo(TipoTransacao tipo) {
         return categoriaDAO.listarPorTipo(tipo);
+    }
+
+    /**
+     * Conta quantas transacoes ficarao sem categoria se a categoria for excluida.
+     */
+    public long contarTransacoesVinculadas(Long categoriaId) {
+        if (categoriaId == null) {
+            return 0;
+        }
+        return categoriaDAO.contarTransacoes(categoriaId);
     }
 
     /**

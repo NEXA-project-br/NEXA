@@ -5,6 +5,7 @@ import com.sistema.controller.TransacaoController;
 import com.sistema.model.Categoria;
 import com.sistema.model.TipoTransacao;
 import com.sistema.model.Transacao;
+import com.sistema.util.AppIcon;
 import com.sistema.util.CurrencyUtil;
 
 import javax.swing.*;
@@ -49,9 +50,16 @@ public class TransactionFormView extends JDialog {
     private final TipoTransacao        tipoInicial;
     private final TransacaoController  transacaoController;
     private final CategoriaController  categoriaController;
+<<<<<<< Updated upstream
+=======
+    private long                       valorCentavos;
+    private boolean                    atualizandoValor;
+    private boolean                    valorEntradaInvalida;
+>>>>>>> Stashed changes
 
     public TransactionFormView(Frame owner, Transacao transacaoParaEditar, TipoTransacao tipoInicial) {
         super(owner, transacaoParaEditar == null ? "Nova Transacao" : "Editar Transacao", true);
+        AppIcon.aplicar(this);
         this.transacaoParaEditar = transacaoParaEditar;
         this.tipoInicial         = tipoInicial != null ? tipoInicial : TipoTransacao.DESPESA;
         this.transacaoController = new TransacaoController();
@@ -182,6 +190,9 @@ public class TransactionFormView extends JDialog {
     private void salvarTransacao() {
         try {
             String        descricao = txtDescricao.getText().trim();
+            if (valorEntradaInvalida) {
+                throw new IllegalArgumentException("Valor monetario invalido. Digite apenas numeros ou moeda em Real.");
+            }
             BigDecimal    valor     = CurrencyUtil.parsear(txtValor.getText());
             LocalDate     data      = LocalDate.parse(txtData.getText().trim(), FMT);
             TipoTransacao tipo      = (TipoTransacao) cmbTipo.getSelectedItem();
@@ -261,4 +272,115 @@ public class TransactionFormView extends JDialog {
         JOptionPane.showMessageDialog(this, msg, "Erro de Validacao",
                 JOptionPane.ERROR_MESSAGE);
     }
+<<<<<<< Updated upstream
 }
+=======
+
+    private void aplicarMascaraData(JTextField campo) {
+        ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DateDocumentFilter());
+    }
+
+    private void aplicarMascaraMoeda(JTextField campo) {
+        ((AbstractDocument) campo.getDocument()).setDocumentFilter(new ValorMoedaDocumentFilter());
+        campo.setHorizontalAlignment(SwingConstants.LEFT);
+    }
+
+    private void validarAnoNaoFuturo(LocalDate data) {
+        int anoAtual = LocalDate.now().getYear();
+        if (data.getYear() > anoAtual) {
+            throw new IllegalArgumentException("O ano da data nao pode ser superior ao ano atual (" + anoAtual + ").");
+        }
+    }
+
+    private void definirValorCampo(BigDecimal valor) {
+        BigDecimal valorSeguro = valor != null ? valor : BigDecimal.ZERO;
+        valorCentavos = valorSeguro.movePointRight(2).setScale(0, RoundingMode.HALF_UP).longValue();
+        valorEntradaInvalida = false;
+        atualizarTextoValor();
+    }
+
+    private void atualizarTextoValor() {
+        atualizandoValor = true;
+        txtValor.setText(FMT_VALOR.format(BigDecimal.valueOf(valorCentavos, 2)));
+        atualizandoValor = false;
+    }
+
+    private class ValorMoedaDocumentFilter extends DocumentFilter {
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+                throws BadLocationException {
+            if (atualizandoValor) {
+                fb.insertString(offset, string, attr);
+                return;
+            }
+            processarEntrada(fb, string);
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                throws BadLocationException {
+            if (atualizandoValor) {
+                fb.replace(offset, length, text, attrs);
+                return;
+            }
+            processarEntrada(fb, text);
+        }
+
+        @Override
+        public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+            if (atualizandoValor) {
+                fb.remove(offset, length);
+                return;
+            }
+            valorEntradaInvalida = false;
+            valorCentavos /= 10;
+            substituirTexto(fb);
+        }
+
+        private void processarEntrada(FilterBypass fb, String texto) throws BadLocationException {
+            if (atualizandoValor || texto == null) {
+                return;
+            }
+            if (contemCaracterMoedaInvalido(texto)) {
+                valorEntradaInvalida = true;
+                Toolkit.getDefaultToolkit().beep();
+                return;
+            }
+
+            boolean recebeuDigito = false;
+            for (char ch : texto.toCharArray()) {
+                if (Character.isDigit(ch)) {
+                    valorCentavos = (valorCentavos * 10) + Character.getNumericValue(ch);
+                    recebeuDigito = true;
+                }
+            }
+            if (recebeuDigito) {
+                valorEntradaInvalida = false;
+            }
+            substituirTexto(fb);
+        }
+
+        private boolean contemCaracterMoedaInvalido(String texto) {
+            for (char ch : texto.toCharArray()) {
+                if (!Character.isDigit(ch)
+                        && !Character.isWhitespace(ch)
+                        && ch != 'R'
+                        && ch != 'r'
+                        && ch != '$'
+                        && ch != '.'
+                        && ch != ',') {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void substituirTexto(FilterBypass fb) throws BadLocationException {
+            atualizandoValor = true;
+            fb.replace(0, fb.getDocument().getLength(),
+                    FMT_VALOR.format(BigDecimal.valueOf(valorCentavos, 2)), null);
+            atualizandoValor = false;
+        }
+    }
+}
+>>>>>>> Stashed changes
