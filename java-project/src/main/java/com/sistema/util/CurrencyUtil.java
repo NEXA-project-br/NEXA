@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
- * Utilitário para formatação de valores monetários em Real Brasileiro.
+ * Utilitario para formatacao de valores monetarios em Real Brasileiro.
  */
 public class CurrencyUtil {
 
@@ -18,10 +18,12 @@ public class CurrencyUtil {
     private CurrencyUtil() {}
 
     /**
-     * Formata um BigDecimal para String no padrão "R$ 1.234,56".
+     * Formata um BigDecimal para String no padrao "R$ 1.234,56".
      */
     public static String formatar(BigDecimal valor) {
-        if (valor == null) return "R$ 0,00";
+        if (valor == null) {
+            return "R$ 0,00";
+        }
         return FORMATTER.format(valor);
     }
 
@@ -30,22 +32,6 @@ public class CurrencyUtil {
      * Aceita formatos como "1234,56", "R$ 1.234,56", "1234.56".
      */
     public static BigDecimal parsear(String texto) {
-        if (texto == null || texto.isBlank()) {
-            throw new IllegalArgumentException("Valor monetario invalido.");
-        }
-        String limpo = texto
-                .replace("R$", "")
-                .replace(" ", "")
-                .replace(".", "")
-                .replace(",", ".")
-                .trim();
-        try {
-            return new BigDecimal(limpo);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Valor monetario invalido.");
-        }
-    }
-}
         if (texto == null || texto.isBlank()) {
             throw criarErroValorInvalido(null);
         }
@@ -82,5 +68,3 @@ public class CurrencyUtil {
         return new IllegalArgumentException("Valor monetario invalido. Use um formato como 123,45.", causa);
     }
 }
-
- main

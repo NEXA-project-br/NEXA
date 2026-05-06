@@ -67,10 +67,6 @@ public class TransactionFormView extends JDialog {
     private boolean                    atualizandoValor;
     private boolean                    valorEntradaInvalida;
 
-    private long                       valorCentavos;
-    private boolean                    atualizandoValor;
- main
-
     public TransactionFormView(Frame owner, Transacao transacaoParaEditar, TipoTransacao tipoInicial) {
         super(owner, transacaoParaEditar == null ? "Nova Transacao" : "Editar Transacao", true);
         AppIcon.aplicar(this);
@@ -401,7 +397,3 @@ public class TransactionFormView extends JDialog {
         }
     }
 }
- test
- Stashed changes
-
- main
