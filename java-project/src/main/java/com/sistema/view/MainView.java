@@ -18,16 +18,16 @@ import java.util.List;
 
 public class MainView extends JFrame {
 
-    private static final Color COR_FUNDO       = new Color(15, 23, 42);
-    private static final Color COR_CARD        = new Color(30, 41, 59);
-    private static final Color COR_BORDA       = new Color(51, 65, 85);
+    private static final Color COR_FUNDO       = new Color(248, 250, 252);
+    private static final Color COR_CARD        = new Color(255, 255, 255);
+    private static final Color COR_BORDA       = new Color(203, 213, 225);
     private static final Color COR_VERDE       = new Color(34, 197, 94);
     private static final Color COR_VERMELHO    = new Color(220, 60, 60);
     private static final Color COR_AZUL_ESCURO = new Color(29, 78, 150);
     private static final Color COR_AZUL_CLARO  = new Color(59, 130, 246);
-    private static final Color COR_GRAFITE     = new Color(71, 85, 105);
-    private static final Color COR_TEXTO       = new Color(241, 245, 249);
-    private static final Color COR_MUTED       = new Color(148, 163, 184);
+    private static final Color COR_GRAFITE     = new Color(100, 116, 139);
+    private static final Color COR_TEXTO       = new Color(15, 23, 42);
+    private static final Color COR_MUTED       = new Color(71, 85, 105);
 
     private static final Font FONTE_TITULO   = new Font("Segoe UI", Font.BOLD, 22);
     private static final Font FONTE_CARD_VAL = new Font("Segoe UI", Font.BOLD, 26);
@@ -84,23 +84,38 @@ public class MainView extends JFrame {
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(COR_TEXTO);
 
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         btnPanel.setOpaque(false);
 
-        JButton btnReceita = criarBotao("Nova Receita", COR_VERDE);
-        JButton btnDespesa = criarBotao("Nova Despesa", COR_VERMELHO);
-        JButton btnCats    = criarBotao("Categorias",   COR_GRAFITE);
-        JButton btnRelat   = criarBotao("Relatorios",   COR_AZUL_ESCURO);
+        JButton btnNovo = criarBotaoMenu("Novo", COR_VERDE, UiIcons.plus(Color.WHITE));
+        JPopupMenu menuNovo = criarMenuSuspenso();
+        menuNovo.add(criarItemMenu("Nova Receita", COR_VERDE, UiIcons.plus(COR_VERDE),
+                () -> abrirFormularioNovaTransacao(TipoTransacao.RECEITA)));
+        menuNovo.add(criarItemMenu("Nova Despesa", COR_VERMELHO, UiIcons.plus(COR_VERMELHO),
+                () -> abrirFormularioNovaTransacao(TipoTransacao.DESPESA)));
+        btnNovo.addActionListener(e -> exibirMenu(btnNovo, menuNovo));
 
-        btnReceita.addActionListener(e -> abrirFormularioNovaTransacao(TipoTransacao.RECEITA));
-        btnDespesa.addActionListener(e -> abrirFormularioNovaTransacao(TipoTransacao.DESPESA));
-        btnCats.addActionListener(e    -> abrirCategorias());
-        btnRelat.addActionListener(e   -> abrirRelatorios());
+        JButton btnGraficos = criarBotaoMenu("Gr\u00e1ficos", COR_AZUL_ESCURO, UiIcons.chart(Color.WHITE));
+        JPopupMenu menuGraficos = criarMenuSuspenso();
+        menuGraficos.add(criarItemMenu("Despesa Mensal", COR_VERMELHO, UiIcons.chart(COR_VERMELHO),
+                () -> abrirGraficoMensal(TipoTransacao.DESPESA)));
+        menuGraficos.add(criarItemMenu("Receita Mensal", COR_VERDE, UiIcons.chart(COR_VERDE),
+                () -> abrirGraficoMensal(TipoTransacao.RECEITA)));
+        btnGraficos.addActionListener(e -> exibirMenu(btnGraficos, menuGraficos));
 
+        JButton btnCats    = criarBotao("Categorias", COR_GRAFITE, UiIcons.category(Color.WHITE));
+        JButton btnRelat   = criarBotao("Relat\u00f3rios", COR_AZUL_ESCURO, UiIcons.report(Color.WHITE));
+        JButton btnCalc    = criarBotao("Calculadora", COR_AZUL_CLARO, UiIcons.calculator(Color.WHITE));
+
+        btnCats.addActionListener(e  -> abrirCategorias());
+        btnRelat.addActionListener(e -> abrirRelatorios());
+        btnCalc.addActionListener(e  -> abrirCalculadora());
+
+        btnPanel.add(btnGraficos);
+        btnPanel.add(btnCalc);
         btnPanel.add(btnRelat);
         btnPanel.add(btnCats);
-        btnPanel.add(btnDespesa);
-        btnPanel.add(btnReceita);
+        btnPanel.add(btnNovo);
 
         painel.add(titulo,   BorderLayout.WEST);
         painel.add(btnPanel, BorderLayout.EAST);
@@ -173,7 +188,7 @@ public class MainView extends JFrame {
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 15));
         lblTitulo.setForeground(COR_TEXTO);
 
-        JButton btnAtualizar = criarBotao("Atualizar", COR_AZUL_CLARO);
+        JButton btnAtualizar = criarBotao("Atualizar", COR_AZUL_CLARO, UiIcons.refresh(Color.WHITE));
         btnAtualizar.addActionListener(e -> atualizarDashboard());
 
         cabecalho.add(lblTitulo,    BorderLayout.WEST);
@@ -189,7 +204,7 @@ public class MainView extends JFrame {
         tabela.setRowHeight(36);
         tabela.setBackground(COR_CARD);
         tabela.setForeground(COR_TEXTO);
-        tabela.setSelectionBackground(new Color(51, 65, 85));
+        tabela.setSelectionBackground(new Color(219, 234, 254));
         tabela.setSelectionForeground(COR_TEXTO);
         tabela.setGridColor(COR_BORDA);
         tabela.setShowGrid(true);
@@ -197,10 +212,12 @@ public class MainView extends JFrame {
         tabela.setIntercellSpacing(new Dimension(0, 1));
 
         tabela.getTableHeader().setFont(FONTE_HEADER);
-        tabela.getTableHeader().setBackground(new Color(51, 65, 85));
-        tabela.getTableHeader().setForeground(COR_MUTED);
+        tabela.getTableHeader().setBackground(new Color(241, 245, 249));
+        tabela.getTableHeader().setForeground(COR_TEXTO);
         tabela.getTableHeader().setPreferredSize(new Dimension(0, 38));
         tabela.getTableHeader().setReorderingAllowed(false);
+        ((DefaultTableCellRenderer) tabela.getTableHeader().getDefaultRenderer())
+                .setHorizontalAlignment(SwingConstants.CENTER);
 
         tabela.getColumnModel().getColumn(0).setPreferredWidth(100);
         tabela.getColumnModel().getColumn(1).setPreferredWidth(300);
@@ -208,6 +225,11 @@ public class MainView extends JFrame {
         tabela.getColumnModel().getColumn(3).setPreferredWidth(100);
         tabela.getColumnModel().getColumn(4).setPreferredWidth(120);
 
+        DefaultTableCellRenderer centroRenderer = new DefaultTableCellRenderer();
+        centroRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        tabela.getColumnModel().getColumn(0).setCellRenderer(centroRenderer);
+        tabela.getColumnModel().getColumn(1).setCellRenderer(centroRenderer);
+        tabela.getColumnModel().getColumn(2).setCellRenderer(centroRenderer);
         tabela.getColumnModel().getColumn(3).setCellRenderer(new TipoRenderer());
         tabela.getColumnModel().getColumn(4).setCellRenderer(new ValorRenderer());
 
@@ -228,8 +250,13 @@ public class MainView extends JFrame {
         scroll.getViewport().setBackground(COR_CARD);
         scroll.setBorder(BorderFactory.createEmptyBorder());
 
-        painel.add(cabecalho, BorderLayout.NORTH);
-        painel.add(scroll,    BorderLayout.CENTER);
+        JPanel tabelaWrapper = new JPanel(new BorderLayout());
+        tabelaWrapper.setBackground(COR_CARD);
+        tabelaWrapper.setBorder(new EmptyBorder(0, 20, 20, 20));
+        tabelaWrapper.add(scroll, BorderLayout.CENTER);
+
+        painel.add(cabecalho,     BorderLayout.NORTH);
+        painel.add(tabelaWrapper, BorderLayout.CENTER);
         return painel;
     }
 
@@ -285,16 +312,64 @@ public class MainView extends JFrame {
         view.setVisible(true);
     }
 
+    private void abrirCalculadora() {
+        CompoundInterestCalculatorView view = new CompoundInterestCalculatorView(this);
+        view.setVisible(true);
+    }
+
+    private void abrirGraficoMensal(TipoTransacao tipo) {
+        MonthlyChartView view = new MonthlyChartView(this, tipo);
+        view.setVisible(true);
+    }
+
     private JButton criarBotao(String texto, Color fundo) {
+        return criarBotao(texto, fundo, null);
+    }
+
+    private JButton criarBotao(String texto, Color fundo, Icon icone) {
         JButton btn = new JButton(texto);
         btn.setFont(FONTE_BTN);
         btn.setForeground(Color.WHITE);
         btn.setBackground(fundo);
-        btn.setBorder(new EmptyBorder(8, 16, 8, 16));
+        btn.setBorder(new EmptyBorder(9, 16, 9, 16));
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setOpaque(true);
+        btn.setBorderPainted(false);
+        btn.setIcon(icone);
+        btn.setIconTextGap(8);
+        btn.setPreferredSize(new Dimension(Math.max(128, btn.getPreferredSize().width), 38));
         return btn;
+    }
+
+    private JButton criarBotaoMenu(String texto, Color fundo, Icon icone) {
+        JButton btn = criarBotao(texto, fundo, icone);
+        btn.setToolTipText("Abrir op\u00e7\u00f5es de " + texto);
+        return btn;
+    }
+
+    private JPopupMenu criarMenuSuspenso() {
+        JPopupMenu menu = new JPopupMenu();
+        menu.setBorder(BorderFactory.createLineBorder(COR_BORDA, 1));
+        return menu;
+    }
+
+    private JMenuItem criarItemMenu(String texto, Color cor, Icon icone, Runnable acao) {
+        JMenuItem item = new JMenuItem(texto, icone);
+        item.setFont(FONTE_BTN);
+        item.setForeground(COR_TEXTO);
+        item.setBackground(Color.WHITE);
+        item.setBorder(new EmptyBorder(8, 12, 8, 18));
+        item.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        item.addActionListener(e -> acao.run());
+        item.setIconTextGap(8);
+        item.setOpaque(true);
+        item.addChangeListener(e -> item.setForeground(item.isArmed() ? cor : COR_TEXTO));
+        return item;
+    }
+
+    private void exibirMenu(JButton origem, JPopupMenu menu) {
+        menu.show(origem, 0, origem.getHeight() + 4);
     }
 
     private void mostrarErro(String msg) {
@@ -327,7 +402,7 @@ public class MainView extends JFrame {
                     setText("Despesa");
                 }
             }
-            setBackground(sel ? new Color(51, 65, 85) : new Color(30, 41, 59));
+            setBackground(sel ? new Color(219, 234, 254) : Color.WHITE);
             return this;
         }
     }
@@ -337,10 +412,10 @@ public class MainView extends JFrame {
         public Component getTableCellRendererComponent(JTable t, Object val,
                 boolean sel, boolean foc, int row, int col) {
             super.getTableCellRendererComponent(t, val, sel, foc, row, col);
-            setHorizontalAlignment(RIGHT);
+            setHorizontalAlignment(CENTER);
             setFont(new Font("Segoe UI", Font.BOLD, 13));
-            setForeground(new Color(241, 245, 249));
-            setBackground(sel ? new Color(51, 65, 85) : new Color(30, 41, 59));
+            setForeground(new Color(15, 23, 42));
+            setBackground(sel ? new Color(219, 234, 254) : Color.WHITE);
             return this;
         }
     }

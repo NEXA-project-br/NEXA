@@ -10,12 +10,19 @@ import com.sistema.util.CurrencyUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Dialogo de formulario para cadastro e edicao de transacoes financeiras.
@@ -23,22 +30,28 @@ import java.util.List;
  */
 public class TransactionFormView extends JDialog {
 
-    private static final Color COR_FUNDO    = new Color(15, 23, 42);
-    private static final Color COR_CARD     = new Color(30, 41, 59);
-    private static final Color COR_BORDA    = new Color(51, 65, 85);
+    private static final Color COR_FUNDO    = new Color(248, 250, 252);
+    private static final Color COR_CARD     = new Color(255, 255, 255);
+    private static final Color COR_BORDA    = new Color(203, 213, 225);
     private static final Color COR_VERDE    = new Color(34, 197, 94);
     private static final Color COR_VERMELHO = new Color(220, 60, 60);
     private static final Color COR_AZUL     = new Color(59, 130, 246);
-    private static final Color COR_GRAFITE  = new Color(71, 85, 105);
-    private static final Color COR_TEXTO    = new Color(241, 245, 249);
-    private static final Color COR_MUTED    = new Color(148, 163, 184);
-    private static final Color COR_INPUT    = new Color(15, 23, 42);
+    private static final Color COR_GRAFITE  = new Color(100, 116, 139);
+    private static final Color COR_TEXTO    = new Color(15, 23, 42);
+    private static final Color COR_MUTED    = new Color(71, 85, 105);
+    private static final Color COR_INPUT    = new Color(255, 255, 255);
 
     private static final Font FONTE_LABEL = new Font("Segoe UI", Font.BOLD, 13);
     private static final Font FONTE_INPUT = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font FONTE_BTN   = new Font("Segoe UI", Font.BOLD, 14);
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final NumberFormat FMT_VALOR = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
+
+    static {
+        FMT_VALOR.setMinimumFractionDigits(2);
+        FMT_VALOR.setMaximumFractionDigits(2);
+    }
 
     private JTextField           txtDescricao;
     private JTextField           txtValor;
@@ -50,12 +63,13 @@ public class TransactionFormView extends JDialog {
     private final TipoTransacao        tipoInicial;
     private final TransacaoController  transacaoController;
     private final CategoriaController  categoriaController;
-<<<<<<< Updated upstream
-=======
     private long                       valorCentavos;
     private boolean                    atualizandoValor;
     private boolean                    valorEntradaInvalida;
->>>>>>> Stashed changes
+
+    private long                       valorCentavos;
+    private boolean                    atualizandoValor;
+ main
 
     public TransactionFormView(Frame owner, Transacao transacaoParaEditar, TipoTransacao tipoInicial) {
         super(owner, transacaoParaEditar == null ? "Nova Transacao" : "Editar Transacao", true);
@@ -121,11 +135,14 @@ public class TransactionFormView extends JDialog {
         // Valor
         adicionarLabel(p, gbc, "Valor (R$)");
         txtValor = criarTextField("0,00");
+        aplicarMascaraMoeda(txtValor);
+        definirValorCampo(BigDecimal.ZERO);
         p.add(txtValor, gbc);
 
         // Data
         adicionarLabel(p, gbc, "Data (dd/MM/yyyy)");
         txtData = criarTextField(LocalDate.now().format(FMT));
+        aplicarMascaraData(txtData);
         p.add(txtData, gbc);
 
         // Categoria — filtrada pelo tipo selecionado
@@ -139,7 +156,8 @@ public class TransactionFormView extends JDialog {
     }
 
     private JPanel criarRodape() {
-        JPanel p = new JPanel(new GridLayout(1, 2, 12, 0));
+        int colunas = transacaoParaEditar == null ? 2 : 3;
+        JPanel p = new JPanel(new GridLayout(1, colunas, 12, 0));
         p.setBackground(COR_FUNDO);
         p.setBorder(new EmptyBorder(0, 24, 24, 24));
 
@@ -150,6 +168,11 @@ public class TransactionFormView extends JDialog {
         btnCancelar.addActionListener(e -> dispose());
         btnSalvar.addActionListener(e   -> salvarTransacao());
 
+        if (transacaoParaEditar != null) {
+            JButton btnExcluir = criarBotao("Excluir", COR_VERMELHO);
+            btnExcluir.addActionListener(e -> excluirTransacao());
+            p.add(btnExcluir);
+        }
         p.add(btnCancelar);
         p.add(btnSalvar);
         return p;
@@ -173,7 +196,7 @@ public class TransactionFormView extends JDialog {
         cmbTipo.setSelectedItem(transacaoParaEditar.getTipo());
         recarregarCategorias(); // garante que a lista esta correta antes de selecionar
         txtDescricao.setText(transacaoParaEditar.getDescricao());
-        txtValor.setText(transacaoParaEditar.getValor().toPlainString().replace(".", ","));
+        definirValorCampo(transacaoParaEditar.getValor());
         txtData.setText(transacaoParaEditar.getData().format(FMT));
 
         if (transacaoParaEditar.getCategoria() != null) {
@@ -195,6 +218,7 @@ public class TransactionFormView extends JDialog {
             }
             BigDecimal    valor     = CurrencyUtil.parsear(txtValor.getText());
             LocalDate     data      = LocalDate.parse(txtData.getText().trim(), FMT);
+            validarAnoNaoFuturo(data);
             TipoTransacao tipo      = (TipoTransacao) cmbTipo.getSelectedItem();
             Categoria     categoria = (Categoria) cmbCategoria.getSelectedItem();
 
@@ -225,6 +249,30 @@ public class TransactionFormView extends JDialog {
     }
 
     // ── Helpers de UI ─────────────────────────────────────────────────────────
+
+    private void excluirTransacao() {
+        if (transacaoParaEditar == null || transacaoParaEditar.getId() == null) {
+            return;
+        }
+
+        int confirmacao = JOptionPane.showConfirmDialog(this,
+                "Excluir a transacao \"" + transacaoParaEditar.getDescricao() + "\"?",
+                "Confirmar exclusao", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (confirmacao != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            transacaoController.excluir(transacaoParaEditar.getId());
+            JOptionPane.showMessageDialog(this, "Transacao excluida com sucesso!",
+                    "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        } catch (IllegalArgumentException e) {
+            mostrarErro(e.getMessage());
+        } catch (Exception e) {
+            mostrarErro("Erro inesperado ao excluir: " + e.getMessage());
+        }
+    }
 
     private void adicionarLabel(JPanel p, GridBagConstraints gbc, String texto) {
         gbc.insets = new Insets(0, 0, 4, 0);
@@ -265,6 +313,7 @@ public class TransactionFormView extends JDialog {
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setOpaque(true);
+        btn.setBorderPainted(false);
         return btn;
     }
 
@@ -272,9 +321,6 @@ public class TransactionFormView extends JDialog {
         JOptionPane.showMessageDialog(this, msg, "Erro de Validacao",
                 JOptionPane.ERROR_MESSAGE);
     }
-<<<<<<< Updated upstream
-}
-=======
 
     private void aplicarMascaraData(JTextField campo) {
         ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DateDocumentFilter());
@@ -295,7 +341,6 @@ public class TransactionFormView extends JDialog {
     private void definirValorCampo(BigDecimal valor) {
         BigDecimal valorSeguro = valor != null ? valor : BigDecimal.ZERO;
         valorCentavos = valorSeguro.movePointRight(2).setScale(0, RoundingMode.HALF_UP).longValue();
-        valorEntradaInvalida = false;
         atualizarTextoValor();
     }
 
@@ -332,7 +377,6 @@ public class TransactionFormView extends JDialog {
                 fb.remove(offset, length);
                 return;
             }
-            valorEntradaInvalida = false;
             valorCentavos /= 10;
             substituirTexto(fb);
         }
@@ -341,38 +385,12 @@ public class TransactionFormView extends JDialog {
             if (atualizandoValor || texto == null) {
                 return;
             }
-            if (contemCaracterMoedaInvalido(texto)) {
-                valorEntradaInvalida = true;
-                Toolkit.getDefaultToolkit().beep();
-                return;
-            }
-
-            boolean recebeuDigito = false;
             for (char ch : texto.toCharArray()) {
                 if (Character.isDigit(ch)) {
                     valorCentavos = (valorCentavos * 10) + Character.getNumericValue(ch);
-                    recebeuDigito = true;
                 }
-            }
-            if (recebeuDigito) {
-                valorEntradaInvalida = false;
             }
             substituirTexto(fb);
-        }
-
-        private boolean contemCaracterMoedaInvalido(String texto) {
-            for (char ch : texto.toCharArray()) {
-                if (!Character.isDigit(ch)
-                        && !Character.isWhitespace(ch)
-                        && ch != 'R'
-                        && ch != 'r'
-                        && ch != '$'
-                        && ch != '.'
-                        && ch != ',') {
-                    return true;
-                }
-            }
-            return false;
         }
 
         private void substituirTexto(FilterBypass fb) throws BadLocationException {
@@ -383,4 +401,7 @@ public class TransactionFormView extends JDialog {
         }
     }
 }
->>>>>>> Stashed changes
+ test
+ Stashed changes
+
+ main

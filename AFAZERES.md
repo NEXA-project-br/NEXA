@@ -1,5 +1,4 @@
 - grafico mostrando dispesa mensal
 - gerar relatório em pdf
-- calculadora (juros compostos com taxa manual)
 - simulador de renda
 - primeiro milhão

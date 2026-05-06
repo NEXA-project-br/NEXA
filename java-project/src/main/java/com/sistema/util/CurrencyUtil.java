@@ -30,8 +30,9 @@ public class CurrencyUtil {
      * Aceita formatos como "1234,56", "R$ 1.234,56", "1234.56".
      */
     public static BigDecimal parsear(String texto) {
-<<<<<<< Updated upstream
-        if (texto == null || texto.isBlank()) return BigDecimal.ZERO;
+        if (texto == null || texto.isBlank()) {
+            throw new IllegalArgumentException("Valor monetario invalido.");
+        }
         String limpo = texto
                 .replace("R$", "")
                 .replace(" ", "")
@@ -41,11 +42,10 @@ public class CurrencyUtil {
         try {
             return new BigDecimal(limpo);
         } catch (NumberFormatException e) {
-            return BigDecimal.ZERO;
+            throw new IllegalArgumentException("Valor monetario invalido.");
         }
     }
 }
-=======
         if (texto == null || texto.isBlank()) {
             throw criarErroValorInvalido(null);
         }
@@ -82,4 +82,5 @@ public class CurrencyUtil {
         return new IllegalArgumentException("Valor monetario invalido. Use um formato como 123,45.", causa);
     }
 }
->>>>>>> Stashed changes
+
+ main
