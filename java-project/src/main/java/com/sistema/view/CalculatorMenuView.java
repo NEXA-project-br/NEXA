@@ -22,6 +22,7 @@ public class CalculatorMenuView extends JDialog {
 
     public CalculatorMenuView(Frame owner) {
         super(owner, "Calculadoras", true);
+        AppIconUtil.aplicar(this);
         construirInterface();
     }
 

@@ -57,6 +57,7 @@ public class ReportView extends JDialog {
 
     public ReportView(Frame owner) {
         super(owner, "Relatorio Financeiro", true);
+        AppIconUtil.aplicar(this);
         this.transacaoController = new TransacaoController();
         construirInterface();
         LocalDate hoje = LocalDate.now();

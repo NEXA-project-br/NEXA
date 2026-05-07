@@ -42,6 +42,7 @@ public class CategoryView extends JDialog {
 
     public CategoryView(Frame owner) {
         super(owner, "Gerenciamento de Categorias", true);
+        AppIconUtil.aplicar(this);
         this.categoriaController = new CategoriaController();
         construirInterface();
         carregarCategorias();

@@ -70,6 +70,7 @@ public class TransactionFormView extends JDialog {
 
     public TransactionFormView(Frame owner, Transacao transacaoParaEditar, TipoTransacao tipoInicial) {
         super(owner, transacaoParaEditar == null ? "Nova Transacao" : "Editar Transacao", true);
+        AppIconUtil.aplicar(this);
         this.transacaoParaEditar = transacaoParaEditar;
         this.tipoInicial         = tipoInicial != null ? tipoInicial : TipoTransacao.DESPESA;
         this.transacaoController = new TransacaoController();

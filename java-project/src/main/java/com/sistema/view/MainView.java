@@ -56,6 +56,7 @@ public class MainView extends JFrame {
 
     private void configurarJanela() {
         setTitle("Sistema Financeiro Pessoal");
+        AppIconUtil.aplicar(this);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(1100, 720);
         setMinimumSize(new Dimension(900, 600));

@@ -39,6 +39,7 @@ public class CompoundInterestCalculatorView extends JDialog {
 
     public CompoundInterestCalculatorView(Frame owner) {
         super(owner, "Calculadora de Juros Compostos", true);
+        AppIconUtil.aplicar(this);
         construirInterface();
     }
 

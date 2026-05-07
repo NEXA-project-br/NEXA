@@ -37,6 +37,7 @@ public class IncomeCalculatorView extends JDialog {
 
     public IncomeCalculatorView(Frame owner) {
         super(owner, "Calculadora de Renda", true);
+        AppIconUtil.aplicar(this);
         construirInterface();
     }
 

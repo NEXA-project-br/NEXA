@@ -39,6 +39,7 @@ public class MonthlyChartView extends JDialog {
 
     public MonthlyChartView(Frame owner, TipoTransacao tipo) {
         super(owner, tipo == TipoTransacao.RECEITA ? "Grafico de Receita Mensal" : "Grafico de Despesa Mensal", true);
+        AppIconUtil.aplicar(this);
         this.transacaoController = new TransacaoController();
         this.tipo = tipo;
         construirInterface();

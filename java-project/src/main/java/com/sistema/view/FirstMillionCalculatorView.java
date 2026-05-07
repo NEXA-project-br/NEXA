@@ -39,6 +39,7 @@ public class FirstMillionCalculatorView extends JDialog {
 
     public FirstMillionCalculatorView(Frame owner) {
         super(owner, "Primeiro Milhao", true);
+        AppIconUtil.aplicar(this);
         construirInterface();
     }
 
