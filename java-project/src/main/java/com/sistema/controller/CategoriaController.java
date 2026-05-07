@@ -13,8 +13,14 @@ import java.util.Optional;
  */
 public class CategoriaController implements GenericController<Categoria> {
 
+    /**
+     * DAO responsavel pela persistencia de categorias.
+     */
     private final CategoriaDAO categoriaDAO;
 
+    /**
+     * Cria o controller com uma instancia padrao de {@link CategoriaDAO}.
+     */
     public CategoriaController() {
         this.categoriaDAO = new CategoriaDAO();
     }

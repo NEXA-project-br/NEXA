@@ -15,8 +15,14 @@ import java.util.Optional;
  */
 public class TransacaoController implements GenericController<Transacao> {
 
+    /**
+     * DAO responsavel pela persistencia e consultas de transacoes.
+     */
     private final TransacaoDAO transacaoDAO;
 
+    /**
+     * Cria o controller com uma instancia padrao de {@link TransacaoDAO}.
+     */
     public TransacaoController() {
         this.transacaoDAO = new TransacaoDAO();
     }
