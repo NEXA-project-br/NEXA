@@ -11,7 +11,7 @@ public class Categoria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", columnDefinition = "integer")
     private Long id;
 
     @Column(name = "nome", nullable = false, length = 100)
@@ -21,7 +21,7 @@ public class Categoria {
     @Column(name = "tipo", nullable = true, length = 10)
     private TipoTransacao tipo;
 
-    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
     private List<Transacao> transacoes = new ArrayList<>();
 
     public Categoria() {}

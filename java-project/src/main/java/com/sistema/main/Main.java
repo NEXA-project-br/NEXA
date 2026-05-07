@@ -1,9 +1,11 @@
 package com.sistema;
 
 import com.sistema.util.HibernateUtil;
+import com.sistema.util.SQLiteBackupUtil;
 import com.sistema.view.MainView;
 
 import javax.swing.*;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -20,7 +22,7 @@ import java.sql.Statement;
  */
 public class Main {
 
-    private static final String DB_URL = "jdbc:sqlite:financeiro.db";
+    private static final String DB_URL = "jdbc:sqlite:financeiro.db?foreign_keys=on";
 
     public static void main(String[] args) {
 
@@ -51,6 +53,8 @@ public class Main {
             System.exit(1);
         }
 
+        criarBackupInicial();
+
         // 3. Configura Look and Feel
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -76,6 +80,15 @@ public class Main {
 
         try (Connection conn = DriverManager.getConnection(DB_URL);
              Statement  stmt = conn.createStatement()) {
+            stmt.execute("PRAGMA foreign_keys = ON");
+
+            if (!tabelaExiste(conn, "categorias") && !tabelaExiste(conn, "transacoes")) {
+                criarSchemaInicial(stmt);
+                return;
+            }
+            if (!tabelaExiste(conn, "categorias") || !tabelaExiste(conn, "transacoes")) {
+                throw new IllegalStateException("Schema incompleto: tabelas categorias/transacoes inconsistentes.");
+            }
 
             // ── Migracao 1: coluna 'tipo' na tabela 'categorias' ─────────────
             // Verifica se a coluna ja existe consultando o PRAGMA da tabela
@@ -87,9 +100,6 @@ public class Main {
                         break;
                     }
                 }
-            } catch (Exception ignored) {
-                // Tabela ainda nao existe — o Hibernate vai criá-la do zero, OK
-                return;
             }
 
             if (!colunaExiste) {
@@ -101,6 +111,153 @@ public class Main {
                 System.out.println("[Migracao] Coluna 'tipo' adicionada. " +
                         "Categorias existentes classificadas como DESPESA.");
             }
+
+            validarTransacoesOrfas(conn);
+            validarCategoriasDuplicadas(conn);
+            criarIndiceUnicoCategorias(stmt);
+            if (!transacoesPossuiForeignKey(conn)
+                    || !tipoColunaEh(conn, "transacoes", "categoria_id", "integer")) {
+                recriarTransacoesComForeignKey(conn);
+            }
+        }
+    }
+
+    private static boolean tabelaExiste(Connection conn, String nome) throws Exception {
+        try (ResultSet rs = conn.getMetaData().getTables(null, null, nome, null)) {
+            return rs.next();
+        }
+    }
+
+    private static void criarSchemaInicial(Statement stmt) throws Exception {
+        stmt.execute("""
+                CREATE TABLE categorias (
+                    id integer,
+                    tipo varchar(10) check (tipo in ('RECEITA','DESPESA')),
+                    nome varchar(100) not null unique,
+                    primary key (id)
+                )
+                """);
+        criarIndiceUnicoCategorias(stmt);
+        stmt.execute("""
+                CREATE TABLE transacoes (
+                    data date not null,
+                    valor numeric(15,2) not null,
+                    categoria_id integer,
+                    id integer,
+                    tipo varchar(10) not null check (tipo in ('RECEITA','DESPESA')),
+                    descricao varchar(255) not null,
+                    primary key (id),
+                    foreign key (categoria_id) references categorias(id)
+                )
+                """);
+    }
+
+    private static void validarTransacoesOrfas(Connection conn) throws Exception {
+        String sql = """
+                SELECT COUNT(*)
+                FROM transacoes t
+                WHERE t.categoria_id IS NOT NULL
+                  AND NOT EXISTS (
+                      SELECT 1 FROM categorias c WHERE c.id = t.categoria_id
+                  )
+                """;
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next() && rs.getLong(1) > 0) {
+                throw new IllegalStateException(
+                        "Existem transacoes com categoria_id sem categoria correspondente.");
+            }
+        }
+    }
+
+    private static void validarCategoriasDuplicadas(Connection conn) throws Exception {
+        String sql = """
+                SELECT LOWER(nome), COUNT(*)
+                FROM categorias
+                GROUP BY LOWER(nome)
+                HAVING COUNT(*) > 1
+                """;
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                throw new IllegalStateException(
+                        "Existem categorias duplicadas para o nome: " + rs.getString(1));
+            }
+        }
+    }
+
+    private static void criarIndiceUnicoCategorias(Statement stmt) throws Exception {
+        stmt.execute("""
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_categorias_nome_lower_unique
+                ON categorias (LOWER(nome))
+                """);
+    }
+
+    private static boolean transacoesPossuiForeignKey(Connection conn) throws Exception {
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("PRAGMA foreign_key_list(transacoes)")) {
+            while (rs.next()) {
+                if ("categorias".equalsIgnoreCase(rs.getString("table"))
+                        && "categoria_id".equalsIgnoreCase(rs.getString("from"))
+                        && "id".equalsIgnoreCase(rs.getString("to"))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    private static boolean tipoColunaEh(Connection conn, String tabela, String coluna, String tipo) throws Exception {
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("PRAGMA table_info(" + tabela + ")")) {
+            while (rs.next()) {
+                if (coluna.equalsIgnoreCase(rs.getString("name"))) {
+                    return tipo.equalsIgnoreCase(rs.getString("type"));
+                }
+            }
+            return false;
+        }
+    }
+
+    private static void recriarTransacoesComForeignKey(Connection conn) throws Exception {
+        System.out.println("[Migracao] Recriando tabela 'transacoes' com foreign key...");
+        conn.setAutoCommit(false);
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("ALTER TABLE transacoes RENAME TO transacoes_legacy_migracao");
+            stmt.execute("""
+                    CREATE TABLE transacoes (
+                        data date not null,
+                        valor numeric(15,2) not null,
+                        categoria_id integer,
+                        id integer,
+                        tipo varchar(10) not null check (tipo in ('RECEITA','DESPESA')),
+                        descricao varchar(255) not null,
+                        primary key (id),
+                        foreign key (categoria_id) references categorias(id)
+                    )
+                    """);
+            stmt.execute("""
+                    INSERT INTO transacoes (data, valor, categoria_id, id, tipo, descricao)
+                    SELECT data, valor, categoria_id, id, tipo, descricao
+                    FROM transacoes_legacy_migracao
+                    """);
+            stmt.execute("DROP TABLE transacoes_legacy_migracao");
+            conn.commit();
+            System.out.println("[Migracao] Tabela 'transacoes' recriada com foreign key.");
+        } catch (Exception e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
+        }
+    }
+
+    private static void criarBackupInicial() {
+        try {
+            Path backup = SQLiteBackupUtil.criarBackup(DB_URL);
+            System.out.println("[Sistema] Backup SQLite criado: " + backup);
+        } catch (Exception e) {
+            System.err.println("[Sistema] Backup SQLite nao foi criado: " + e.getMessage());
         }
     }
 }

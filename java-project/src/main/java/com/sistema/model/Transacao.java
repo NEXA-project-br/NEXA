@@ -14,7 +14,7 @@ public class Transacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", columnDefinition = "integer")
     private Long id;
 
     @Column(name = "descricao", nullable = false, length = 255)
@@ -31,7 +31,7 @@ public class Transacao {
     private TipoTransacao tipo;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "categoria_id", nullable = true)
+    @JoinColumn(name = "categoria_id", nullable = true, columnDefinition = "integer")
     private Categoria categoria;
 
     // ── Construtores ──────────────────────────────────────────────────────────
