@@ -1,4 +1,0 @@
-- grafico mostrando dispesa mensal
-- gerar relatório em pdf
-- simulador de renda
-- primeiro milhão
