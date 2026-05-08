@@ -14,6 +14,9 @@ public final class AppIconUtil {
      */
     private static final String LOGO_PATH = "/images/nexa2.png";
 
+    /**
+     * Cria uma nova instancia de AppIconUtil.
+     */
     private AppIconUtil() {
     }
 

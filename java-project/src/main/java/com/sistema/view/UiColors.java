@@ -2,6 +2,9 @@ package com.sistema.view;
 
 import java.awt.Color;
 
+/**
+ * Classe utilitaria que concentra cores usadas na interface.
+ */
 final class UiColors {
 
     static final Color COR_GRAFICOS = Color.decode("#1E3C96");
@@ -10,5 +13,8 @@ final class UiColors {
     static final Color COR_CATEGORIAS = Color.decode("#C88C28");
     static final Color COR_NOVO = Color.decode("#00B46E");
 
+    /**
+     * Cria uma nova instancia de UiColors.
+     */
     private UiColors() {}
 }

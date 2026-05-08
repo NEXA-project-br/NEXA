@@ -27,6 +27,12 @@ public class CategoriaController implements GenericController<Categoria> {
 
     // ── Implementação GenericController ───────────────────────────────────────
 
+    /**
+     * Executa a rotina salvar.
+     *
+     * @param categoria parametro categoria
+     * @return resultado da operacao
+     */
     @Override
     public Categoria salvar(Categoria categoria) {
         validarCategoria(categoria);
@@ -41,6 +47,12 @@ public class CategoriaController implements GenericController<Categoria> {
         return categoriaDAO.salvar(categoria);
     }
 
+    /**
+     * Executa a rotina atualizar.
+     *
+     * @param categoria parametro categoria
+     * @return resultado da operacao
+     */
     @Override
     public Categoria atualizar(Categoria categoria) {
         validarCategoria(categoria);
@@ -60,6 +72,11 @@ public class CategoriaController implements GenericController<Categoria> {
         return categoriaDAO.atualizar(categoria);
     }
 
+    /**
+     * Executa a rotina excluir.
+     *
+     * @param id parametro id
+     */
     @Override
     public void excluir(Long id) {
         if (id == null) {
@@ -75,11 +92,22 @@ public class CategoriaController implements GenericController<Categoria> {
         categoriaDAO.excluir(id);
     }
 
+    /**
+     * Executa a rotina buscarPorId.
+     *
+     * @param id parametro id
+     * @return resultado da operacao
+     */
     @Override
     public Optional<Categoria> buscarPorId(Long id) {
         return categoriaDAO.buscarPorId(id);
     }
 
+    /**
+     * Executa a rotina listarTodos.
+     *
+     * @return resultado da operacao
+     */
     @Override
     public List<Categoria> listarTodos() {
         return categoriaDAO.listarOrdenadoPorNome();
@@ -115,6 +143,11 @@ public class CategoriaController implements GenericController<Categoria> {
 
     // ── Validação ─────────────────────────────────────────────────────────────
 
+    /**
+     * Executa a rotina validarCategoria.
+     *
+     * @param categoria parametro categoria
+     */
     private void validarCategoria(Categoria categoria) {
         if (categoria == null) {
             throw new IllegalArgumentException("Categoria não pode ser nula.");

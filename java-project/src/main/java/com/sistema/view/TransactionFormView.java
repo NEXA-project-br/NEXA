@@ -30,23 +30,71 @@ import java.util.concurrent.ExecutionException;
  */
 public class TransactionFormView extends JDialog {
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_FUNDO    = new Color(248, 250, 252);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_CARD     = new Color(255, 255, 255);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_BORDA    = new Color(203, 213, 225);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERDE    = new Color(34, 197, 94);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERMELHO = new Color(220, 60, 60);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_AZUL     = new Color(59, 130, 246);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_GRAFITE  = new Color(100, 116, 139);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_TEXTO    = new Color(15, 23, 42);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_MUTED    = new Color(71, 85, 105);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_INPUT    = new Color(255, 255, 255);
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_LABEL = new Font("Segoe UI", Font.BOLD, 13);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_INPUT = new Font("Segoe UI", Font.PLAIN, 13);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_BTN   = new Font("Segoe UI", Font.BOLD, 14);
 
+    /**
+     * Formato usado para compor o nome dos arquivos de backup.
+     */
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final NumberFormat FMT_VALOR = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
+    /**
+     * Quantidade maxima de digitos em centavos permitida.
+     */
     private static final int MAX_DIGITOS_CENTAVOS = 15;
 
     static {
@@ -54,20 +102,63 @@ public class TransactionFormView extends JDialog {
         FMT_VALOR.setMaximumFractionDigits(2);
     }
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JTextField           txtDescricao;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JTextField           txtValor;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JTextField           txtData;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JComboBox<TipoTransacao> cmbTipo;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JComboBox<Categoria>     cmbCategoria;
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private final Transacao            transacaoParaEditar;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private final TipoTransacao        tipoInicial;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private final TransacaoController  transacaoController;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private final CategoriaController  categoriaController;
+    /**
+     * Valor monetario armazenado em centavos.
+     */
     private long                       valorCentavos;
+    /**
+     * Indica se o campo esta sendo atualizado internamente.
+     */
     private boolean                    atualizandoValor;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private boolean                    preenchendoFormulario;
 
+    /**
+     * Cria uma nova instancia de TransactionFormView.
+     *
+     * @param owner janela proprietaria do dialogo
+     * @param transacaoParaEditar parametro transacaoParaEditar
+     * @param tipoInicial parametro tipoInicial
+     */
     public TransactionFormView(Frame owner, Transacao transacaoParaEditar, TipoTransacao tipoInicial) {
         super(owner, transacaoParaEditar == null ? "Nova Transacao" : "Editar Transacao", true);
         AppIconUtil.aplicar(this);
@@ -79,6 +170,9 @@ public class TransactionFormView extends JDialog {
         if (transacaoParaEditar != null) preencherFormulario();
     }
 
+    /**
+     * Monta os componentes visuais da tela.
+     */
     private void construirInterface() {
         setSize(480, 500);
         setResizable(false);
@@ -91,6 +185,11 @@ public class TransactionFormView extends JDialog {
         add(criarRodape(),    BorderLayout.SOUTH);
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarCabecalho() {
         JPanel p = new JPanel(new BorderLayout());
         p.setBackground(COR_CARD);
@@ -104,6 +203,11 @@ public class TransactionFormView extends JDialog {
         return p;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarFormulario() {
         JPanel p = new JPanel(new GridBagLayout());
         p.setBackground(COR_FUNDO);
@@ -158,6 +262,11 @@ public class TransactionFormView extends JDialog {
         return p;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarRodape() {
         int colunas = transacaoParaEditar == null ? 2 : 3;
         JPanel p = new JPanel(new GridLayout(1, colunas, 12, 0));
@@ -188,9 +297,19 @@ public class TransactionFormView extends JDialog {
         recarregarCategorias(null);
     }
 
+    /**
+     * Executa a rotina recarregarCategorias.
+     *
+     * @param categoriaParaSelecionar parametro categoriaParaSelecionar
+     */
     private void recarregarCategorias(Categoria categoriaParaSelecionar) {
         TipoTransacao tipoSelecionado = (TipoTransacao) cmbTipo.getSelectedItem();
         new SwingWorker<List<Categoria>, Void>() {
+            /**
+             * Executa a rotina doInBackground.
+             *
+             * @return resultado da operacao
+             */
             @Override
             protected List<Categoria> doInBackground() {
                 return tipoSelecionado != null
@@ -198,6 +317,9 @@ public class TransactionFormView extends JDialog {
                         : List.of();
             }
 
+            /**
+             * Executa a rotina done.
+             */
             @Override
             protected void done() {
                 try {
@@ -213,6 +335,9 @@ public class TransactionFormView extends JDialog {
         }.execute();
     }
 
+    /**
+     * Executa a rotina preencherFormulario.
+     */
     private void preencherFormulario() {
         preenchendoFormulario = true;
         try {
@@ -226,6 +351,9 @@ public class TransactionFormView extends JDialog {
         recarregarCategorias(transacaoParaEditar.getCategoria());
     }
 
+    /**
+     * Executa a rotina salvarTransacao.
+     */
     private void salvarTransacao() {
         try {
             String        descricao = txtDescricao.getText().trim();
@@ -236,6 +364,11 @@ public class TransactionFormView extends JDialog {
             Categoria     categoria = (Categoria) cmbCategoria.getSelectedItem();
 
             new SwingWorker<Void, Void>() {
+                /**
+                 * Executa a rotina doInBackground.
+                 *
+                 * @return resultado da operacao
+                 */
                 @Override
                 protected Void doInBackground() {
                     if (transacaoParaEditar == null) {
@@ -252,6 +385,9 @@ public class TransactionFormView extends JDialog {
                     return null;
                 }
 
+                /**
+                 * Executa a rotina done.
+                 */
                 @Override
                 protected void done() {
                     try {
@@ -279,6 +415,9 @@ public class TransactionFormView extends JDialog {
 
     // ── Helpers de UI ─────────────────────────────────────────────────────────
 
+    /**
+     * Executa a rotina excluirTransacao.
+     */
     private void excluirTransacao() {
         if (transacaoParaEditar == null || transacaoParaEditar.getId() == null) {
             return;
@@ -292,12 +431,20 @@ public class TransactionFormView extends JDialog {
         }
 
         new SwingWorker<Void, Void>() {
+            /**
+             * Executa a rotina doInBackground.
+             *
+             * @return resultado da operacao
+             */
             @Override
             protected Void doInBackground() {
                 transacaoController.excluir(transacaoParaEditar.getId());
                 return null;
             }
 
+            /**
+             * Executa a rotina done.
+             */
             @Override
             protected void done() {
                 try {
@@ -312,6 +459,13 @@ public class TransactionFormView extends JDialog {
         }.execute();
     }
 
+    /**
+     * Adiciona o componente configurado ao painel informado.
+     *
+     * @param p parametro p
+     * @param gbc parametro gbc
+     * @param texto parametro texto
+     */
     private void adicionarLabel(JPanel p, GridBagConstraints gbc, String texto) {
         gbc.insets = new Insets(0, 0, 4, 0);
         JLabel lbl = new JLabel(texto);
@@ -321,6 +475,12 @@ public class TransactionFormView extends JDialog {
         gbc.insets = new Insets(0, 0, 14, 0);
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param toolTip parametro toolTip
+     * @return campo de texto configurado
+     */
     private JTextField criarTextField(String toolTip) {
         JTextField tf = new JTextField();
         tf.setFont(FONTE_INPUT);
@@ -334,6 +494,11 @@ public class TransactionFormView extends JDialog {
         return tf;
     }
 
+    /**
+     * Aplica a aparencia padrao ao componente informado.
+     *
+     * @param cmb parametro cmb
+     */
     private <E> void estilizarComboBox(JComboBox<E> cmb) {
         cmb.setFont(FONTE_INPUT);
         cmb.setForeground(COR_TEXTO);
@@ -342,6 +507,13 @@ public class TransactionFormView extends JDialog {
         cmb.setPreferredSize(new Dimension(0, 36));
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param texto parametro texto
+     * @param cor parametro cor
+     * @return botao configurado
+     */
     private JButton criarBotao(String texto, Color cor) {
         JButton btn = new JButton(texto);
         btn.setFont(FONTE_BTN);
@@ -355,11 +527,22 @@ public class TransactionFormView extends JDialog {
         return btn;
     }
 
+    /**
+     * Exibe uma mensagem para o usuario.
+     *
+     * @param msg parametro msg
+     */
     private void mostrarErro(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Erro de Validacao",
                 JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Executa a rotina mensagemErroWorker.
+     *
+     * @param ex parametro ex
+     * @return texto formatado
+     */
     private String mensagemErroWorker(Exception ex) {
         Throwable causa = ex instanceof ExecutionException ? ex.getCause() : ex;
         if (causa instanceof IllegalArgumentException) {
@@ -368,10 +551,20 @@ public class TransactionFormView extends JDialog {
         return "Nao foi possivel concluir a operacao.";
     }
 
+    /**
+     * Executa a rotina aplicarMascaraData.
+     *
+     * @param campo parametro campo
+     */
     private void aplicarMascaraData(JTextField campo) {
         ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DateDocumentFilter());
     }
 
+    /**
+     * Executa a rotina selecionarCategoria.
+     *
+     * @param categoriaParaSelecionar parametro categoriaParaSelecionar
+     */
     private void selecionarCategoria(Categoria categoriaParaSelecionar) {
         if (categoriaParaSelecionar == null) {
             return;
@@ -385,11 +578,21 @@ public class TransactionFormView extends JDialog {
         }
     }
 
+    /**
+     * Executa a rotina aplicarMascaraMoeda.
+     *
+     * @param campo parametro campo
+     */
     private void aplicarMascaraMoeda(JTextField campo) {
         ((AbstractDocument) campo.getDocument()).setDocumentFilter(new ValorMoedaDocumentFilter());
         campo.setHorizontalAlignment(SwingConstants.LEFT);
     }
 
+    /**
+     * Executa a rotina validarAnoNaoFuturo.
+     *
+     * @param data parametro data
+     */
     private void validarAnoNaoFuturo(LocalDate data) {
         int anoAtual = LocalDate.now().getYear();
         if (data.getYear() > anoAtual) {
@@ -397,6 +600,11 @@ public class TransactionFormView extends JDialog {
         }
     }
 
+    /**
+     * Executa a rotina definirValorCampo.
+     *
+     * @param valor parametro valor
+     */
     private void definirValorCampo(BigDecimal valor) {
         BigDecimal valorSeguro = valor != null ? valor : BigDecimal.ZERO;
         try {
@@ -408,13 +616,28 @@ public class TransactionFormView extends JDialog {
         atualizarTextoValor();
     }
 
+    /**
+     * Executa a rotina atualizarTextoValor.
+     */
     private void atualizarTextoValor() {
         atualizandoValor = true;
         txtValor.setText(FMT_VALOR.format(BigDecimal.valueOf(valorCentavos, 2)));
         atualizandoValor = false;
     }
 
+    /**
+     * Tipo responsavel por funcionalidades de ValorMoedaDocumentFilter.
+     */
     private class ValorMoedaDocumentFilter extends DocumentFilter {
+        /**
+         * Insere texto aplicando a formatacao do documento.
+         *
+         * @param fb objeto de acesso ao documento filtrado
+         * @param offset posicao inicial da alteracao
+         * @param string texto a ser inserido
+         * @param attr atributos do texto inserido
+         * @throws BadLocationException se ocorrer erro ao alterar o documento
+         */
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
                 throws BadLocationException {
@@ -425,6 +648,16 @@ public class TransactionFormView extends JDialog {
             processarEntrada(fb, string);
         }
 
+        /**
+         * Substitui texto aplicando a formatacao do documento.
+         *
+         * @param fb objeto de acesso ao documento filtrado
+         * @param offset posicao inicial da alteracao
+         * @param length quantidade de caracteres afetados
+         * @param text texto usado na substituicao
+         * @param attrs atributos do texto substituido
+         * @throws BadLocationException se ocorrer erro ao alterar o documento
+         */
         @Override
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
                 throws BadLocationException {
@@ -435,6 +668,14 @@ public class TransactionFormView extends JDialog {
             processarEntrada(fb, text);
         }
 
+        /**
+         * Remove texto mantendo a formatacao do documento.
+         *
+         * @param fb objeto de acesso ao documento filtrado
+         * @param offset posicao inicial da alteracao
+         * @param length quantidade de caracteres afetados
+         * @throws BadLocationException se ocorrer erro ao alterar o documento
+         */
         @Override
         public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
             if (atualizandoValor) {
@@ -445,6 +686,13 @@ public class TransactionFormView extends JDialog {
             substituirTexto(fb);
         }
 
+        /**
+         * Executa a rotina processarEntrada.
+         *
+         * @param fb objeto de acesso ao documento filtrado
+         * @param texto parametro texto
+         * @throws BadLocationException se ocorrer erro ao alterar o documento
+         */
         private void processarEntrada(FilterBypass fb, String texto) throws BadLocationException {
             if (atualizandoValor || texto == null) {
                 return;
@@ -460,6 +708,12 @@ public class TransactionFormView extends JDialog {
             substituirTexto(fb);
         }
 
+        /**
+         * Executa a rotina substituirTexto.
+         *
+         * @param fb objeto de acesso ao documento filtrado
+         * @throws BadLocationException se ocorrer erro ao alterar o documento
+         */
         private void substituirTexto(FilterBypass fb) throws BadLocationException {
             atualizandoValor = true;
             fb.replace(0, fb.getDocument().getLength(),

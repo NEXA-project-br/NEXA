@@ -20,6 +20,11 @@ public abstract class BaseDAOImpl<T> implements GenericDAO<T> {
     /** Classe da entidade gerenciada — necessária para TypedQuery e find(). */
     protected final Class<T> classeEntidade;
 
+    /**
+     * Cria uma nova instancia de BaseDAOImpl.
+     *
+     * @param classeEntidade parametro classeEntidade
+     */
     protected BaseDAOImpl(Class<T> classeEntidade) {
         this.classeEntidade = classeEntidade;
     }
@@ -62,6 +67,12 @@ public abstract class BaseDAOImpl<T> implements GenericDAO<T> {
 
     // ── Implementações CRUD ───────────────────────────────────────────────────
 
+    /**
+     * Executa a rotina salvar.
+     *
+     * @param entidade parametro entidade
+     * @return resultado da operacao
+     */
     @Override
     public T salvar(T entidade) {
         return executarEmTransacao(em -> {
@@ -70,11 +81,22 @@ public abstract class BaseDAOImpl<T> implements GenericDAO<T> {
         });
     }
 
+    /**
+     * Executa a rotina atualizar.
+     *
+     * @param entidade parametro entidade
+     * @return resultado da operacao
+     */
     @Override
     public T atualizar(T entidade) {
         return executarEmTransacao(em -> em.merge(entidade));
     }
 
+    /**
+     * Executa a rotina excluir.
+     *
+     * @param id parametro id
+     */
     @Override
     public void excluir(Long id) {
         executarEmTransacao(em -> {
@@ -86,11 +108,22 @@ public abstract class BaseDAOImpl<T> implements GenericDAO<T> {
         });
     }
 
+    /**
+     * Executa a rotina buscarPorId.
+     *
+     * @param id parametro id
+     * @return resultado da operacao
+     */
     @Override
     public Optional<T> buscarPorId(Long id) {
         return executarLeitura(em -> Optional.ofNullable(em.find(classeEntidade, id)));
     }
 
+    /**
+     * Executa a rotina listarTodos.
+     *
+     * @return resultado da operacao
+     */
     @Override
     public List<T> listarTodos() {
         return executarLeitura(em -> {
@@ -102,11 +135,17 @@ public abstract class BaseDAOImpl<T> implements GenericDAO<T> {
 
     // ── Interfaces funcionais internas ────────────────────────────────────────
 
+    /**
+     * Tipo responsavel por funcionalidades de TransacaoCallback.
+     */
     @FunctionalInterface
     protected interface TransacaoCallback<R> {
         R executar(EntityManager em) throws Exception;
     }
 
+    /**
+     * Tipo responsavel por funcionalidades de LeituraCallback.
+     */
     @FunctionalInterface
     protected interface LeituraCallback<R> {
         R executar(EntityManager em) throws Exception;
@@ -114,7 +153,16 @@ public abstract class BaseDAOImpl<T> implements GenericDAO<T> {
 
     // ── Exceção de DAO ────────────────────────────────────────────────────────
 
+    /**
+     * Tipo responsavel por funcionalidades de DAOException.
+     */
     public static class DAOException extends RuntimeException {
+        /**
+         * Cria uma nova excecao de DAO.
+         *
+         * @param message mensagem da excecao
+         * @param cause causa original da excecao
+         */
         public DAOException(String message, Throwable cause) {
             super(message, cause);
         }

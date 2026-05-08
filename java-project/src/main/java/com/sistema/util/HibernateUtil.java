@@ -11,9 +11,18 @@ import jakarta.persistence.Persistence;
  */
 public class HibernateUtil {
 
+    /**
+     * Nome da unidade de persistencia configurada no projeto.
+     */
     private static final String PERSISTENCE_UNIT = "sistemaFinanceiroPU";
+    /**
+     * Fabrica compartilhada de EntityManager.
+     */
     private static EntityManagerFactory factory;
 
+    /**
+     * Cria uma nova instancia de HibernateUtil.
+     */
     private HibernateUtil() {}
 
     /**

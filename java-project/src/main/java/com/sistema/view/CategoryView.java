@@ -16,30 +16,95 @@ import java.util.concurrent.ExecutionException;
  */
 public class CategoryView extends JDialog {
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_FUNDO    = new Color(248, 250, 252);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_CARD     = new Color(255, 255, 255);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_BORDA    = new Color(203, 213, 225);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERDE    = new Color(34, 197, 94);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERMELHO = new Color(220, 60, 60);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_GRAFITE  = new Color(100, 116, 139);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_TEXTO    = new Color(15, 23, 42);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_MUTED    = new Color(71, 85, 105);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_INPUT    = new Color(255, 255, 255);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_SELECAO  = new Color(219, 234, 254);
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_TITULO = new Font("Segoe UI", Font.BOLD, 18);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_ITEM   = new Font("Segoe UI", Font.PLAIN, 14);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_LABEL  = new Font("Segoe UI", Font.BOLD, 13);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_BTN    = new Font("Segoe UI", Font.BOLD, 13);
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private DefaultListModel<Categoria> listModel;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JList<Categoria>            listaCategorias;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JTextField                  txtNome;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JComboBox<TipoTransacao>    cmbTipo;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JButton                     btnAdicionar;
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private final CategoriaController categoriaController;
 
+    /**
+     * Cria uma nova instancia de CategoryView.
+     *
+     * @param owner janela proprietaria do dialogo
+     */
     public CategoryView(Frame owner) {
         super(owner, "Gerenciamento de Categorias", true);
         AppIconUtil.aplicar(this);
@@ -48,6 +113,9 @@ public class CategoryView extends JDialog {
         carregarCategorias();
     }
 
+    /**
+     * Monta os componentes visuais da tela.
+     */
     private void construirInterface() {
         setSize(480, 600);
         setResizable(false);
@@ -60,6 +128,11 @@ public class CategoryView extends JDialog {
         add(criarRodape(),    BorderLayout.SOUTH);
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarCabecalho() {
         JPanel p = new JPanel(new BorderLayout());
         p.setBackground(COR_CARD);
@@ -71,6 +144,11 @@ public class CategoryView extends JDialog {
         return p;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarCorpo() {
         JPanel p = new JPanel(new BorderLayout(0, 16));
         p.setBackground(COR_FUNDO);
@@ -151,6 +229,11 @@ public class CategoryView extends JDialog {
         return p;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarRodape() {
         JPanel p = new JPanel(new GridLayout(1, 2, 12, 0));
         p.setBackground(COR_FUNDO);
@@ -169,14 +252,25 @@ public class CategoryView extends JDialog {
 
     // ── Logica ────────────────────────────────────────────────────────────────
 
+    /**
+     * Executa a rotina carregarCategorias.
+     */
     private void carregarCategorias() {
         TipoTransacao tipoSelecionado = obterTipoSelecionado();
         new SwingWorker<List<Categoria>, Void>() {
+            /**
+             * Executa a rotina doInBackground.
+             *
+             * @return resultado da operacao
+             */
             @Override
             protected List<Categoria> doInBackground() {
                 return categoriaController.listarPorTipo(tipoSelecionado);
             }
 
+            /**
+             * Executa a rotina done.
+             */
             @Override
             protected void done() {
                 try {
@@ -189,6 +283,9 @@ public class CategoryView extends JDialog {
         }.execute();
     }
 
+    /**
+     * Adiciona o componente configurado ao painel informado.
+     */
     private void adicionarCategoria() {
         String nome = txtNome.getText().trim();
         TipoTransacao tipo = obterTipoSelecionado();
@@ -198,12 +295,20 @@ public class CategoryView extends JDialog {
             return;
         }
         new SwingWorker<Void, Void>() {
+            /**
+             * Executa a rotina doInBackground.
+             *
+             * @return resultado da operacao
+             */
             @Override
             protected Void doInBackground() {
                 categoriaController.salvarPorNome(nome, tipo);
                 return null;
             }
 
+            /**
+             * Executa a rotina done.
+             */
             @Override
             protected void done() {
                 try {
@@ -220,6 +325,9 @@ public class CategoryView extends JDialog {
         }.execute();
     }
 
+    /**
+     * Executa a rotina excluirCategoriaSelecionada.
+     */
     private void excluirCategoriaSelecionada() {
         Categoria selecionada = listaCategorias.getSelectedValue();
         if (selecionada == null) {
@@ -232,12 +340,20 @@ public class CategoryView extends JDialog {
         if (confirm != JOptionPane.YES_OPTION) return;
 
         new SwingWorker<Void, Void>() {
+            /**
+             * Executa a rotina doInBackground.
+             *
+             * @return resultado da operacao
+             */
             @Override
             protected Void doInBackground() {
                 categoriaController.excluir(selecionada.getId());
                 return null;
             }
 
+            /**
+             * Executa a rotina done.
+             */
             @Override
             protected void done() {
                 try {
@@ -252,6 +368,13 @@ public class CategoryView extends JDialog {
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param texto parametro texto
+     * @param cor parametro cor
+     * @return botao configurado
+     */
     private JButton criarBotao(String texto, Color cor) {
         JButton btn = new JButton(texto);
         btn.setFont(FONTE_BTN);
@@ -265,6 +388,9 @@ public class CategoryView extends JDialog {
         return btn;
     }
 
+    /**
+     * Executa a rotina atualizarCorBotaoAdicionar.
+     */
     private void atualizarCorBotaoAdicionar() {
         if (btnAdicionar == null || cmbTipo == null) {
             return;
@@ -275,15 +401,31 @@ public class CategoryView extends JDialog {
         btnAdicionar.repaint();
     }
 
+    /**
+     * Executa a rotina obterTipoSelecionado.
+     *
+     * @return resultado da operacao
+     */
     private TipoTransacao obterTipoSelecionado() {
         TipoTransacao tipoSelecionado = (TipoTransacao) cmbTipo.getSelectedItem();
         return tipoSelecionado != null ? tipoSelecionado : TipoTransacao.RECEITA;
     }
 
+    /**
+     * Exibe uma mensagem para o usuario.
+     *
+     * @param msg parametro msg
+     */
     private void mostrarAviso(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Atencao", JOptionPane.WARNING_MESSAGE);
     }
 
+    /**
+     * Executa a rotina mensagemErroWorker.
+     *
+     * @param ex parametro ex
+     * @return texto formatado
+     */
     private String mensagemErroWorker(Exception ex) {
         Throwable causa = ex instanceof ExecutionException ? ex.getCause() : ex;
         if (causa instanceof IllegalArgumentException || causa instanceof IllegalStateException) {
@@ -294,10 +436,29 @@ public class CategoryView extends JDialog {
 
     // ── Renderer customizado ──────────────────────────────────────────────────
 
+    /**
+     * Tipo responsavel por funcionalidades de CategoriaRenderer.
+     */
     private static class CategoriaRenderer extends DefaultListCellRenderer {
+        /**
+         * Atributo usado pelo funcionamento desta classe.
+         */
         private static final Color COR_VERDE    = new Color(34, 197, 94);
+        /**
+         * Atributo usado pelo funcionamento desta classe.
+         */
         private static final Color COR_VERMELHO = new Color(220, 60, 60);
 
+        /**
+         * Prepara o componente usado para renderizar um item da lista.
+         *
+         * @param list lista que contem o item
+         * @param value valor exibido na lista
+         * @param index indice do item
+         * @param isSelected indica se o item esta selecionado
+         * @param cellHasFocus indica se a celula possui foco
+         * @return componente preparado para renderizacao
+         */
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value,
                 int index, boolean isSelected, boolean cellHasFocus) {
@@ -319,6 +480,12 @@ public class CategoryView extends JDialog {
             return this;
         }
 
+        /**
+         * Executa a rotina toHex.
+         *
+         * @param c componente onde o icone sera desenhado
+         * @return texto formatado
+         */
         private static String toHex(Color c) {
             return String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
         }

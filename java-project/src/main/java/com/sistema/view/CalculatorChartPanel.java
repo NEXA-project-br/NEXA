@@ -9,15 +9,39 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Painel responsavel por desenhar graficos das calculadoras.
+ */
 class CalculatorChartPanel extends JPanel {
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_BORDA = new Color(203, 213, 225);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_GRID = new Color(226, 232, 240);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_TEXTO = new Color(15, 23, 42);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_MUTED = new Color(71, 85, 105);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_AZUL = new Color(59, 130, 246);
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private List<BigDecimal> valores = List.of();
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private String titulo = "Evolucao";
 
     CalculatorChartPanel() {
@@ -36,6 +60,11 @@ class CalculatorChartPanel extends JPanel {
         atualizarDados("Evolucao", List.of());
     }
 
+    /**
+     * Executa a rotina paintComponent.
+     *
+     * @param g contexto grafico usado no desenho
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -72,6 +101,12 @@ class CalculatorChartPanel extends JPanel {
         g2.dispose();
     }
 
+    /**
+     * Executa a rotina desenharTitulo.
+     *
+     * @param g2 parametro g2
+     * @param largura parametro largura
+     */
     private void desenharTitulo(Graphics2D g2, int largura) {
         g2.setColor(COR_TEXTO);
         g2.setFont(new Font("Segoe UI", Font.BOLD, 13));
@@ -79,6 +114,15 @@ class CalculatorChartPanel extends JPanel {
         g2.drawString(titulo, Math.max(16, (largura - textoW) / 2), 24);
     }
 
+    /**
+     * Executa a rotina desenharEixos.
+     *
+     * @param g2 parametro g2
+     * @param x coordenada horizontal
+     * @param y coordenada vertical
+     * @param w parametro w
+     * @param h parametro h
+     */
     private void desenharEixos(Graphics2D g2, int x, int y, int w, int h) {
         g2.setColor(COR_GRID);
         for (int i = 0; i <= 4; i++) {
@@ -90,6 +134,13 @@ class CalculatorChartPanel extends JPanel {
         g2.drawLine(x, y, x, y + h);
     }
 
+    /**
+     * Executa a rotina desenharVazio.
+     *
+     * @param g2 parametro g2
+     * @param largura parametro largura
+     * @param altura parametro altura
+     */
     private void desenharVazio(Graphics2D g2, int largura, int altura) {
         String texto = "Preencha os campos e calcule para visualizar o grafico.";
         g2.setColor(COR_MUTED);
@@ -98,6 +149,15 @@ class CalculatorChartPanel extends JPanel {
         g2.drawString(texto, Math.max(16, (largura - textoW) / 2), altura / 2);
     }
 
+    /**
+     * Executa a rotina desenharEscala.
+     *
+     * @param g2 parametro g2
+     * @param x coordenada horizontal
+     * @param y coordenada vertical
+     * @param h parametro h
+     * @param maximo parametro maximo
+     */
     private void desenharEscala(Graphics2D g2, int x, int y, int h, BigDecimal maximo) {
         g2.setColor(COR_MUTED);
         g2.setFont(new Font("Segoe UI", Font.PLAIN, 10));
@@ -110,6 +170,16 @@ class CalculatorChartPanel extends JPanel {
         }
     }
 
+    /**
+     * Executa a rotina desenharLinha.
+     *
+     * @param g2 parametro g2
+     * @param x coordenada horizontal
+     * @param y coordenada vertical
+     * @param w parametro w
+     * @param h parametro h
+     * @param maximo parametro maximo
+     */
     private void desenharLinha(Graphics2D g2, int x, int y, int w, int h, BigDecimal maximo) {
         g2.setColor(COR_AZUL);
         g2.setStroke(new BasicStroke(2.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
@@ -135,6 +205,15 @@ class CalculatorChartPanel extends JPanel {
         g2.drawString(CurrencyUtil.formatar(ultimo), Math.max(x, pontoAnteriorX - 96), Math.max(38, pontoAnteriorY - 10));
     }
 
+    /**
+     * Executa a rotina desenharRodape.
+     *
+     * @param g2 parametro g2
+     * @param x coordenada horizontal
+     * @param y coordenada vertical
+     * @param w parametro w
+     * @param h parametro h
+     */
     private void desenharRodape(Graphics2D g2, int x, int y, int w, int h) {
         g2.setColor(COR_MUTED);
         g2.setFont(new Font("Segoe UI", Font.PLAIN, 10));
@@ -144,6 +223,12 @@ class CalculatorChartPanel extends JPanel {
         g2.drawString(fim, x + w - fimW, y + h + 22);
     }
 
+    /**
+     * Executa a rotina abreviarMoeda.
+     *
+     * @param valor parametro valor
+     * @return texto formatado
+     */
     private String abreviarMoeda(BigDecimal valor) {
         BigDecimal milhao = BigDecimal.valueOf(1_000_000);
         BigDecimal mil = BigDecimal.valueOf(1_000);

@@ -4,28 +4,75 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * Janela de menu que centraliza o acesso as calculadoras financeiras.
+ */
 public class CalculatorMenuView extends JDialog {
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_FUNDO = new Color(248, 250, 252);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_CARD = new Color(255, 255, 255);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_BORDA = new Color(203, 213, 225);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_AZUL = new Color(59, 130, 246);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERDE = new Color(34, 197, 94);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_GRAFITE = new Color(100, 116, 139);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_TEXTO = new Color(15, 23, 42);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_MUTED = new Color(71, 85, 105);
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_TITULO = new Font("Segoe UI", Font.BOLD, 18);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_CARD_TITULO = new Font("Segoe UI", Font.BOLD, 15);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_CARD_DESC = new Font("Segoe UI", Font.PLAIN, 12);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_BTN = new Font("Segoe UI", Font.BOLD, 13);
 
+    /**
+     * Cria uma nova instancia de CalculatorMenuView.
+     *
+     * @param owner janela proprietaria do dialogo
+     */
     public CalculatorMenuView(Frame owner) {
         super(owner, "Calculadoras", true);
         AppIconUtil.aplicar(this);
         construirInterface();
     }
 
+    /**
+     * Monta os componentes visuais da tela.
+     */
     private void construirInterface() {
         setSize(780, 360);
         setMinimumSize(new Dimension(680, 320));
@@ -38,6 +85,11 @@ public class CalculatorMenuView extends JDialog {
         add(criarRodape(), BorderLayout.SOUTH);
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarCabecalho() {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setBackground(COR_CARD);
@@ -50,6 +102,11 @@ public class CalculatorMenuView extends JDialog {
         return painel;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarCorpo() {
         JPanel painel = new JPanel(new GridLayout(1, 3, 16, 0));
         painel.setBackground(COR_FUNDO);
@@ -74,6 +131,15 @@ public class CalculatorMenuView extends JDialog {
         return painel;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param titulo parametro titulo
+     * @param descricao parametro descricao
+     * @param cor parametro cor
+     * @param acao parametro acao
+     * @return painel configurado
+     */
     private JPanel criarCard(String titulo, String descricao, Color cor, Runnable acao) {
         JPanel card = new JPanel(new BorderLayout(0, 12));
         card.setBackground(COR_CARD);
@@ -109,6 +175,11 @@ public class CalculatorMenuView extends JDialog {
         return card;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarRodape() {
         JPanel painel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         painel.setBackground(COR_FUNDO);
@@ -120,10 +191,23 @@ public class CalculatorMenuView extends JDialog {
         return painel;
     }
 
+    /**
+     * Abre a janela informada para o usuario.
+     *
+     * @param calculadora parametro calculadora
+     */
     private void abrirCalculadora(JDialog calculadora) {
         calculadora.setVisible(true);
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param texto parametro texto
+     * @param cor parametro cor
+     * @param icone parametro icone
+     * @return botao configurado
+     */
     private JButton criarBotao(String texto, Color cor, Icon icone) {
         JButton btn = new JButton(texto);
         btn.setFont(FONTE_BTN);

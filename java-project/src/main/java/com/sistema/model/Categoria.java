@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Entidade que representa uma categoria de receita ou despesa.
+ */
 @Entity
 @Table(name = "categorias")
 public class Categoria {

@@ -12,6 +12,9 @@ import java.util.Optional;
  */
 public class CategoriaDAO extends BaseDAOImpl<Categoria> {
 
+    /**
+     * Cria uma nova instancia de CategoriaDAO.
+     */
     public CategoriaDAO() {
         super(Categoria.class);
     }

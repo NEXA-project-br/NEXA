@@ -29,12 +29,24 @@ public class TransacaoController implements GenericController<Transacao> {
 
     // ── Implementação GenericController ───────────────────────────────────────
 
+    /**
+     * Executa a rotina salvar.
+     *
+     * @param transacao parametro transacao
+     * @return resultado da operacao
+     */
     @Override
     public Transacao salvar(Transacao transacao) {
         validarTransacao(transacao);
         return transacaoDAO.salvar(transacao);
     }
 
+    /**
+     * Executa a rotina atualizar.
+     *
+     * @param transacao parametro transacao
+     * @return resultado da operacao
+     */
     @Override
     public Transacao atualizar(Transacao transacao) {
         validarTransacao(transacao);
@@ -44,17 +56,33 @@ public class TransacaoController implements GenericController<Transacao> {
         return transacaoDAO.atualizar(transacao);
     }
 
+    /**
+     * Executa a rotina excluir.
+     *
+     * @param id parametro id
+     */
     @Override
     public void excluir(Long id) {
         if (id == null) throw new IllegalArgumentException("ID não pode ser nulo.");
         transacaoDAO.excluir(id);
     }
 
+    /**
+     * Executa a rotina buscarPorId.
+     *
+     * @param id parametro id
+     * @return resultado da operacao
+     */
     @Override
     public Optional<Transacao> buscarPorId(Long id) {
         return transacaoDAO.buscarPorId(id);
     }
 
+    /**
+     * Executa a rotina listarTodos.
+     *
+     * @return resultado da operacao
+     */
     @Override
     public List<Transacao> listarTodos() {
         return transacaoDAO.listarOrdenadoPorData();
@@ -155,6 +183,11 @@ public class TransacaoController implements GenericController<Transacao> {
 
     // ── Validações ────────────────────────────────────────────────────────────
 
+    /**
+     * Executa a rotina validarTransacao.
+     *
+     * @param t tabela ou lista relacionada a renderizacao
+     */
     private void validarTransacao(Transacao t) {
         if (t == null) {
             throw new IllegalArgumentException("Transação não pode ser nula.");
@@ -173,6 +206,12 @@ public class TransacaoController implements GenericController<Transacao> {
         }
     }
 
+    /**
+     * Executa a rotina validarPeriodo.
+     *
+     * @param inicio parametro inicio
+     * @param fim parametro fim
+     */
     private void validarPeriodo(LocalDate inicio, LocalDate fim) {
         if (inicio == null || fim == null) {
             throw new IllegalArgumentException("Período inválido: datas não podem ser nulas.");

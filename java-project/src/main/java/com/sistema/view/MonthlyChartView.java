@@ -17,26 +17,80 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Janela responsavel por exibir graficos mensais de transacoes.
+ */
 public class MonthlyChartView extends JDialog {
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_FUNDO = new Color(248, 250, 252);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_CARD = new Color(255, 255, 255);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_BORDA = new Color(203, 213, 225);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_TEXTO = new Color(15, 23, 42);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_MUTED = new Color(71, 85, 105);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERDE = new Color(34, 197, 94);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERMELHO = new Color(220, 60, 60);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_AZUL = new Color(59, 130, 246);
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_TITULO = new Font("Segoe UI", Font.BOLD, 18);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_RESUMO = new Font("Segoe UI", Font.BOLD, 14);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_BTN = new Font("Segoe UI", Font.BOLD, 13);
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private final TransacaoController transacaoController;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private final TipoTransacao tipo;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JLabel lblResumo;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JPanel corpoWrapper;
 
+    /**
+     * Cria uma nova instancia de MonthlyChartView.
+     *
+     * @param owner janela proprietaria do dialogo
+     * @param tipo parametro tipo
+     */
     public MonthlyChartView(Frame owner, TipoTransacao tipo) {
         super(owner, tipo == TipoTransacao.RECEITA ? "Grafico de Receita Mensal" : "Grafico de Despesa Mensal", true);
         AppIconUtil.aplicar(this);
@@ -45,6 +99,9 @@ public class MonthlyChartView extends JDialog {
         construirInterface();
     }
 
+    /**
+     * Monta os componentes visuais da tela.
+     */
     private void construirInterface() {
         setSize(860, 540);
         setMinimumSize(new Dimension(720, 480));
@@ -60,6 +117,11 @@ public class MonthlyChartView extends JDialog {
         carregarDadosAsync();
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarCabecalho() {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setBackground(COR_CARD);
@@ -78,6 +140,12 @@ public class MonthlyChartView extends JDialog {
         return painel;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param dados parametro dados
+     * @return painel configurado
+     */
     private JPanel criarCorpo(Map<YearMonth, BigDecimal> dados) {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setBackground(COR_FUNDO);
@@ -110,6 +178,11 @@ public class MonthlyChartView extends JDialog {
         return painel;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarRodape() {
         JPanel painel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         painel.setBackground(COR_FUNDO);
@@ -129,6 +202,11 @@ public class MonthlyChartView extends JDialog {
         return painel;
     }
 
+    /**
+     * Executa a rotina carregarDados.
+     *
+     * @return resultado da operacao
+     */
     private Map<YearMonth, BigDecimal> carregarDados() {
         List<Transacao> transacoes = transacaoController.listarTodos();
         Map<YearMonth, BigDecimal> agrupado = new LinkedHashMap<>();
@@ -148,13 +226,24 @@ public class MonthlyChartView extends JDialog {
                         LinkedHashMap::putAll);
     }
 
+    /**
+     * Executa a rotina carregarDadosAsync.
+     */
     private void carregarDadosAsync() {
         new SwingWorker<Map<YearMonth, BigDecimal>, Void>() {
+            /**
+             * Executa a rotina doInBackground.
+             *
+             * @return resultado da operacao
+             */
             @Override
             protected Map<YearMonth, BigDecimal> doInBackground() {
                 return carregarDados();
             }
 
+            /**
+             * Executa a rotina done.
+             */
             @Override
             protected void done() {
                 try {
@@ -172,6 +261,12 @@ public class MonthlyChartView extends JDialog {
         }.execute();
     }
 
+    /**
+     * Executa a rotina mensagemErroWorker.
+     *
+     * @param ex parametro ex
+     * @return texto formatado
+     */
     private String mensagemErroWorker(Exception ex) {
         Throwable causa = ex instanceof ExecutionException ? ex.getCause() : ex;
         if (causa instanceof IllegalArgumentException) {
@@ -180,18 +275,41 @@ public class MonthlyChartView extends JDialog {
         return "Nao foi possivel concluir a operacao.";
     }
 
+    /**
+     * Tipo responsavel por funcionalidades de ChartPanel.
+     */
     private static class ChartPanel extends JPanel {
 
+        /**
+         * Formato usado para compor o nome dos arquivos de backup.
+         */
         private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("MM/yyyy");
 
+        /**
+         * Atributo usado pelo funcionamento desta classe.
+         */
         private final Map<YearMonth, BigDecimal> dados;
+        /**
+         * Atributo usado pelo funcionamento desta classe.
+         */
         private final TipoTransacao tipo;
 
+        /**
+         * Cria o painel de grafico mensal.
+         *
+         * @param dados dados agrupados por mes
+         * @param tipo tipo de transacao exibido
+         */
         private ChartPanel(Map<YearMonth, BigDecimal> dados, TipoTransacao tipo) {
             this.dados = dados;
             this.tipo = tipo;
         }
 
+        /**
+         * Executa a rotina paintComponent.
+         *
+         * @param g contexto grafico usado no desenho
+         */
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);

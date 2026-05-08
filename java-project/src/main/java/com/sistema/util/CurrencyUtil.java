@@ -9,9 +9,18 @@ import java.util.Locale;
  */
 public class CurrencyUtil {
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Locale LOCALE_BR = new Locale("pt", "BR");
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final NumberFormat FORMATTER = NumberFormat.getCurrencyInstance(LOCALE_BR);
 
+    /**
+     * Cria uma nova instancia de CurrencyUtil.
+     */
     private CurrencyUtil() {}
 
     /**

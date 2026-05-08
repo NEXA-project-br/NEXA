@@ -16,37 +16,115 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Janela principal da aplicacao financeira.
+ */
 public class MainView extends JFrame {
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_FUNDO       = new Color(248, 250, 252);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_CARD        = new Color(255, 255, 255);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_BORDA       = new Color(203, 213, 225);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERDE       = new Color(34, 197, 94);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERMELHO    = new Color(220, 60, 60);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_AZUL_ESCURO = new Color(29, 78, 150);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_AZUL_CLARO  = new Color(59, 130, 246);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_GRAFITE     = new Color(100, 116, 139);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_TEXTO       = new Color(15, 23, 42);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_MUTED       = new Color(71, 85, 105);
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_TITULO   = new Font("Segoe UI", Font.BOLD, 22);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_CARD_VAL = new Font("Segoe UI", Font.BOLD, 26);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_CARD_LBL = new Font("Segoe UI", Font.PLAIN, 13);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_TABELA   = new Font("Segoe UI", Font.PLAIN, 13);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_HEADER   = new Font("Segoe UI", Font.BOLD, 13);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_BTN      = new Font("Segoe UI", Font.BOLD, 13);
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final DateTimeFormatter FMT_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JLabel lblSaldo;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JLabel lblTotalReceitas;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JLabel lblTotalDespesas;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private DefaultTableModel tableModel;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JTable tabela;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private List<Transacao> listaAtual = List.of();
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private final TransacaoController transacaoController;
 
+    /**
+     * Cria uma nova instancia de MainView.
+     */
     public MainView() {
         this.transacaoController = new TransacaoController();
         configurarJanela();
@@ -54,6 +132,9 @@ public class MainView extends JFrame {
         atualizarDashboard();
     }
 
+    /**
+     * Executa a rotina configurarJanela.
+     */
     private void configurarJanela() {
         setTitle("Sistema Financeiro Pessoal");
         AppIconUtil.aplicar(this);
@@ -69,12 +150,20 @@ public class MainView extends JFrame {
         });
     }
 
+    /**
+     * Monta os componentes visuais da tela.
+     */
     private void construirInterface() {
         setLayout(new BorderLayout());
         add(criarPainelTopo(),    BorderLayout.NORTH);
         add(criarPainelCentral(), BorderLayout.CENTER);
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarPainelTopo() {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setBackground(COR_CARD);
@@ -129,6 +218,11 @@ public class MainView extends JFrame {
         return wrapper;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarPainelCentral() {
         JPanel painel = new JPanel(new BorderLayout(0, 0));
         painel.setBackground(COR_FUNDO);
@@ -138,6 +232,11 @@ public class MainView extends JFrame {
         return painel;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarPainelCards() {
         JPanel painel = new JPanel(new GridLayout(1, 3, 16, 0));
         painel.setBackground(COR_FUNDO);
@@ -155,6 +254,14 @@ public class MainView extends JFrame {
         return painel;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param titulo parametro titulo
+     * @param valorLabel parametro valorLabel
+     * @param corValor parametro corValor
+     * @return painel configurado
+     */
     private JPanel criarCard(String titulo, JLabel valorLabel, Color corValor) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(COR_CARD);
@@ -175,6 +282,11 @@ public class MainView extends JFrame {
         return card;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarPainelTabela() {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setBackground(COR_CARD);
@@ -234,6 +346,11 @@ public class MainView extends JFrame {
         tabela.getColumnModel().getColumn(4).setCellRenderer(new ValorRenderer());
 
         tabela.addMouseListener(new java.awt.event.MouseAdapter() {
+            /**
+             * Executa a rotina mouseClicked.
+             *
+             * @param e evento recebido pela interface
+             */
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -260,8 +377,16 @@ public class MainView extends JFrame {
         return painel;
     }
 
+    /**
+     * Executa a rotina atualizarDashboard.
+     */
     public void atualizarDashboard() {
         new SwingWorker<DashboardData, Void>() {
+            /**
+             * Executa a rotina doInBackground.
+             *
+             * @return resultado da operacao
+             */
             @Override
             protected DashboardData doInBackground() {
                 BigDecimal saldo    = transacaoController.calcularSaldoAtual();
@@ -271,6 +396,9 @@ public class MainView extends JFrame {
                 return new DashboardData(saldo, receitas, despesas, transacoes);
             }
 
+            /**
+             * Executa a rotina done.
+             */
             @Override
             protected void done() {
                 try {
@@ -298,43 +426,82 @@ public class MainView extends JFrame {
         }.execute();
     }
 
+    /**
+     * Abre a janela informada para o usuario.
+     *
+     * @param tipoInicial parametro tipoInicial
+     */
     private void abrirFormularioNovaTransacao(TipoTransacao tipoInicial) {
         TransactionFormView form = new TransactionFormView(this, null, tipoInicial);
         form.setVisible(true);
         atualizarDashboard();
     }
 
+    /**
+     * Abre a janela informada para o usuario.
+     *
+     * @param transacao parametro transacao
+     */
     private void abrirFormularioEdicao(Transacao transacao) {
         TransactionFormView form = new TransactionFormView(this, transacao, transacao.getTipo());
         form.setVisible(true);
         atualizarDashboard();
     }
 
+    /**
+     * Abre a janela informada para o usuario.
+     */
     private void abrirCategorias() {
         CategoryView view = new CategoryView(this);
         view.setVisible(true);
         atualizarDashboard();
     }
 
+    /**
+     * Abre a janela informada para o usuario.
+     */
     private void abrirRelatorios() {
         ReportView view = new ReportView(this);
         view.setVisible(true);
     }
 
+    /**
+     * Abre a janela informada para o usuario.
+     */
     private void abrirCalculadora() {
         CalculatorMenuView view = new CalculatorMenuView(this);
         view.setVisible(true);
     }
 
+    /**
+     * Abre a janela informada para o usuario.
+     *
+     * @param tipo parametro tipo
+     */
     private void abrirGraficoMensal(TipoTransacao tipo) {
         MonthlyChartView view = new MonthlyChartView(this, tipo);
         view.setVisible(true);
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param texto parametro texto
+     * @param fundo parametro fundo
+     * @return botao configurado
+     */
     private JButton criarBotao(String texto, Color fundo) {
         return criarBotao(texto, fundo, null);
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param texto parametro texto
+     * @param fundo parametro fundo
+     * @param icone parametro icone
+     * @return botao configurado
+     */
     private JButton criarBotao(String texto, Color fundo, Icon icone) {
         JButton btn = new JButton(texto);
         btn.setFont(FONTE_BTN);
@@ -351,18 +518,40 @@ public class MainView extends JFrame {
         return btn;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param texto parametro texto
+     * @param fundo parametro fundo
+     * @param icone parametro icone
+     * @return botao configurado
+     */
     private JButton criarBotaoMenu(String texto, Color fundo, Icon icone) {
         JButton btn = criarBotao(texto, fundo, icone);
         btn.setToolTipText("Abrir op\u00e7\u00f5es de " + texto);
         return btn;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return resultado da operacao
+     */
     private JPopupMenu criarMenuSuspenso() {
         JPopupMenu menu = new JPopupMenu();
         menu.setBorder(BorderFactory.createLineBorder(COR_BORDA, 1));
         return menu;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param texto parametro texto
+     * @param cor parametro cor
+     * @param icone parametro icone
+     * @param acao parametro acao
+     * @return resultado da operacao
+     */
     private JMenuItem criarItemMenu(String texto, Color cor, Icon icone, Runnable acao) {
         JMenuItem item = new JMenuItem(texto, icone);
         item.setFont(FONTE_BTN);
@@ -377,14 +566,31 @@ public class MainView extends JFrame {
         return item;
     }
 
+    /**
+     * Executa a rotina exibirMenu.
+     *
+     * @param origem parametro origem
+     * @param menu parametro menu
+     */
     private void exibirMenu(JButton origem, JPopupMenu menu) {
         menu.show(origem, 0, origem.getHeight() + 4);
     }
 
+    /**
+     * Exibe uma mensagem para o usuario.
+     *
+     * @param msg parametro msg
+     */
     private void mostrarErro(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Erro", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Executa a rotina mensagemErroWorker.
+     *
+     * @param ex parametro ex
+     * @return texto formatado
+     */
     private String mensagemErroWorker(Exception ex) {
         Throwable causa = ex instanceof ExecutionException ? ex.getCause() : ex;
         if (causa instanceof IllegalArgumentException) {
@@ -393,9 +599,15 @@ public class MainView extends JFrame {
         return "Nao foi possivel concluir a operacao.";
     }
 
+    /**
+     * Tipo responsavel por funcionalidades de DashboardData.
+     */
     private record DashboardData(BigDecimal saldo, BigDecimal receitas,
                                  BigDecimal despesas, List<Transacao> transacoes) {}
 
+    /**
+     * Executa a rotina encerrarAplicacao.
+     */
     private void encerrarAplicacao() {
         int r = JOptionPane.showConfirmDialog(this,
                 "Deseja sair do sistema?", "Confirmar saida",
@@ -406,7 +618,21 @@ public class MainView extends JFrame {
         }
     }
 
+    /**
+     * Tipo responsavel por funcionalidades de TipoRenderer.
+     */
     private static class TipoRenderer extends DefaultTableCellRenderer {
+        /**
+         * Prepara o componente usado para renderizar uma celula da tabela.
+         *
+         * @param t tabela ou lista relacionada a renderizacao
+         * @param val valor exibido na celula
+         * @param sel parametro sel
+         * @param foc parametro foc
+         * @param row linha da celula
+         * @param col coluna da celula
+         * @return componente preparado para renderizacao
+         */
         @Override
         public Component getTableCellRendererComponent(JTable t, Object val,
                 boolean sel, boolean foc, int row, int col) {
@@ -427,7 +653,21 @@ public class MainView extends JFrame {
         }
     }
 
+    /**
+     * Tipo responsavel por funcionalidades de ValorRenderer.
+     */
     private static class ValorRenderer extends DefaultTableCellRenderer {
+        /**
+         * Prepara o componente usado para renderizar uma celula da tabela.
+         *
+         * @param t tabela ou lista relacionada a renderizacao
+         * @param val valor exibido na celula
+         * @param sel parametro sel
+         * @param foc parametro foc
+         * @param row linha da celula
+         * @param col coluna da celula
+         * @return componente preparado para renderizacao
+         */
         @Override
         public Component getTableCellRendererComponent(JTable t, Object val,
                 boolean sel, boolean foc, int row, int col) {

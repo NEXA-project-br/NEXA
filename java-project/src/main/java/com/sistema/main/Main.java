@@ -22,8 +22,16 @@ import java.sql.Statement;
  */
 public class Main {
 
+    /**
+     * URL de conexao com o banco de dados SQLite.
+     */
     private static final String DB_URL = "jdbc:sqlite:financeiro.db?foreign_keys=on";
 
+    /**
+     * Inicia a aplicacao e prepara o ambiente grafico.
+     *
+     * @param args argumentos recebidos pela linha de comando
+     */
     public static void main(String[] args) {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -122,12 +130,26 @@ public class Main {
         }
     }
 
+    /**
+     * Executa a rotina tabelaExiste.
+     *
+     * @param conn parametro conn
+     * @param nome parametro nome
+     * @return true quando a condicao for atendida; false caso contrario
+     * @throws Exception se a operacao nao puder ser concluida
+     */
     private static boolean tabelaExiste(Connection conn, String nome) throws Exception {
         try (ResultSet rs = conn.getMetaData().getTables(null, null, nome, null)) {
             return rs.next();
         }
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param stmt parametro stmt
+     * @throws Exception se a operacao nao puder ser concluida
+     */
     private static void criarSchemaInicial(Statement stmt) throws Exception {
         stmt.execute("""
                 CREATE TABLE categorias (
@@ -152,6 +174,12 @@ public class Main {
                 """);
     }
 
+    /**
+     * Executa a rotina validarTransacoesOrfas.
+     *
+     * @param conn parametro conn
+     * @throws Exception se a operacao nao puder ser concluida
+     */
     private static void validarTransacoesOrfas(Connection conn) throws Exception {
         String sql = """
                 SELECT COUNT(*)
@@ -170,6 +198,12 @@ public class Main {
         }
     }
 
+    /**
+     * Executa a rotina validarCategoriasDuplicadas.
+     *
+     * @param conn parametro conn
+     * @throws Exception se a operacao nao puder ser concluida
+     */
     private static void validarCategoriasDuplicadas(Connection conn) throws Exception {
         String sql = """
                 SELECT LOWER(nome), COUNT(*)
@@ -186,6 +220,12 @@ public class Main {
         }
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param stmt parametro stmt
+     * @throws Exception se a operacao nao puder ser concluida
+     */
     private static void criarIndiceUnicoCategorias(Statement stmt) throws Exception {
         stmt.execute("""
                 CREATE UNIQUE INDEX IF NOT EXISTS idx_categorias_nome_lower_unique
@@ -193,6 +233,13 @@ public class Main {
                 """);
     }
 
+    /**
+     * Executa a rotina transacoesPossuiForeignKey.
+     *
+     * @param conn parametro conn
+     * @return true quando a condicao for atendida; false caso contrario
+     * @throws Exception se a operacao nao puder ser concluida
+     */
     private static boolean transacoesPossuiForeignKey(Connection conn) throws Exception {
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("PRAGMA foreign_key_list(transacoes)")) {
@@ -207,6 +254,16 @@ public class Main {
         }
     }
 
+    /**
+     * Executa a rotina tipoColunaEh.
+     *
+     * @param conn parametro conn
+     * @param tabela parametro tabela
+     * @param coluna parametro coluna
+     * @param tipo parametro tipo
+     * @return true quando a condicao for atendida; false caso contrario
+     * @throws Exception se a operacao nao puder ser concluida
+     */
     private static boolean tipoColunaEh(Connection conn, String tabela, String coluna, String tipo) throws Exception {
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("PRAGMA table_info(" + tabela + ")")) {
@@ -219,6 +276,12 @@ public class Main {
         }
     }
 
+    /**
+     * Executa a rotina recriarTransacoesComForeignKey.
+     *
+     * @param conn parametro conn
+     * @throws Exception se a operacao nao puder ser concluida
+     */
     private static void recriarTransacoesComForeignKey(Connection conn) throws Exception {
         System.out.println("[Migracao] Recriando tabela 'transacoes' com foreign key...");
         conn.setAutoCommit(false);
@@ -252,6 +315,9 @@ public class Main {
         }
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     */
     private static void criarBackupInicial() {
         try {
             Path backup = SQLiteBackupUtil.criarBackup(DB_URL);

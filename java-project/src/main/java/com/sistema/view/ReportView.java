@@ -21,40 +21,129 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Janela responsavel por gerar e exibir relatorios financeiros.
+ */
 public class ReportView extends JDialog {
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_FUNDO    = new Color(248, 250, 252);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_CARD     = new Color(255, 255, 255);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_BORDA    = new Color(203, 213, 225);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERDE    = new Color(34, 197, 94);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERMELHO = new Color(220, 60, 60);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_AZUL_ESCURO = new Color(29, 78, 150);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_AZUL_CLARO  = new Color(59, 130, 246);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_GRAFITE  = new Color(100, 116, 139);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_TEXTO    = new Color(15, 23, 42);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_MUTED    = new Color(71, 85, 105);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_INPUT    = new Color(255, 255, 255);
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_TITULO  = new Font("Segoe UI", Font.BOLD, 18);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_LABEL   = new Font("Segoe UI", Font.BOLD, 13);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_INPUT   = new Font("Segoe UI", Font.PLAIN, 13);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_TABELA  = new Font("Segoe UI", Font.PLAIN, 12);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_RESUMO  = new Font("Segoe UI", Font.BOLD, 15);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Font FONTE_BTN     = new Font("Segoe UI", Font.BOLD, 13);
 
+    /**
+     * Formato usado para compor o nome dos arquivos de backup.
+     */
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JTextField        txtDataInicio;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JTextField        txtDataFim;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JLabel            lblReceitas;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JLabel            lblDespesas;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JLabel            lblSaldo;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private DefaultTableModel tableModel;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private ResumoFinanceiro  resumoAtual;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private JButton           btnExportar;
 
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private final TransacaoController transacaoController;
 
+    /**
+     * Cria uma nova instancia de ReportView.
+     *
+     * @param owner janela proprietaria do dialogo
+     */
     public ReportView(Frame owner) {
         super(owner, "Relatorio Financeiro", true);
         AppIconUtil.aplicar(this);
@@ -66,6 +155,9 @@ public class ReportView extends JDialog {
         gerarRelatorio();
     }
 
+    /**
+     * Monta os componentes visuais da tela.
+     */
     private void construirInterface() {
         setSize(820, 680);
         setMinimumSize(new Dimension(700, 560));
@@ -78,6 +170,11 @@ public class ReportView extends JDialog {
         add(criarPainelAcoes(),  BorderLayout.SOUTH);
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarCabecalho() {
         JPanel p = new JPanel(new BorderLayout());
         p.setBackground(COR_CARD);
@@ -89,6 +186,11 @@ public class ReportView extends JDialog {
         return p;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarCorpo() {
         JPanel p = new JPanel(new BorderLayout(0, 16));
         p.setBackground(COR_FUNDO);
@@ -98,6 +200,11 @@ public class ReportView extends JDialog {
         return p;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarPainelFiltro() {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setBackground(COR_CARD);
@@ -132,6 +239,11 @@ public class ReportView extends JDialog {
         return painel;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarPainelResultado() {
         JPanel p = new JPanel(new BorderLayout(0, 16));
         p.setBackground(COR_FUNDO);
@@ -177,6 +289,17 @@ public class ReportView extends JDialog {
         tabela.getColumnModel().getColumn(4).setPreferredWidth(110);
 
         tabela.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
+            /**
+             * Prepara o componente usado para renderizar uma celula da tabela.
+             *
+             * @param t tabela ou lista relacionada a renderizacao
+             * @param val valor exibido na celula
+             * @param sel parametro sel
+             * @param foc parametro foc
+             * @param row linha da celula
+             * @param col coluna da celula
+             * @return componente preparado para renderizacao
+             */
             @Override
             public Component getTableCellRendererComponent(JTable t, Object val,
                     boolean sel, boolean foc, int row, int col) {
@@ -198,6 +321,17 @@ public class ReportView extends JDialog {
         });
 
         tabela.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+            /**
+             * Prepara o componente usado para renderizar uma celula da tabela.
+             *
+             * @param t tabela ou lista relacionada a renderizacao
+             * @param val valor exibido na celula
+             * @param sel parametro sel
+             * @param foc parametro foc
+             * @param row linha da celula
+             * @param col coluna da celula
+             * @return componente preparado para renderizacao
+             */
             @Override
             public Component getTableCellRendererComponent(JTable t, Object val,
                     boolean sel, boolean foc, int row, int col) {
@@ -219,6 +353,14 @@ public class ReportView extends JDialog {
         return p;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param titulo parametro titulo
+     * @param valor parametro valor
+     * @param cor parametro cor
+     * @return painel configurado
+     */
     private JPanel criarCardResumo(String titulo, JLabel valor, Color cor) {
         JPanel c = new JPanel(new BorderLayout());
         c.setBackground(COR_CARD);
@@ -236,6 +378,11 @@ public class ReportView extends JDialog {
         return c;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return painel configurado
+     */
     private JPanel criarPainelAcoes() {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         p.setBackground(COR_FUNDO);
@@ -255,6 +402,9 @@ public class ReportView extends JDialog {
 
     // ── Logica ────────────────────────────────────────────────────────────────
 
+    /**
+     * Executa a rotina gerarRelatorio.
+     */
     private void gerarRelatorio() {
         try {
             LocalDate inicio = LocalDate.parse(txtDataInicio.getText().trim(), FMT);
@@ -263,11 +413,19 @@ public class ReportView extends JDialog {
             resumoAtual = null;
 
             new SwingWorker<ResumoFinanceiro, Void>() {
+                /**
+                 * Executa a rotina doInBackground.
+                 *
+                 * @return resultado da operacao
+                 */
                 @Override
                 protected ResumoFinanceiro doInBackground() {
                     return transacaoController.gerarResumo(inicio, fim);
                 }
 
+                /**
+                 * Executa a rotina done.
+                 */
                 @Override
                 protected void done() {
                     try {
@@ -310,6 +468,9 @@ public class ReportView extends JDialog {
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
+    /**
+     * Executa a rotina exportarPdf.
+     */
     private void exportarPdf() {
         if (resumoAtual == null) {
             JOptionPane.showMessageDialog(this,
@@ -341,6 +502,12 @@ public class ReportView extends JDialog {
         }
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param texto parametro texto
+     * @return rotulo configurado
+     */
     private JLabel criarLabelInline(String texto) {
         JLabel lbl = new JLabel(texto);
         lbl.setFont(FONTE_LABEL);
@@ -348,6 +515,11 @@ public class ReportView extends JDialog {
         return lbl;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @return campo de texto configurado
+     */
     private JTextField criarCampoData() {
         JTextField tf = new JTextField(10);
         tf.setFont(FONTE_INPUT);
@@ -360,10 +532,25 @@ public class ReportView extends JDialog {
         return tf;
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param texto parametro texto
+     * @param cor parametro cor
+     * @return botao configurado
+     */
     private JButton criarBotao(String texto, Color cor) {
         return criarBotao(texto, cor, null);
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param texto parametro texto
+     * @param cor parametro cor
+     * @param icone parametro icone
+     * @return botao configurado
+     */
     private JButton criarBotao(String texto, Color cor, Icon icone) {
         JButton btn = new JButton(texto);
         btn.setFont(FONTE_BTN);
@@ -380,16 +567,32 @@ public class ReportView extends JDialog {
         return btn;
     }
 
+    /**
+     * Executa a rotina aplicarMascaraData.
+     *
+     * @param campo parametro campo
+     */
     private void aplicarMascaraData(JTextField campo) {
         ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DateDocumentFilter());
     }
 
+    /**
+     * Executa a rotina nomeArquivoPadrao.
+     *
+     * @return texto formatado
+     */
     private String nomeArquivoPadrao() {
         String inicio = resumoAtual.inicio().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String fim = resumoAtual.fim().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         return "relatorio-financeiro-" + inicio + "-a-" + fim + ".pdf";
     }
 
+    /**
+     * Executa a rotina mensagemErroWorker.
+     *
+     * @param ex parametro ex
+     * @return texto formatado
+     */
     private String mensagemErroWorker(Exception ex) {
         Throwable causa = ex instanceof ExecutionException ? ex.getCause() : ex;
         if (causa instanceof IllegalArgumentException) {

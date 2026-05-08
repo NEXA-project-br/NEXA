@@ -13,6 +13,9 @@ import java.util.List;
  */
 public class TransacaoDAO extends BaseDAOImpl<Transacao> {
 
+    /**
+     * Cria uma nova instancia de TransacaoDAO.
+     */
     public TransacaoDAO() {
         super(Transacao.class);
     }

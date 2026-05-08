@@ -14,17 +14,48 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utilitario responsavel por exportar relatorios financeiros em PDF.
+ */
 public final class PdfReportExporter {
 
+    /**
+     * Formato usado para compor o nome dos arquivos de backup.
+     */
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    /**
+     * Largura da pagina PDF.
+     */
     private static final int PAGE_WIDTH = 595;
+    /**
+     * Altura da pagina PDF.
+     */
     private static final int PAGE_HEIGHT = 842;
+    /**
+     * Margem horizontal usada no PDF.
+     */
     private static final int MARGIN_X = 48;
+    /**
+     * Posicao vertical inicial usada no PDF.
+     */
     private static final int START_Y = 790;
+    /**
+     * Altura de linha usada no PDF.
+     */
     private static final int LINE_HEIGHT = 16;
 
+    /**
+     * Cria uma nova instancia de PdfReportExporter.
+     */
     private PdfReportExporter() {}
 
+    /**
+     * Exporta o resumo financeiro informado para um arquivo PDF.
+     *
+     * @param resumo resumo financeiro a ser exportado
+     * @param destino caminho do arquivo PDF de destino
+     * @throws IOException se ocorrer erro de escrita no arquivo
+     */
     public static void exportar(ResumoFinanceiro resumo, Path destino) throws IOException {
         if (resumo == null) {
             throw new IllegalArgumentException("Resumo financeiro nao pode ser nulo.");
@@ -41,6 +72,12 @@ public final class PdfReportExporter {
         escreverPdf(paginas, destino);
     }
 
+    /**
+     * Executa a rotina montarLinhas.
+     *
+     * @param resumo resumo financeiro a ser exportado
+     * @return resultado da operacao
+     */
     private static List<String> montarLinhas(ResumoFinanceiro resumo) {
         List<String> linhas = new ArrayList<>();
         linhas.add("Relatorio Financeiro");
@@ -64,6 +101,12 @@ public final class PdfReportExporter {
         return linhas;
     }
 
+    /**
+     * Formata o valor informado para exibicao.
+     *
+     * @param transacao parametro transacao
+     * @return texto formatado
+     */
     private static String formatarTransacao(Transacao transacao) {
         String data = transacao.getData().format(FMT);
         String tipo = transacao.getTipo() == TipoTransacao.RECEITA ? "Receita" : "Despesa";
@@ -78,6 +121,12 @@ public final class PdfReportExporter {
                 + " " + limitar(descricao, 42);
     }
 
+    /**
+     * Executa a rotina quebrarEmPaginas.
+     *
+     * @param linhas parametro linhas
+     * @return resultado da operacao
+     */
     private static List<List<String>> quebrarEmPaginas(List<String> linhas) {
         int linhasPorPagina = 42;
         List<List<String>> paginas = new ArrayList<>();
@@ -87,6 +136,13 @@ public final class PdfReportExporter {
         return paginas;
     }
 
+    /**
+     * Executa a rotina escreverPdf.
+     *
+     * @param paginas parametro paginas
+     * @param destino caminho do arquivo PDF de destino
+     * @throws IOException se ocorrer erro de escrita no arquivo
+     */
     private static void escreverPdf(List<List<String>> paginas, Path destino) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         List<Integer> offsets = new ArrayList<>();
@@ -131,6 +187,14 @@ public final class PdfReportExporter {
         Files.write(destino, out.toByteArray());
     }
 
+    /**
+     * Cria e configura o componente solicitado.
+     *
+     * @param linhas parametro linhas
+     * @param paginaAtual parametro paginaAtual
+     * @param totalPaginas parametro totalPaginas
+     * @return resultado da operacao
+     */
     private static byte[] criarConteudoPagina(List<String> linhas, int paginaAtual, int totalPaginas) {
         ByteArrayOutputStream page = new ByteArrayOutputStream();
         writeAscii(page, "BT\n");
@@ -153,11 +217,27 @@ public final class PdfReportExporter {
         return page.toByteArray();
     }
 
+    /**
+     * Executa a rotina appendObject.
+     *
+     * @param out parametro out
+     * @param offsets parametro offsets
+     * @param numero parametro numero
+     * @param conteudo parametro conteudo
+     */
     private static void appendObject(ByteArrayOutputStream out, List<Integer> offsets, int numero, String conteudo) {
         offsets.add(out.size());
         writeAscii(out, numero + " 0 obj\n" + conteudo + "\nendobj\n");
     }
 
+    /**
+     * Executa a rotina appendStreamObject.
+     *
+     * @param out parametro out
+     * @param offsets parametro offsets
+     * @param numero parametro numero
+     * @param stream parametro stream
+     */
     private static void appendStreamObject(ByteArrayOutputStream out, List<Integer> offsets, int numero, byte[] stream) {
         offsets.add(out.size());
         writeAscii(out, numero + " 0 obj\n<< /Length " + stream.length + " >>\nstream\n");
@@ -165,6 +245,12 @@ public final class PdfReportExporter {
         writeAscii(out, "endstream\nendobj\n");
     }
 
+    /**
+     * Executa a rotina escapar.
+     *
+     * @param texto parametro texto
+     * @return texto formatado
+     */
     private static String escapar(String texto) {
         return normalizar(texto)
                 .replace("\\", "\\\\")
@@ -172,6 +258,12 @@ public final class PdfReportExporter {
                 .replace(")", "\\)");
     }
 
+    /**
+     * Executa a rotina normalizar.
+     *
+     * @param texto parametro texto
+     * @return texto formatado
+     */
     private static String normalizar(String texto) {
         return texto == null ? "" : texto
                 .replace("\u00a0", " ")
@@ -182,6 +274,13 @@ public final class PdfReportExporter {
                 .replace("\u2019", "'");
     }
 
+    /**
+     * Executa a rotina limitar.
+     *
+     * @param texto parametro texto
+     * @param tamanho parametro tamanho
+     * @return texto formatado
+     */
     private static String limitar(String texto, int tamanho) {
         String valor = normalizar(texto);
         if (valor.length() <= tamanho) {
@@ -190,11 +289,24 @@ public final class PdfReportExporter {
         return valor.substring(0, Math.max(0, tamanho - 3)) + "...";
     }
 
+    /**
+     * Executa a rotina pad.
+     *
+     * @param texto parametro texto
+     * @param tamanho parametro tamanho
+     * @return texto formatado
+     */
     private static String pad(String texto, int tamanho) {
         String valor = limitar(texto, tamanho);
         return valor + " ".repeat(Math.max(0, tamanho - valor.length()));
     }
 
+    /**
+     * Executa a rotina writeAscii.
+     *
+     * @param out parametro out
+     * @param texto parametro texto
+     */
     private static void writeAscii(ByteArrayOutputStream out, String texto) {
         out.writeBytes(texto.getBytes(StandardCharsets.ISO_8859_1));
     }
