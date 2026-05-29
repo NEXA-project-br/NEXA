@@ -6,6 +6,8 @@ O NEXA e um sistema financeiro pessoal para cadastrar receitas, despesas, catego
 
 Para abrir o sistema pelo NetBeans, execute a classe `com.sistema.Main`. Pelo terminal, entre na pasta `java-project` e execute `mvn exec:java`.
 
+Para preencher o banco com dados ficticios de demonstracao, execute manualmente a classe `com.sistema.util.DemoDataSeeder`. Ela cria categorias, receitas e despesas dos ultimos meses quando o banco `financeiro.db` ainda nao possui transacoes. Isso facilita testes, apresentacoes e validacao dos graficos e relatorios.
+
 ## 2. Tela principal - Painel Financeiro
 
 ### Funcionalidades
@@ -29,6 +31,15 @@ Para abrir o sistema pelo NetBeans, execute a classe `com.sistema.Main`. Pelo te
 2. De duplo clique na linha.
 3. Altere os campos na tela de transacao.
 4. Clique em `Atualizar`.
+5. Confira a mensagem de sucesso e veja o painel atualizado.
+
+### Como cadastrar uma categoria antes da transacao
+
+1. Na tela principal, clique em `Categorias`.
+2. Selecione o tipo da categoria: `Receita` ou `Despesa`.
+3. Digite o nome da categoria.
+4. Clique em `Adicionar`.
+5. Feche a tela de categorias e cadastre a transacao normalmente.
 
 ### Como sair do sistema
 
@@ -72,6 +83,7 @@ Para abrir o sistema pelo NetBeans, execute a classe `com.sistema.Main`. Pelo te
 1. Na tela principal, de duplo clique na transacao desejada.
 2. Clique em `Excluir`.
 3. Confirme a exclusao.
+4. Confira a mensagem de sucesso.
 
 ## 4. Tela Categorias
 
@@ -128,17 +140,18 @@ Para abrir o sistema pelo NetBeans, execute a classe `com.sistema.Main`. Pelo te
 ### Como consultar um relatorio
 
 1. Na tela principal, clique em `Relatorios`.
-2. Informe a data inicial.
-3. Informe a data final.
-4. Acione a busca/geracao do relatorio.
+2. Informe a data inicial no formato `dd/MM/yyyy`.
+3. Informe a data final no formato `dd/MM/yyyy`.
+4. Clique em `Filtrar`.
 5. Confira os totais e a lista de transacoes.
 
 ### Como exportar relatorio em PDF
 
 1. Gere um relatorio por periodo.
-2. Clique na opcao de exportar PDF.
-3. Escolha o local de destino, quando solicitado.
+2. Clique em `Exportar para PDF`.
+3. Escolha o nome e o local de destino.
 4. Confirme a exportacao.
+5. Se ja existir um arquivo com o mesmo nome, confirme se deseja substituir.
 
 ## 7. Tela Calculadoras
 
@@ -172,7 +185,10 @@ Para abrir o sistema pelo NetBeans, execute a classe `com.sistema.Main`. Pelo te
 4. Informe o aporte mensal.
 5. Informe a taxa de juros.
 6. Informe o periodo.
-7. Clique em calcular.
+7. Selecione se o periodo esta em meses ou anos.
+8. Clique em `Calcular`.
+9. Confira o montante final, os juros acumulados e o grafico.
+10. Use `Limpar` para apagar os campos, se necessario.
 
 ## 9. Calculadora do Primeiro Milhao
 
@@ -188,14 +204,16 @@ Para abrir o sistema pelo NetBeans, execute a classe `com.sistema.Main`. Pelo te
 3. Informe o valor ja acumulado.
 4. Informe o aporte mensal.
 5. Informe a rentabilidade esperada.
-6. Clique em calcular.
+6. Clique em `Calcular`.
+7. Confira o tempo estimado e o patrimonio projetado.
+8. Use `Limpar` para apagar os campos, se necessario.
 
 ## 10. Calculadora de Renda
 
 ### Funcionalidades
 
-- Estima renda gerada por um patrimonio ou investimento.
-- Usa taxa informada pelo usuario para calcular retorno aproximado.
+- Estima por quanto tempo um patrimonio pode sustentar retiradas mensais.
+- Usa taxa informada pelo usuario para simular a evolucao do saldo.
 
 ### Passo a passo
 
@@ -203,7 +221,10 @@ Para abrir o sistema pelo NetBeans, execute a classe `com.sistema.Main`. Pelo te
 2. Selecione a calculadora de renda.
 3. Informe o patrimonio ou valor investido.
 4. Informe a taxa de rendimento.
-5. Clique em calcular.
+5. Informe o valor da retirada mensal.
+6. Clique em `Calcular`.
+7. Confira por quanto tempo o patrimonio sustenta as retiradas.
+8. Use `Limpar` para apagar os campos, se necessario.
 
 ## 11. Validacoes e mensagens
 

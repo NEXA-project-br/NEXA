@@ -41,7 +41,7 @@ public class Main {
 
         // 1. Migracoes de schema ANTES do Hibernate (compatibilidade SQLite)
         try {
-            executarMigracoes();
+            prepararBanco();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
                     "Erro na migracao do banco de dados:\n" + e.getMessage(),
@@ -73,6 +73,15 @@ public class Main {
             MainView mainView = new MainView();
             mainView.setVisible(true);
         });
+    }
+
+    /**
+     * Prepara o banco SQLite criando ou migrando as tabelas necessarias.
+     *
+     * @throws Exception se a operacao nao puder ser concluida
+     */
+    public static void prepararBanco() throws Exception {
+        executarMigracoes();
     }
 
     /**

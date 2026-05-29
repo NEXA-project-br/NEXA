@@ -119,7 +119,7 @@ public class CalculatorMenuView extends JDialog {
                 () -> abrirCalculadora(new CompoundInterestCalculatorView((Frame) getOwner()))));
         painel.add(criarCard(
                 "Calculadora de Renda",
-                "Simule por quanto tempo uma retirada mensal sustenta seu capital.",
+                "Estime por quanto tempo seu patrimonio pode sustentar retiradas mensais.",
                 COR_GRAFITE,
                 () -> abrirCalculadora(new IncomeCalculatorView((Frame) getOwner()))));
         painel.add(criarCard(

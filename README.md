@@ -1,13 +1,13 @@
 Projeto IFSP para saber mais do projeto só clicar nos links abaixo:
 
 
-[Projeto](https://github.com/conradobr1/ProjetoIFSP/blob/main/public/docs/Projeto.md)<br>  
+[Projeto](public/docs/Projeto.md)<br>  
 
-[Contrato](https://github.com/conradobr1/NEXA/blob/main/public/docs/Contrato.md)<br>  
+[Contrato](public/docs/Contrato.md)<br>  
 
-[Equipe](https://github.com/conradobr1/ProjetoIFSP/blob/main/public/docs/Equipe.md)<br>
+[Equipe](public/docs/Equipe.md)<br>
 
-[Orçamento](https://github.com/conradobr1/ProjetoIFSP/blob/main/public/docs/Orcamento.md)<br>
+[Orçamento](public/docs/Orcamento.md)<br>
 
 [Manual do usuário](manual_usuario.md)<br>
 

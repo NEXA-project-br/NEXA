@@ -665,6 +665,10 @@ public class TransactionFormView extends JDialog {
                 fb.replace(offset, length, text, attrs);
                 return;
             }
+            boolean substituiTudo = offset == 0 && length == fb.getDocument().getLength();
+            if (substituiTudo) {
+                valorCentavos = 0L;
+            }
             processarEntrada(fb, text);
         }
 
@@ -680,6 +684,11 @@ public class TransactionFormView extends JDialog {
         public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
             if (atualizandoValor) {
                 fb.remove(offset, length);
+                return;
+            }
+            if (offset == 0 && length == fb.getDocument().getLength()) {
+                valorCentavos = 0L;
+                substituirTexto(fb);
                 return;
             }
             valorCentavos /= 10;

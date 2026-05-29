@@ -238,6 +238,17 @@ public class IncomeCalculatorView extends JDialog {
             evolucao.add(saldo);
             BigDecimal fator = BigDecimal.ONE.add(taxaMensal);
             MathContext mc = new MathContext(12, RoundingMode.HALF_UP);
+            BigDecimal rendimentoMensal = saldo.multiply(taxaMensal, mc);
+            if (rendimentoMensal.compareTo(retirada) >= 0) {
+                for (int i = 0; i < 120; i++) {
+                    saldo = saldo.multiply(fator, mc).subtract(retirada, mc);
+                    evolucao.add(saldo);
+                }
+                lblTempo.setText("O patrimônio nunca se esgota");
+                lblSaldoFinal.setText(CurrencyUtil.formatar(saldo));
+                chartPanel.atualizarDados("Valor restante ao longo do tempo", evolucao);
+                return;
+            }
             int meses = 0;
             int limiteMeses = 1200;
 

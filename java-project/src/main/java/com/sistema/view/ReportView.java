@@ -13,7 +13,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -479,8 +478,15 @@ public class ReportView extends JDialog {
             return;
         }
 
-        Path destino = new File(System.getProperty("user.home"),
-                "Downloads" + File.separator + nomeArquivoPadrao()).toPath();
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Salvar relatorio em PDF");
+        chooser.setSelectedFile(new java.io.File(nomeArquivoPadrao()));
+
+        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        Path destino = garantirExtensaoPdf(chooser.getSelectedFile().toPath());
         if (destino.toFile().exists()) {
             int sobrescrever = JOptionPane.showConfirmDialog(this,
                     "O arquivo ja existe. Deseja substituir?",
@@ -585,6 +591,17 @@ public class ReportView extends JDialog {
         String inicio = resumoAtual.inicio().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String fim = resumoAtual.fim().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         return "relatorio-financeiro-" + inicio + "-a-" + fim + ".pdf";
+    }
+
+    /**
+     * Garante que o arquivo escolhido termine com a extensao .pdf.
+     *
+     * @param caminho arquivo escolhido pelo usuario
+     * @return caminho com extensao PDF
+     */
+    private Path garantirExtensaoPdf(Path caminho) {
+        String texto = caminho.toString();
+        return texto.toLowerCase().endsWith(".pdf") ? caminho : Path.of(texto + ".pdf");
     }
 
     /**
