@@ -15,7 +15,9 @@ Para preencher o banco com dados ficticios de demonstracao, execute manualmente 
 - Exibe o saldo atual.
 - Exibe o total de receitas cadastradas.
 - Exibe o total de despesas cadastradas.
-- Lista as ultimas movimentacoes em uma tabela.
+- Lista as movimentacoes em uma tabela.
+- Permite buscar movimentacoes por data, descricao, categoria, tipo ou valor.
+- Permite filtrar a tabela por todos os registros, ultimos 30/60/90 dias, mes especifico ou ano especifico.
 - Permite abrir as telas de nova receita, nova despesa, graficos, calculadoras, relatorios e categorias.
 - Permite editar uma movimentacao com duplo clique.
 
@@ -25,9 +27,23 @@ Para preencher o banco com dados ficticios de demonstracao, execute manualmente 
 2. Clique em `Atualizar`.
 3. Confira os cards de saldo, receitas e despesas e a tabela de movimentacoes.
 
+### Como filtrar movimentacoes por periodo
+
+1. Na tela principal, localize o filtro `Periodo` acima da tabela.
+2. Escolha `Todas`, `Ultimos 30 dias`, `Ultimos 60 dias`, `Ultimos 90 dias`, `Mes especifico` ou `Ano especifico`.
+3. Para `Mes especifico`, selecione o mes e o ano desejados.
+4. Para `Ano especifico`, selecione o ano desejado.
+5. Confira a tabela atualizada com as movimentacoes do periodo.
+
+### Como buscar movimentacoes
+
+1. Na tela principal, localize o campo `Buscar` acima da tabela.
+2. Digite uma data, descricao, categoria, tipo ou valor.
+3. Confira a tabela atualizada automaticamente com os resultados encontrados.
+
 ### Como editar uma movimentacao
 
-1. Na tabela `Ultimas Movimentacoes`, localize a receita ou despesa desejada.
+1. Na tabela de movimentacoes, localize a receita ou despesa desejada.
 2. De duplo clique na linha.
 3. Altere os campos na tela de transacao.
 4. Clique em `Atualizar`.

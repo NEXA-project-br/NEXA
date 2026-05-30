@@ -248,7 +248,7 @@ public class TransactionFormView extends JDialog {
         adicionarLabel(p, gbc, "Data (dd/MM/yyyy)");
         txtData = criarTextField(LocalDate.now().format(FMT));
         aplicarMascaraData(txtData);
-        p.add(txtData, gbc);
+        p.add(DatePickerUtil.criarCampoComCalendario(txtData), gbc);
 
         // Categoria — filtrada pelo tipo selecionado
         adicionarLabel(p, gbc, "Categoria");

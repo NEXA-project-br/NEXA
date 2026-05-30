@@ -222,12 +222,12 @@ public class ReportView extends JDialog {
         linha.add(criarLabelInline("De:"));
         txtDataInicio = criarCampoData();
         aplicarMascaraData(txtDataInicio);
-        linha.add(txtDataInicio);
+        linha.add(DatePickerUtil.criarCampoComCalendario(txtDataInicio));
 
         linha.add(criarLabelInline("Ate:"));
         txtDataFim = criarCampoData();
         aplicarMascaraData(txtDataFim);
-        linha.add(txtDataFim);
+        linha.add(DatePickerUtil.criarCampoComCalendario(txtDataFim));
 
         JButton btnGerar = criarBotao("Filtrar", COR_AZUL_CLARO, UiIcons.report(Color.WHITE));
         btnGerar.addActionListener(e -> gerarRelatorio());

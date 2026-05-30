@@ -8,10 +8,15 @@ import com.sistema.util.HibernateUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.math.BigDecimal;
+import java.text.Normalizer;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -116,6 +121,22 @@ public class MainView extends JFrame {
      * Atributo usado pelo funcionamento desta classe.
      */
     private List<Transacao> listaAtual = List.of();
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
+    private JTextField txtBusca;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
+    private JComboBox<String> cmbFiltroPeriodo;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
+    private JComboBox<String> cmbMesFiltro;
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
+    private JSpinner spnAnoFiltro;
 
     /**
      * Atributo usado pelo funcionamento desta classe.
@@ -296,15 +317,15 @@ public class MainView extends JFrame {
         cabecalho.setBackground(COR_CARD);
         cabecalho.setBorder(new EmptyBorder(16, 20, 12, 20));
 
-        JLabel lblTitulo = new JLabel("Ultimas Movimentacoes  (duplo clique para editar)");
+        JLabel lblTitulo = new JLabel("Movimentacoes");
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 15));
         lblTitulo.setForeground(COR_TEXTO);
 
         JButton btnAtualizar = criarBotao("Atualizar", COR_AZUL_CLARO, UiIcons.refresh(Color.WHITE));
         btnAtualizar.addActionListener(e -> atualizarDashboard());
 
-        cabecalho.add(lblTitulo,    BorderLayout.WEST);
-        cabecalho.add(btnAtualizar, BorderLayout.EAST);
+        cabecalho.add(lblTitulo, BorderLayout.WEST);
+        cabecalho.add(criarPainelFiltroTabela(btnAtualizar), BorderLayout.EAST);
 
         String[] colunas = {"Data", "Descricao", "Categoria", "Tipo", "Valor"};
         tableModel = new DefaultTableModel(colunas, 0) {
@@ -378,9 +399,93 @@ public class MainView extends JFrame {
     }
 
     /**
+     * Cria os controles de filtro da tabela principal.
+     *
+     * @param btnAtualizar botao de atualizacao manual
+     * @return painel com filtros de periodo
+     */
+    private JPanel criarPainelFiltroTabela(JButton btnAtualizar) {
+        JPanel painel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        painel.setOpaque(false);
+
+        txtBusca = new JTextField();
+        txtBusca.setFont(FONTE_TABELA);
+        txtBusca.setForeground(COR_TEXTO);
+        txtBusca.setBackground(Color.WHITE);
+        txtBusca.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COR_BORDA),
+                new EmptyBorder(7, 10, 7, 10)));
+        txtBusca.setPreferredSize(new Dimension(210, 34));
+        txtBusca.setToolTipText("Pesquisar por data, descricao, categoria, tipo ou valor");
+        txtBusca.getDocument().addDocumentListener(new DocumentListener() {
+            @Override public void insertUpdate(DocumentEvent e) { atualizarDashboard(); }
+            @Override public void removeUpdate(DocumentEvent e) { atualizarDashboard(); }
+            @Override public void changedUpdate(DocumentEvent e) { atualizarDashboard(); }
+        });
+
+        cmbFiltroPeriodo = new JComboBox<>(new String[]{
+                "Todas",
+                "Ultimos 30 dias",
+                "Ultimos 60 dias",
+                "Ultimos 90 dias",
+                "Mes especifico",
+                "Ano especifico"
+        });
+        estilizarComboFiltro(cmbFiltroPeriodo, 150);
+
+        cmbMesFiltro = new JComboBox<>(new String[]{
+                "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+                "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+        });
+        cmbMesFiltro.setSelectedIndex(LocalDate.now().getMonthValue() - 1);
+        estilizarComboFiltro(cmbMesFiltro, 120);
+
+        spnAnoFiltro = new JSpinner(new SpinnerNumberModel(LocalDate.now().getYear(), 2000, 2100, 1));
+        spnAnoFiltro.setFont(FONTE_TABELA);
+        spnAnoFiltro.setPreferredSize(new Dimension(78, 34));
+        JSpinner.NumberEditor editorAno = new JSpinner.NumberEditor(spnAnoFiltro, "0");
+        editorAno.getFormat().setGroupingUsed(false);
+        spnAnoFiltro.setEditor(editorAno);
+
+        cmbFiltroPeriodo.addActionListener(e -> {
+            atualizarVisibilidadeFiltrosPeriodo();
+            atualizarDashboard();
+        });
+        cmbMesFiltro.addActionListener(e -> atualizarDashboard());
+        spnAnoFiltro.addChangeListener(e -> atualizarDashboard());
+
+        painel.add(new JLabel("Buscar:"));
+        painel.add(txtBusca);
+        painel.add(new JLabel("Periodo:"));
+        painel.add(cmbFiltroPeriodo);
+        painel.add(cmbMesFiltro);
+        painel.add(spnAnoFiltro);
+        painel.add(btnAtualizar);
+
+        atualizarVisibilidadeFiltrosPeriodo();
+        return painel;
+    }
+
+    /**
+     * Atualiza os controles visiveis conforme o filtro selecionado.
+     */
+    private void atualizarVisibilidadeFiltrosPeriodo() {
+        if (cmbFiltroPeriodo == null || cmbMesFiltro == null || spnAnoFiltro == null) {
+            return;
+        }
+        String filtro = (String) cmbFiltroPeriodo.getSelectedItem();
+        boolean mesEspecifico = "Mes especifico".equals(filtro);
+        boolean anoEspecifico = "Ano especifico".equals(filtro);
+        cmbMesFiltro.setVisible(mesEspecifico);
+        spnAnoFiltro.setVisible(mesEspecifico || anoEspecifico);
+    }
+
+    /**
      * Executa a rotina atualizarDashboard.
      */
     public void atualizarDashboard() {
+        PeriodoTabela filtroTabela = obterFiltroTabela();
+        String termoBusca = obterTermoBusca();
         new SwingWorker<DashboardData, Void>() {
             /**
              * Executa a rotina doInBackground.
@@ -389,10 +494,11 @@ public class MainView extends JFrame {
              */
             @Override
             protected DashboardData doInBackground() {
-                BigDecimal saldo    = transacaoController.calcularSaldoAtual();
-                BigDecimal receitas = transacaoController.totalReceitas();
-                BigDecimal despesas = transacaoController.totalDespesas();
-                List<Transacao> transacoes = transacaoController.listarUltimas(50);
+                List<Transacao> transacoes = filtrarTransacoesPorBusca(
+                        carregarTransacoesTabela(filtroTabela), termoBusca);
+                BigDecimal receitas = somarPorTipo(transacoes, TipoTransacao.RECEITA);
+                BigDecimal despesas = somarPorTipo(transacoes, TipoTransacao.DESPESA);
+                BigDecimal saldo = receitas.subtract(despesas);
                 return new DashboardData(saldo, receitas, despesas, transacoes);
             }
 
@@ -424,6 +530,135 @@ public class MainView extends JFrame {
                 }
             }
         }.execute();
+    }
+
+    /**
+     * Soma as movimentacoes de um tipo dentro da lista exibida.
+     *
+     * @param transacoes movimentacoes exibidas na tabela
+     * @param tipo tipo financeiro somado
+     * @return total do tipo informado
+     */
+    private BigDecimal somarPorTipo(List<Transacao> transacoes, TipoTransacao tipo) {
+        return transacoes.stream()
+                .filter(t -> t.getTipo() == tipo)
+                .map(Transacao::getValor)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /**
+     * Obtem o texto digitado no campo de busca da tabela.
+     *
+     * @return termo de busca informado
+     */
+    private String obterTermoBusca() {
+        return txtBusca != null ? txtBusca.getText() : "";
+    }
+
+    /**
+     * Filtra as movimentacoes pelos campos exibidos na tabela.
+     *
+     * @param transacoes movimentacoes carregadas pelo filtro de periodo
+     * @param termoBusca texto pesquisado pelo usuario
+     * @return lista compativel com o termo pesquisado
+     */
+    private List<Transacao> filtrarTransacoesPorBusca(List<Transacao> transacoes, String termoBusca) {
+        String termo = normalizarBusca(termoBusca);
+        if (termo.isBlank()) {
+            return transacoes;
+        }
+
+        return transacoes.stream()
+                .filter(t -> textoPesquisaTransacao(t).contains(termo))
+                .toList();
+    }
+
+    /**
+     * Monta o texto pesquisavel de uma movimentacao.
+     *
+     * @param transacao movimentacao avaliada
+     * @return texto normalizado para busca
+     */
+    private String textoPesquisaTransacao(Transacao transacao) {
+        String categoria = transacao.getCategoria() != null ? transacao.getCategoria().getNome() : "-";
+        String tipo = transacao.getTipo() == TipoTransacao.RECEITA ? "Receita" : "Despesa";
+        String valorFormatado = CurrencyUtil.formatar(transacao.getValor());
+        String valorSimples = transacao.getValor() != null ? transacao.getValor().toPlainString() : "";
+
+        return normalizarBusca(String.join(" ",
+                transacao.getData().format(FMT_DATA),
+                transacao.getDescricao(),
+                categoria,
+                tipo,
+                valorFormatado,
+                valorSimples));
+    }
+
+    /**
+     * Normaliza textos para busca sem diferenciar acentos, maiusculas e alguns separadores.
+     *
+     * @param texto texto original
+     * @return texto preparado para comparacao
+     */
+    private String normalizarBusca(String texto) {
+        if (texto == null) {
+            return "";
+        }
+        String semAcento = Normalizer.normalize(texto, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+        return semAcento
+                .toLowerCase()
+                .replace("r$", " ")
+                .replaceAll("[.,/\\-]", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
+    }
+
+    /**
+     * Obtem o filtro atual da tabela a partir dos controles visuais.
+     *
+     * @return filtro selecionado
+     */
+    private PeriodoTabela obterFiltroTabela() {
+        if (cmbFiltroPeriodo == null) {
+            return new PeriodoTabela("Todas", 1, LocalDate.now().getYear());
+        }
+        String filtro = (String) cmbFiltroPeriodo.getSelectedItem();
+        int mes = cmbMesFiltro != null ? cmbMesFiltro.getSelectedIndex() + 1 : LocalDate.now().getMonthValue();
+        int ano = spnAnoFiltro != null ? (Integer) spnAnoFiltro.getValue() : LocalDate.now().getYear();
+        return new PeriodoTabela(filtro != null ? filtro : "Todas", mes, ano);
+    }
+
+    /**
+     * Carrega as movimentacoes conforme o filtro selecionado na tabela.
+     *
+     * @param filtroTabela filtro selecionado na tela
+     * @return lista de transacoes filtradas
+     */
+    private List<Transacao> carregarTransacoesTabela(PeriodoTabela filtroTabela) {
+        String filtro = filtroTabela.tipo();
+        LocalDate hoje = LocalDate.now();
+
+        if ("Ultimos 30 dias".equals(filtro)) {
+            return transacaoController.filtrarPorPeriodo(hoje.minusDays(30), hoje);
+        }
+        if ("Ultimos 60 dias".equals(filtro)) {
+            return transacaoController.filtrarPorPeriodo(hoje.minusDays(60), hoje);
+        }
+        if ("Ultimos 90 dias".equals(filtro)) {
+            return transacaoController.filtrarPorPeriodo(hoje.minusDays(90), hoje);
+        }
+        if ("Mes especifico".equals(filtro)) {
+            YearMonth periodo = YearMonth.of(filtroTabela.ano(), filtroTabela.mes());
+            return transacaoController.filtrarPorPeriodo(periodo.atDay(1), periodo.atEndOfMonth());
+        }
+        if ("Ano especifico".equals(filtro)) {
+            return transacaoController.filtrarPorPeriodo(
+                    LocalDate.of(filtroTabela.ano(), 1, 1),
+                    LocalDate.of(filtroTabela.ano(), 12, 31));
+        }
+
+        return transacaoController.listarTodos();
     }
 
     /**
@@ -533,6 +768,20 @@ public class MainView extends JFrame {
     }
 
     /**
+     * Aplica estilo aos combos de filtro da tabela.
+     *
+     * @param combo combo a ser estilizado
+     * @param largura largura preferencial
+     */
+    private void estilizarComboFiltro(JComboBox<String> combo, int largura) {
+        combo.setFont(FONTE_TABELA);
+        combo.setForeground(COR_TEXTO);
+        combo.setBackground(Color.WHITE);
+        combo.setBorder(BorderFactory.createLineBorder(COR_BORDA));
+        combo.setPreferredSize(new Dimension(largura, 34));
+    }
+
+    /**
      * Cria e configura o componente solicitado.
      *
      * @return resultado da operacao
@@ -604,6 +853,11 @@ public class MainView extends JFrame {
      */
     private record DashboardData(BigDecimal saldo, BigDecimal receitas,
                                  BigDecimal despesas, List<Transacao> transacoes) {}
+
+    /**
+     * Filtro de periodo aplicado na tabela principal.
+     */
+    private record PeriodoTabela(String tipo, int mes, int ano) {}
 
     /**
      * Executa a rotina encerrarAplicacao.
