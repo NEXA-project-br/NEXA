@@ -25,7 +25,8 @@
 - **Detalhes do recurso/tecnologia:**
   - **SQLite JDBC Driver (xerial):** versão 3.x. Licença: Apache License 2.0.
   - Banco de dados armazenado no arquivo `financeiro.db` na raiz do projeto.
-  - O Hibernate é configurado com `hibernate.dialect = org.hibernate.community.dialect.SQLiteDialect` e `hbm2ddl.auto = update`.
+  - O Hibernate é configurado com `hibernate.dialect = org.hibernate.community.dialect.SQLiteDialect` e `hbm2ddl.auto = validate`.
+  - A criação e migração do schema são realizadas manualmente antes da inicialização do Hibernate, garantindo que o banco esteja compatível com as entidades.
 
 ---
 
@@ -62,7 +63,7 @@
 - **Detalhes do recurso/tecnologia:**
   - Migrações executadas diretamente via JDBC (classe `Main.executarMigracoes()`) antes da inicialização do Hibernate.
   - Estratégia: verificação idempotente via `PRAGMA table_info` do SQLite antes de aplicar qualquer `ALTER TABLE`.
-  - Necessário pois o SQLite não suporta `ADD COLUMN NOT NULL` em tabelas existentes, o que causaria falha no `hbm2ddl.auto = update` do Hibernate.
+  - Necessário pois o SQLite possui limitações para alterações de schema em tabelas existentes. O Hibernate apenas valida o schema final com `hbm2ddl.auto = validate`.
 
 ---
 

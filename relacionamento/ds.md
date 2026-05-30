@@ -208,7 +208,7 @@ sequenceDiagram
     DB-->>Main: 7a: migrações aplicadas
   end
   Main->>HU: 8: getEntityManagerFactory()
-  HU->>DB: 9: conecta via Hibernate (hbm2ddl.auto = update)
+  HU->>DB: 9: conecta via Hibernate (hbm2ddl.auto = validate)
   DB-->>HU: 10: EntityManagerFactory criado
   HU-->>Main: 11: factory pronto
 

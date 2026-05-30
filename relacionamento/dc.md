@@ -228,7 +228,7 @@ classDiagram
 | `id` | `Long` | `id` | PK, AUTO_INCREMENT | Identificador único da categoria |
 | `nome` | `String` | `nome` | NOT NULL, VARCHAR(100) | Nome da categoria (único) |
 | `tipo` | `TipoTransacao` | `tipo` | nullable, VARCHAR(10) | Tipo padrão da categoria: `RECEITA` ou `DESPESA` |
-| `transacoes` | `List<Transacao>` | — | OneToMany, CascadeType.ALL, Lazy | Lista de transações vinculadas |
+| `transacoes` | `List<Transacao>` | — | OneToMany, Lazy | Lista de transações vinculadas |
 
 ---
 

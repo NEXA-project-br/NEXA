@@ -40,7 +40,7 @@
 - **Ação:** O sistema valida nome e tipo, verifica duplicidade e persiste via `CategoriaController`. A exclusão é bloqueada se houver transações vinculadas à categoria.
 - **Pré-condição:** Nome não pode estar em branco, não pode ultrapassar 100 caracteres, não pode ser duplicado. Para exclusão, a categoria não pode possuir transações vinculadas.
 - **Pós-condição:** A lista de categorias é atualizada. Formulários de transação refletem as categorias disponíveis.
-- **Efeitos colaterais:** Se uma categoria for excluída, as transações vinculadas a ela passam a ter `categoria = null` (devido ao `CascadeType.ALL`).
+- **Efeitos colaterais:** A exclusão de categorias vinculadas a transações é bloqueada para preservar o histórico financeiro. Nenhuma transação é alterada automaticamente.
 
 ---
 

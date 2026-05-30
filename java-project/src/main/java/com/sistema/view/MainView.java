@@ -137,6 +137,10 @@ public class MainView extends JFrame {
      * Atributo usado pelo funcionamento desta classe.
      */
     private JSpinner spnAnoFiltro;
+    /**
+     * Versao da atualizacao mais recente do dashboard.
+     */
+    private long versaoAtualizacaoDashboard;
 
     /**
      * Atributo usado pelo funcionamento desta classe.
@@ -486,6 +490,7 @@ public class MainView extends JFrame {
     public void atualizarDashboard() {
         PeriodoTabela filtroTabela = obterFiltroTabela();
         String termoBusca = obterTermoBusca();
+        long versaoAtualizacao = ++versaoAtualizacaoDashboard;
         new SwingWorker<DashboardData, Void>() {
             /**
              * Executa a rotina doInBackground.
@@ -507,6 +512,9 @@ public class MainView extends JFrame {
              */
             @Override
             protected void done() {
+                if (versaoAtualizacao != versaoAtualizacaoDashboard) {
+                    return;
+                }
                 try {
                     DashboardData dados = get();
                     lblSaldo.setText(CurrencyUtil.formatar(dados.saldo()));
