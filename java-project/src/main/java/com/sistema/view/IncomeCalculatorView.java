@@ -234,6 +234,10 @@ public class IncomeCalculatorView extends JDialog {
                 throw new IllegalArgumentException("Informe capital e retirada maiores que zero e taxa valida.");
             }
 
+            if (saldo.compareTo(retirada) < 0) {
+                throw new IllegalArgumentException("Nao e possivel realizar esta operacao.");
+            }
+
             List<BigDecimal> evolucao = new ArrayList<>();
             evolucao.add(saldo);
             BigDecimal fator = BigDecimal.ONE.add(taxaMensal);

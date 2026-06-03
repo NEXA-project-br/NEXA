@@ -17,7 +17,7 @@ public final class SQLiteBackupUtil {
     /**
      * Diretorio onde os backups sao armazenados.
      */
-    private static final Path BACKUP_DIR = Path.of("backup");
+    private static final Path BACKUP_DIR = DatabaseConfig.getBackupDirectory();
     /**
      * Formato usado para compor o nome dos arquivos de backup.
      */

@@ -41,6 +41,10 @@ public class MainView extends JFrame {
     /**
      * Atributo usado pelo funcionamento desta classe.
      */
+    private static final Color COR_CAMPO_BORDA = new Color(148, 163, 184);
+    /**
+     * Atributo usado pelo funcionamento desta classe.
+     */
     private static final Color COR_VERDE       = new Color(34, 197, 94);
     /**
      * Atributo usado pelo funcionamento desta classe.
@@ -325,11 +329,8 @@ public class MainView extends JFrame {
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 15));
         lblTitulo.setForeground(COR_TEXTO);
 
-        JButton btnAtualizar = criarBotao("Atualizar", COR_AZUL_CLARO, UiIcons.refresh(Color.WHITE));
-        btnAtualizar.addActionListener(e -> atualizarDashboard());
-
         cabecalho.add(lblTitulo, BorderLayout.WEST);
-        cabecalho.add(criarPainelFiltroTabela(btnAtualizar), BorderLayout.EAST);
+        cabecalho.add(criarPainelFiltroTabela(), BorderLayout.EAST);
 
         String[] colunas = {"Data", "Descricao", "Categoria", "Tipo", "Valor"};
         tableModel = new DefaultTableModel(colunas, 0) {
@@ -405,21 +406,16 @@ public class MainView extends JFrame {
     /**
      * Cria os controles de filtro da tabela principal.
      *
-     * @param btnAtualizar botao de atualizacao manual
      * @return painel com filtros de periodo
      */
-    private JPanel criarPainelFiltroTabela(JButton btnAtualizar) {
+    private JPanel criarPainelFiltroTabela() {
         JPanel painel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         painel.setOpaque(false);
 
-        txtBusca = new JTextField();
+        txtBusca = new SearchField();
         txtBusca.setFont(FONTE_TABELA);
         txtBusca.setForeground(COR_TEXTO);
-        txtBusca.setBackground(Color.WHITE);
-        txtBusca.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COR_BORDA),
-                new EmptyBorder(7, 10, 7, 10)));
-        txtBusca.setPreferredSize(new Dimension(210, 34));
+        txtBusca.setPreferredSize(new Dimension(240, 38));
         txtBusca.setToolTipText("Pesquisar por data, descricao, categoria, tipo ou valor");
         txtBusca.getDocument().addDocumentListener(new DocumentListener() {
             @Override public void insertUpdate(DocumentEvent e) { atualizarDashboard(); }
@@ -446,9 +442,15 @@ public class MainView extends JFrame {
 
         spnAnoFiltro = new JSpinner(new SpinnerNumberModel(LocalDate.now().getYear(), 2000, 2100, 1));
         spnAnoFiltro.setFont(FONTE_TABELA);
-        spnAnoFiltro.setPreferredSize(new Dimension(78, 34));
+        spnAnoFiltro.setPreferredSize(new Dimension(78, 38));
+        spnAnoFiltro.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COR_CAMPO_BORDA),
+                new EmptyBorder(0, 8, 0, 4)));
         JSpinner.NumberEditor editorAno = new JSpinner.NumberEditor(spnAnoFiltro, "0");
         editorAno.getFormat().setGroupingUsed(false);
+        editorAno.getTextField().setBorder(new EmptyBorder(0, 0, 0, 0));
+        editorAno.getTextField().setBackground(Color.WHITE);
+        editorAno.getTextField().setForeground(COR_TEXTO);
         spnAnoFiltro.setEditor(editorAno);
 
         cmbFiltroPeriodo.addActionListener(e -> {
@@ -458,13 +460,11 @@ public class MainView extends JFrame {
         cmbMesFiltro.addActionListener(e -> atualizarDashboard());
         spnAnoFiltro.addChangeListener(e -> atualizarDashboard());
 
-        painel.add(new JLabel("Buscar:"));
         painel.add(txtBusca);
         painel.add(new JLabel("Periodo:"));
         painel.add(cmbFiltroPeriodo);
         painel.add(cmbMesFiltro);
         painel.add(spnAnoFiltro);
-        painel.add(btnAtualizar);
 
         atualizarVisibilidadeFiltrosPeriodo();
         return painel;
@@ -785,8 +785,28 @@ public class MainView extends JFrame {
         combo.setFont(FONTE_TABELA);
         combo.setForeground(COR_TEXTO);
         combo.setBackground(Color.WHITE);
-        combo.setBorder(BorderFactory.createLineBorder(COR_BORDA));
-        combo.setPreferredSize(new Dimension(largura, 34));
+        combo.setOpaque(true);
+        combo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COR_CAMPO_BORDA),
+                new EmptyBorder(0, 12, 0, 8)));
+        combo.setPreferredSize(new Dimension(largura, 38));
+        combo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                    boolean isSelected, boolean cellHasFocus) {
+                Component component = super.getListCellRendererComponent(
+                        list, value, index, isSelected, cellHasFocus);
+                component.setFont(FONTE_TABELA);
+                component.setForeground(COR_TEXTO);
+                if (!isSelected) {
+                    component.setBackground(Color.WHITE);
+                }
+                if (component instanceof JComponent jComponent) {
+                    jComponent.setBorder(new EmptyBorder(0, 4, 0, 4));
+                }
+                return component;
+            }
+        });
     }
 
     /**
@@ -877,6 +897,99 @@ public class MainView extends JFrame {
         if (r == JOptionPane.YES_OPTION) {
             HibernateUtil.shutdown();
             System.exit(0);
+        }
+    }
+
+    /**
+     * Campo de busca arredondado com placeholder e icone de lupa integrado.
+     */
+    private static class SearchField extends JTextField {
+        /**
+         * Texto exibido quando o campo esta vazio.
+         */
+        private static final String PLACEHOLDER = "Buscar...";
+        /**
+         * Cor da borda do campo.
+         */
+        private static final Color BORDER_COLOR = COR_CAMPO_BORDA;
+        /**
+         * Cor usada no placeholder.
+         */
+        private static final Color PLACEHOLDER_COLOR = new Color(172, 181, 191);
+        /**
+         * Cor do icone de busca.
+         */
+        private static final Color ICON_COLOR = new Color(74, 85, 98);
+
+        /**
+         * Cria uma nova instancia de SearchField.
+         */
+        private SearchField() {
+            setOpaque(false);
+            setBackground(Color.WHITE);
+            setBorder(new EmptyBorder(8, 18, 8, 44));
+            setCaretColor(COR_TEXTO);
+        }
+
+        /**
+         * Desenha o fundo arredondado antes do texto.
+         *
+         * @param g contexto grafico usado no desenho
+         */
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            int arc = getHeight() - 2;
+            g2.setColor(getBackground());
+            g2.fillRoundRect(1, 1, getWidth() - 2, getHeight() - 2, arc, arc);
+            g2.setColor(BORDER_COLOR);
+            g2.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, arc, arc);
+            g2.dispose();
+
+            super.paintComponent(g);
+
+            if (getText().isEmpty() && !hasFocus()) {
+                paintPlaceholder(g);
+            }
+            paintSearchIcon(g);
+        }
+
+        /**
+         * Desenha o texto auxiliar do campo.
+         *
+         * @param g contexto grafico usado no desenho
+         */
+        private void paintPlaceholder(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2.setFont(getFont());
+            g2.setColor(PLACEHOLDER_COLOR);
+            FontMetrics fm = g2.getFontMetrics();
+            int x = getInsets().left;
+            int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
+            g2.drawString(PLACEHOLDER, x, y);
+            g2.dispose();
+        }
+
+        /**
+         * Desenha o icone de lupa no lado direito.
+         *
+         * @param g contexto grafico usado no desenho
+         */
+        private void paintSearchIcon(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(ICON_COLOR);
+            g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+            int centerY = getHeight() / 2;
+            int circleSize = 12;
+            int circleX = getWidth() - 32;
+            int circleY = centerY - 8;
+            g2.drawOval(circleX, circleY, circleSize, circleSize);
+            g2.drawLine(circleX + 10, circleY + 10, circleX + 18, circleY + 18);
+            g2.dispose();
         }
     }
 

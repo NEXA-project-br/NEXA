@@ -16,8 +16,6 @@
             <!-- SQLite JDBC -->
             <property name="jakarta.persistence.jdbc.driver"
                       value="org.sqlite.JDBC"/>
-            <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:sqlite:financeiro.db?foreign_keys=on"/>
 
             <!-- Dialeto SQLite (hibernate-community-dialects) -->
             <property name="hibernate.dialect"

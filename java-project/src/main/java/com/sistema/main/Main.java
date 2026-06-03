@@ -1,5 +1,6 @@
 package com.sistema;
 
+import com.sistema.util.DatabaseConfig;
 import com.sistema.util.HibernateUtil;
 import com.sistema.util.SQLiteBackupUtil;
 import com.sistema.view.MainView;
@@ -23,11 +24,6 @@ import java.sql.Statement;
 public class Main {
 
     /**
-     * URL de conexao com o banco de dados SQLite.
-     */
-    private static final String DB_URL = "jdbc:sqlite:financeiro.db?foreign_keys=on";
-
-    /**
      * Inicia a aplicacao e prepara o ambiente grafico.
      *
      * @param args argumentos recebidos pela linha de comando
@@ -41,6 +37,7 @@ public class Main {
 
         // 1. Migracoes de schema ANTES do Hibernate (compatibilidade SQLite)
         try {
+            DatabaseConfig.migrarBancoLegadoSeNecessario();
             prepararBanco();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
@@ -95,7 +92,7 @@ public class Main {
     private static void executarMigracoes() throws Exception {
         Class.forName("org.sqlite.JDBC");
 
-        try (Connection conn = DriverManager.getConnection(DB_URL);
+        try (Connection conn = DriverManager.getConnection(DatabaseConfig.getJdbcUrl());
              Statement  stmt = conn.createStatement()) {
             stmt.execute("PRAGMA foreign_keys = ON");
 
@@ -329,7 +326,7 @@ public class Main {
      */
     private static void criarBackupInicial() {
         try {
-            Path backup = SQLiteBackupUtil.criarBackup(DB_URL);
+            Path backup = SQLiteBackupUtil.criarBackup(DatabaseConfig.getJdbcUrl());
             System.out.println("[Sistema] Backup SQLite criado: " + backup);
         } catch (Exception e) {
             System.err.println("[Sistema] Backup SQLite nao foi criado: " + e.getMessage());

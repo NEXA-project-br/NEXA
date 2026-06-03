@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
+import java.util.Map;
+
 /**
  * Utilitário para gerenciar o ciclo de vida do EntityManagerFactory.
  * Implementa o padrão Singleton garantindo uma única instância de fábrica
@@ -31,7 +33,10 @@ public class HibernateUtil {
      */
     public static synchronized EntityManagerFactory getEntityManagerFactory() {
         if (factory == null || !factory.isOpen()) {
-            factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
+            Map<String, String> properties = Map.of(
+                    "jakarta.persistence.jdbc.url", DatabaseConfig.getJdbcUrl()
+            );
+            factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT, properties);
         }
         return factory;
     }
