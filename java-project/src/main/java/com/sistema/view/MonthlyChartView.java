@@ -127,7 +127,7 @@ public class MonthlyChartView extends JDialog {
         painel.setBackground(COR_CARD);
         painel.setBorder(new EmptyBorder(20, 24, 16, 24));
 
-        JLabel titulo = new JLabel(tipo == TipoTransacao.RECEITA ? "Receitas por Mes" : "Despesas por Mes");
+        JLabel titulo = new JLabel(tipo == TipoTransacao.RECEITA ? "Receitas por Mês" : "Despesas por Mês");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(COR_TEXTO);
 

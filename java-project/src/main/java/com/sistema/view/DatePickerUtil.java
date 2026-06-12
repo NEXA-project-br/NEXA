@@ -46,7 +46,7 @@ final class DatePickerUtil {
         botao.setFocusPainted(false);
         botao.setBorderPainted(false);
         botao.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        botao.setToolTipText("Abrir calendario");
+        botao.setToolTipText("Abrir calendário");
         botao.addActionListener(e -> abrirCalendario(campo, botao));
 
         painel.add(campo, BorderLayout.CENTER);
