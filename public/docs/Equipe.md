@@ -65,6 +65,29 @@ Estudante com interesse em **qualidade de software (QA)** e testes.
 
 ---
 
+## Suporte Técnico: Pedro Paulo Alves Araruna
+
+Responsabilidades:
+
+* Prestar suporte técnico relacionado ao uso do sistema
+
+* Auxiliar na identificação de dificuldades durante a utilização
+
+* Relatar os erros encontrados durante os testes e o uso do sistema
+
+* Registrar falhas para facilitar a correção pela equipe
+
+* Apoiar a validação do funcionamento das telas e recursos
+
+ Essa função está alinhada com aspirações em **suporte técnico, atendimento ao usuário e qualidade de software**.
+
+
+Estudante com interesse em **suporte técnico** e **identificação de falhas**, contribuindo para melhorar a experiência do usuário no sistema financeiro pessoal.  
+**Áreas:** Suporte Técnico, Atendimento ao Usuário, Testes Funcionais, Relato de Erros.  
+**Tecnologias:** Testes Manuais, Git, Documentação de Erros, Sistemas Desktop.
+
+---
+
 
 
 ###  Alinhamento Profissional

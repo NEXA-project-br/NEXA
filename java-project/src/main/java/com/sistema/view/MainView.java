@@ -325,14 +325,14 @@ public class MainView extends JFrame {
         cabecalho.setBackground(COR_CARD);
         cabecalho.setBorder(new EmptyBorder(16, 20, 12, 20));
 
-        JLabel lblTitulo = new JLabel("Movimentacoes");
+        JLabel lblTitulo = new JLabel("Movimentações");
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 15));
         lblTitulo.setForeground(COR_TEXTO);
 
         cabecalho.add(lblTitulo, BorderLayout.WEST);
         cabecalho.add(criarPainelFiltroTabela(), BorderLayout.EAST);
 
-        String[] colunas = {"Data", "Descricao", "Categoria", "Tipo", "Valor"};
+        String[] colunas = {"Data", "Descrição", "Categoria", "Tipo", "Valor"};
         tableModel = new DefaultTableModel(colunas, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -416,7 +416,7 @@ public class MainView extends JFrame {
         txtBusca.setFont(FONTE_TABELA);
         txtBusca.setForeground(COR_TEXTO);
         txtBusca.setPreferredSize(new Dimension(240, 38));
-        txtBusca.setToolTipText("Pesquisar por data, descricao, categoria, tipo ou valor");
+        txtBusca.setToolTipText("Pesquisar por data, descrição, categoria, tipo ou valor");
         txtBusca.getDocument().addDocumentListener(new DocumentListener() {
             @Override public void insertUpdate(DocumentEvent e) { atualizarDashboard(); }
             @Override public void removeUpdate(DocumentEvent e) { atualizarDashboard(); }
@@ -425,11 +425,11 @@ public class MainView extends JFrame {
 
         cmbFiltroPeriodo = new JComboBox<>(new String[]{
                 "Todas",
-                "Ultimos 30 dias",
-                "Ultimos 60 dias",
-                "Ultimos 90 dias",
-                "Mes especifico",
-                "Ano especifico"
+                "Últimos 30 dias",
+                "Últimos 60 dias",
+                "Últimos 90 dias",
+                "Mês específico",
+                "Ano específico"
         });
         estilizarComboFiltro(cmbFiltroPeriodo, 150);
 
@@ -461,7 +461,7 @@ public class MainView extends JFrame {
         spnAnoFiltro.addChangeListener(e -> atualizarDashboard());
 
         painel.add(txtBusca);
-        painel.add(new JLabel("Periodo:"));
+        painel.add(new JLabel("Período:"));
         painel.add(cmbFiltroPeriodo);
         painel.add(cmbMesFiltro);
         painel.add(spnAnoFiltro);
@@ -478,8 +478,8 @@ public class MainView extends JFrame {
             return;
         }
         String filtro = (String) cmbFiltroPeriodo.getSelectedItem();
-        boolean mesEspecifico = "Mes especifico".equals(filtro);
-        boolean anoEspecifico = "Ano especifico".equals(filtro);
+        boolean mesEspecifico = "Mês específico".equals(filtro);
+        boolean anoEspecifico = "Ano específico".equals(filtro);
         cmbMesFiltro.setVisible(mesEspecifico);
         spnAnoFiltro.setVisible(mesEspecifico || anoEspecifico);
     }
@@ -647,20 +647,20 @@ public class MainView extends JFrame {
         String filtro = filtroTabela.tipo();
         LocalDate hoje = LocalDate.now();
 
-        if ("Ultimos 30 dias".equals(filtro)) {
+        if ("Últimos 30 dias".equals(filtro)) {
             return transacaoController.filtrarPorPeriodo(hoje.minusDays(30), hoje);
         }
-        if ("Ultimos 60 dias".equals(filtro)) {
+        if ("Últimos 60 dias".equals(filtro)) {
             return transacaoController.filtrarPorPeriodo(hoje.minusDays(60), hoje);
         }
-        if ("Ultimos 90 dias".equals(filtro)) {
+        if ("Últimos 90 dias".equals(filtro)) {
             return transacaoController.filtrarPorPeriodo(hoje.minusDays(90), hoje);
         }
-        if ("Mes especifico".equals(filtro)) {
+        if ("Mês específico".equals(filtro)) {
             YearMonth periodo = YearMonth.of(filtroTabela.ano(), filtroTabela.mes());
             return transacaoController.filtrarPorPeriodo(periodo.atDay(1), periodo.atEndOfMonth());
         }
-        if ("Ano especifico".equals(filtro)) {
+        if ("Ano específico".equals(filtro)) {
             return transacaoController.filtrarPorPeriodo(
                     LocalDate.of(filtroTabela.ano(), 1, 1),
                     LocalDate.of(filtroTabela.ano(), 12, 31));
@@ -873,7 +873,7 @@ public class MainView extends JFrame {
         if (causa instanceof IllegalArgumentException) {
             return causa.getMessage();
         }
-        return "Nao foi possivel concluir a operacao.";
+        return "Não foi possível concluir a operação.";
     }
 
     /**
@@ -892,7 +892,7 @@ public class MainView extends JFrame {
      */
     private void encerrarAplicacao() {
         int r = JOptionPane.showConfirmDialog(this,
-                "Deseja sair do sistema?", "Confirmar saida",
+                "Deseja sair do sistema?", "Confirmar saída",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (r == JOptionPane.YES_OPTION) {
             HibernateUtil.shutdown();

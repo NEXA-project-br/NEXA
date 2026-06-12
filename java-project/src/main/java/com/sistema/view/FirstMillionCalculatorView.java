@@ -106,7 +106,7 @@ public class FirstMillionCalculatorView extends JDialog {
      * @param owner janela proprietaria do dialogo
      */
     public FirstMillionCalculatorView(Frame owner) {
-        super(owner, "Primeiro Milhao", true);
+        super(owner, "Primeiro Milhão", true);
         AppIconUtil.aplicar(this);
         construirInterface();
     }
@@ -136,7 +136,7 @@ public class FirstMillionCalculatorView extends JDialog {
         painel.setBackground(COR_CARD);
         painel.setBorder(new EmptyBorder(20, 24, 16, 24));
 
-        JLabel titulo = new JLabel("Primeiro Milhao");
+        JLabel titulo = new JLabel("Primeiro Milhão");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(COR_TEXTO);
         painel.add(titulo, BorderLayout.WEST);
@@ -190,11 +190,11 @@ public class FirstMillionCalculatorView extends JDialog {
         MoneyDocumentFilter.aplicar(txtTaxaJuros);
         painel.add(txtTaxaJuros, gbc);
 
-        adicionarLabel(painel, gbc, "Tempo necessario");
+        adicionarLabel(painel, gbc, "Tempo necessário");
         lblTempo = criarLabelResultado("-");
         painel.add(lblTempo, gbc);
 
-        adicionarLabel(painel, gbc, "Patrimonio final");
+        adicionarLabel(painel, gbc, "Patrimônio final");
         lblPatrimonio = criarLabelResultado("R$ 0,00");
         painel.add(lblPatrimonio, gbc);
         return painel;
@@ -241,7 +241,7 @@ public class FirstMillionCalculatorView extends JDialog {
             if (patrimonio.compareTo(META) < 0
                     && aporteMensal.compareTo(BigDecimal.ZERO) == 0
                     && taxaMensal.compareTo(BigDecimal.ZERO) == 0) {
-                throw new IllegalArgumentException("Informe aporte ou taxa para o patrimonio evoluir.");
+                throw new IllegalArgumentException("Informe aporte ou taxa para o patrimônio evoluir.");
             }
 
             List<BigDecimal> evolucao = new ArrayList<>();
@@ -263,13 +263,13 @@ public class FirstMillionCalculatorView extends JDialog {
                 lblTempo.setText(formatarTempo(meses));
             }
             lblPatrimonio.setText(CurrencyUtil.formatar(patrimonio));
-            chartPanel.atualizarDados("Evolucao do patrimonio ate R$ 1.000.000", evolucao);
+            chartPanel.atualizarDados("Evolução do patrimônio até R$ 1.000.000", evolucao);
         } catch (NumberFormatException e) {
             mostrarErro("Preencha os valores numericos corretamente.");
         } catch (IllegalArgumentException e) {
             mostrarErro(e.getMessage());
         } catch (Exception e) {
-            mostrarErro("Nao foi possivel calcular: " + e.getMessage());
+            mostrarErro("Não foi possível calcular: " + e.getMessage());
         }
     }
 
@@ -319,10 +319,10 @@ public class FirstMillionCalculatorView extends JDialog {
         int anos = meses / 12;
         int mesesRestantes = meses % 12;
         if (anos == 0) {
-            return meses + (meses == 1 ? " mes" : " meses");
+            return meses + (meses == 1 ? " mês" : " meses");
         }
         return anos + (anos == 1 ? " ano" : " anos") + " e "
-                + mesesRestantes + (mesesRestantes == 1 ? " mes" : " meses");
+                + mesesRestantes + (mesesRestantes == 1 ? " mês" : " meses");
     }
 
     /**

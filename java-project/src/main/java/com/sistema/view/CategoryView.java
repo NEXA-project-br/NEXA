@@ -336,7 +336,7 @@ public class CategoryView extends JDialog {
         }
         int confirm = JOptionPane.showConfirmDialog(this,
                 "Excluir a categoria \"" + selecionada.getNome() + "\"?",
-                "Confirmar exclusao", JOptionPane.YES_NO_OPTION);
+                "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
         if (confirm != JOptionPane.YES_OPTION) return;
 
         new SwingWorker<Void, Void>() {
@@ -417,7 +417,7 @@ public class CategoryView extends JDialog {
      * @param msg parametro msg
      */
     private void mostrarAviso(String msg) {
-        JOptionPane.showMessageDialog(this, msg, "Atencao", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(this, msg, "Atenção", JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -431,7 +431,7 @@ public class CategoryView extends JDialog {
         if (causa instanceof IllegalArgumentException || causa instanceof IllegalStateException) {
             return causa.getMessage();
         }
-        return "Nao foi possivel concluir a operacao.";
+        return "Não foi possível concluir a operação.";
     }
 
     // ── Renderer customizado ──────────────────────────────────────────────────

@@ -114,16 +114,16 @@ public class CalculatorMenuView extends JDialog {
 
         painel.add(criarCard(
                 "Juros Compostos",
-                "Projete aportes mensais e veja o crescimento do patrimonio.",
+                "Projete aportes mensais e veja o crescimento do patrimônio.",
                 COR_AZUL,
                 () -> abrirCalculadora(new CompoundInterestCalculatorView((Frame) getOwner()))));
         painel.add(criarCard(
                 "Calculadora de Renda",
-                "Estime por quanto tempo seu patrimonio pode sustentar retiradas mensais.",
+                "Estime por quanto tempo seu patrimônio pode sustentar retiradas mensais.",
                 COR_GRAFITE,
                 () -> abrirCalculadora(new IncomeCalculatorView((Frame) getOwner()))));
         painel.add(criarCard(
-                "Primeiro Milhao",
+                "Primeiro Milhão",
                 "Descubra quanto tempo falta para chegar a R$ 1.000.000.",
                 COR_VERDE,
                 () -> abrirCalculadora(new FirstMillionCalculatorView((Frame) getOwner()))));

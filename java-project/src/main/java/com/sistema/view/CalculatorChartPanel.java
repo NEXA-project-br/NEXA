@@ -42,7 +42,7 @@ class CalculatorChartPanel extends JPanel {
     /**
      * Atributo usado pelo funcionamento desta classe.
      */
-    private String titulo = "Evolucao";
+    private String titulo = "Evolução";
 
     CalculatorChartPanel() {
         setBackground(Color.WHITE);
@@ -57,7 +57,7 @@ class CalculatorChartPanel extends JPanel {
     }
 
     void limpar() {
-        atualizarDados("Evolucao", List.of());
+        atualizarDados("Evolução", List.of());
     }
 
     /**

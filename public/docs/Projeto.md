@@ -122,6 +122,8 @@ Esse projeto contribui diretamente para o crescimento profissional na área de T
 
 * # **Ruan Frazão: Desenvolvimento Front-End, Validação de Entrega e Testes de Qualidade.**
 
+* # **Pedro Paulo Alves Araruna: Suporte Técnico e Relato de Erros Encontrados.**
+
 
 
 ### **3\. CLÁUSULA DE ENTREGA "COMO ESTÁ" (AS-IS)**

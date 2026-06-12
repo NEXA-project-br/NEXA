@@ -160,7 +160,7 @@ public class TransactionFormView extends JDialog {
      * @param tipoInicial parametro tipoInicial
      */
     public TransactionFormView(Frame owner, Transacao transacaoParaEditar, TipoTransacao tipoInicial) {
-        super(owner, transacaoParaEditar == null ? "Nova Transacao" : "Editar Transacao", true);
+        super(owner, transacaoParaEditar == null ? "Nova Transação" : "Editar Transação", true);
         AppIconUtil.aplicar(this);
         this.transacaoParaEditar = transacaoParaEditar;
         this.tipoInicial         = tipoInicial != null ? tipoInicial : TipoTransacao.DESPESA;
@@ -195,7 +195,7 @@ public class TransactionFormView extends JDialog {
         p.setBackground(COR_CARD);
         p.setBorder(new EmptyBorder(20, 24, 16, 24));
 
-        String titulo = transacaoParaEditar == null ? "Nova Transacao" : "Editar Transacao";
+        String titulo = transacaoParaEditar == null ? "Nova Transação" : "Editar Transação";
         JLabel lbl = new JLabel(titulo);
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 18));
         lbl.setForeground(COR_TEXTO);
@@ -233,8 +233,8 @@ public class TransactionFormView extends JDialog {
         p.add(cmbTipo, gbc);
 
         // Descricao
-        adicionarLabel(p, gbc, "Descricao");
-        txtDescricao = criarTextField("Ex.: Supermercado, Salario...");
+        adicionarLabel(p, gbc, "Descrição");
+        txtDescricao = criarTextField("Ex.: Supermercado, Salário...");
         p.add(txtDescricao, gbc);
 
         // Valor
@@ -394,8 +394,8 @@ public class TransactionFormView extends JDialog {
                         get();
                         JOptionPane.showMessageDialog(TransactionFormView.this,
                                 transacaoParaEditar == null
-                                        ? "Transacao salva com sucesso!"
-                                        : "Transacao atualizada com sucesso!",
+                                        ? "Transação salva com sucesso!"
+                                        : "Transação atualizada com sucesso!",
                                 "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                         dispose();
                     } catch (Exception e) {
@@ -405,7 +405,7 @@ public class TransactionFormView extends JDialog {
             }.execute();
 
         } catch (DateTimeParseException e) {
-            mostrarErro("Data invalida. Use o formato dd/MM/yyyy.");
+            mostrarErro("Data inválida. Use o formato dd/MM/yyyy.");
         } catch (IllegalArgumentException e) {
             mostrarErro(e.getMessage());
         } catch (Exception e) {
@@ -424,8 +424,8 @@ public class TransactionFormView extends JDialog {
         }
 
         int confirmacao = JOptionPane.showConfirmDialog(this,
-                "Excluir a transacao \"" + transacaoParaEditar.getDescricao() + "\"?",
-                "Confirmar exclusao", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                "Excluir a transação \"" + transacaoParaEditar.getDescricao() + "\"?",
+                "Confirmar exclusão", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (confirmacao != JOptionPane.YES_OPTION) {
             return;
         }
@@ -449,7 +449,7 @@ public class TransactionFormView extends JDialog {
             protected void done() {
                 try {
                     get();
-                    JOptionPane.showMessageDialog(TransactionFormView.this, "Transacao excluida com sucesso!",
+                    JOptionPane.showMessageDialog(TransactionFormView.this, "Transação excluída com sucesso!",
                             "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                     dispose();
                 } catch (Exception e) {
@@ -533,7 +533,7 @@ public class TransactionFormView extends JDialog {
      * @param msg parametro msg
      */
     private void mostrarErro(String msg) {
-        JOptionPane.showMessageDialog(this, msg, "Erro de Validacao",
+        JOptionPane.showMessageDialog(this, msg, "Erro de Validação",
                 JOptionPane.ERROR_MESSAGE);
     }
 
@@ -548,7 +548,7 @@ public class TransactionFormView extends JDialog {
         if (causa instanceof IllegalArgumentException) {
             return causa.getMessage();
         }
-        return "Nao foi possivel concluir a operacao.";
+        return "Não foi possível concluir a operação.";
     }
 
     /**
@@ -596,7 +596,7 @@ public class TransactionFormView extends JDialog {
     private void validarAnoNaoFuturo(LocalDate data) {
         int anoAtual = LocalDate.now().getYear();
         if (data.getYear() > anoAtual) {
-            throw new IllegalArgumentException("O ano da data nao pode ser superior ao ano atual (" + anoAtual + ").");
+            throw new IllegalArgumentException("O ano da data não pode ser superior ao ano atual (" + anoAtual + ").");
         }
     }
 
@@ -611,7 +611,7 @@ public class TransactionFormView extends JDialog {
             valorCentavos = valorSeguro.movePointRight(2).setScale(0, RoundingMode.HALF_UP).longValueExact();
         } catch (ArithmeticException e) {
             valorCentavos = 0L;
-            mostrarErro("Valor monetario invalido.");
+            mostrarErro("Valor monetário inválido.");
         }
         atualizarTextoValor();
     }

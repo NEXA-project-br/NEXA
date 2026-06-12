@@ -210,7 +210,7 @@ public class CompoundInterestCalculatorView extends JDialog {
         MoneyDocumentFilter.aplicar(txtTaxaJuros);
         painel.add(txtTaxaJuros, gbc);
 
-        adicionarLabel(painel, gbc, "Periodo");
+        adicionarLabel(painel, gbc, "Período");
         txtPeriodo = criarTextField("12");
         cmbUnidadePeriodo = new JComboBox<>(new String[]{"Meses", "Anos"});
         estilizarComboBox(cmbUnidadePeriodo);
@@ -266,7 +266,7 @@ public class CompoundInterestCalculatorView extends JDialog {
                     || aporteMensal.compareTo(BigDecimal.ZERO) < 0
                     || taxaMensal.compareTo(BigDecimal.ZERO) < 0
                     || meses <= 0) {
-                throw new IllegalArgumentException("Informe valores validos e um periodo maior que zero.");
+                throw new IllegalArgumentException("Informe valores válidos e um período maior que zero.");
             }
 
             BigDecimal montante = valorInicial;
@@ -285,13 +285,13 @@ public class CompoundInterestCalculatorView extends JDialog {
             BigDecimal juros = montante.subtract(totalInvestido).max(BigDecimal.ZERO);
             lblMontante.setText(CurrencyUtil.formatar(montante));
             lblJuros.setText(CurrencyUtil.formatar(juros));
-            chartPanel.atualizarDados("Evolucao do montante", evolucao);
+            chartPanel.atualizarDados("Evolução do montante", evolucao);
         } catch (NumberFormatException e) {
-            mostrarErro("Preencha o periodo em meses com um numero inteiro.");
+            mostrarErro("Preencha o período em meses com um número inteiro.");
         } catch (IllegalArgumentException e) {
             mostrarErro(e.getMessage());
         } catch (Exception e) {
-            mostrarErro("Nao foi possivel calcular: " + e.getMessage());
+            mostrarErro("Não foi possível calcular: " + e.getMessage());
         }
     }
 

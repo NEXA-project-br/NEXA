@@ -185,7 +185,7 @@ public class IncomeCalculatorView extends JDialog {
         MoneyDocumentFilter.aplicar(txtRetiradaMensal);
         painel.add(txtRetiradaMensal, gbc);
 
-        adicionarLabel(painel, gbc, "Tempo ate acabar");
+        adicionarLabel(painel, gbc, "Tempo até acabar");
         lblTempo = criarLabelResultado("-");
         painel.add(lblTempo, gbc);
 
@@ -235,7 +235,7 @@ public class IncomeCalculatorView extends JDialog {
             }
 
             if (saldo.compareTo(retirada) < 0) {
-                throw new IllegalArgumentException("Nao e possivel realizar esta operacao.");
+                throw new IllegalArgumentException("Não é possível realizar esta operação.");
             }
 
             List<BigDecimal> evolucao = new ArrayList<>();
@@ -274,7 +274,7 @@ public class IncomeCalculatorView extends JDialog {
         } catch (IllegalArgumentException e) {
             mostrarErro(e.getMessage());
         } catch (Exception e) {
-            mostrarErro("Nao foi possivel calcular: " + e.getMessage());
+            mostrarErro("Não foi possível calcular: " + e.getMessage());
         }
     }
 
@@ -324,10 +324,10 @@ public class IncomeCalculatorView extends JDialog {
         int anos = meses / 12;
         int mesesRestantes = meses % 12;
         if (anos == 0) {
-            return meses + (meses == 1 ? " mes" : " meses");
+            return meses + (meses == 1 ? " mês" : " meses");
         }
         return anos + (anos == 1 ? " ano" : " anos") + " e "
-                + mesesRestantes + (mesesRestantes == 1 ? " mes" : " meses");
+                + mesesRestantes + (mesesRestantes == 1 ? " mês" : " meses");
     }
 
     /**

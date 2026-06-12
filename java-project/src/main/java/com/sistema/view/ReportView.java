@@ -144,7 +144,7 @@ public class ReportView extends JDialog {
      * @param owner janela proprietaria do dialogo
      */
     public ReportView(Frame owner) {
-        super(owner, "Relatorio Financeiro", true);
+        super(owner, "Relatório Financeiro", true);
         AppIconUtil.aplicar(this);
         this.transacaoController = new TransacaoController();
         construirInterface();
@@ -178,7 +178,7 @@ public class ReportView extends JDialog {
         JPanel p = new JPanel(new BorderLayout());
         p.setBackground(COR_CARD);
         p.setBorder(new EmptyBorder(20, 24, 16, 24));
-        JLabel lbl = new JLabel("Relatorio Financeiro por Periodo");
+        JLabel lbl = new JLabel("Relatório Financeiro por Período");
         lbl.setFont(FONTE_TITULO);
         lbl.setForeground(COR_TEXTO);
         p.add(lbl, BorderLayout.WEST);
@@ -211,7 +211,7 @@ public class ReportView extends JDialog {
                 BorderFactory.createLineBorder(COR_BORDA, 1),
                 new EmptyBorder(16, 20, 16, 20)));
 
-        JLabel lbl = new JLabel("Periodo");
+        JLabel lbl = new JLabel("Período");
         lbl.setFont(FONTE_LABEL);
         lbl.setForeground(COR_MUTED);
         lbl.setBorder(new EmptyBorder(0, 0, 10, 0));
@@ -224,7 +224,7 @@ public class ReportView extends JDialog {
         aplicarMascaraData(txtDataInicio);
         linha.add(DatePickerUtil.criarCampoComCalendario(txtDataInicio));
 
-        linha.add(criarLabelInline("Ate:"));
+        linha.add(criarLabelInline("Até:"));
         txtDataFim = criarCampoData();
         aplicarMascaraData(txtDataFim);
         linha.add(DatePickerUtil.criarCampoComCalendario(txtDataFim));
@@ -257,10 +257,10 @@ public class ReportView extends JDialog {
         cards.add(criarCardResumo("Despesas", lblDespesas, COR_VERMELHO));
 
         lblSaldo = new JLabel("R$ 0,00");
-        cards.add(criarCardResumo("Saldo do Periodo", lblSaldo, COR_AZUL_CLARO));
+        cards.add(criarCardResumo("Saldo do Período", lblSaldo, COR_AZUL_CLARO));
 
         // Tabela
-        String[] colunas = {"Data", "Descricao", "Categoria", "Tipo", "Valor"};
+        String[] colunas = {"Data", "Descrição", "Categoria", "Tipo", "Valor"};
         tableModel = new DefaultTableModel(colunas, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -449,7 +449,7 @@ public class ReportView extends JDialog {
                         btnExportar.setEnabled(true);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(ReportView.this,
-                                "Erro ao gerar relatorio: " + mensagemErroWorker(ex),
+                                "Erro ao gerar relatório: " + mensagemErroWorker(ex),
                                 "Erro", JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -457,7 +457,7 @@ public class ReportView extends JDialog {
 
         } catch (DateTimeParseException e) {
             JOptionPane.showMessageDialog(this,
-                    "Data invalida. Use o formato dd/MM/yyyy.",
+                    "Data inválida. Use o formato dd/MM/yyyy.",
                     "Erro", JOptionPane.ERROR_MESSAGE);
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(),
@@ -473,13 +473,13 @@ public class ReportView extends JDialog {
     private void exportarPdf() {
         if (resumoAtual == null) {
             JOptionPane.showMessageDialog(this,
-                    "Aguarde o relatorio terminar de carregar antes de exportar.",
-                    "Relatorio ainda carregando", JOptionPane.INFORMATION_MESSAGE);
+                    "Aguarde o relatório terminar de carregar antes de exportar.",
+                    "Relatório ainda carregando", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
         JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Salvar relatorio em PDF");
+        chooser.setDialogTitle("Salvar relatório em PDF");
         chooser.setSelectedFile(new java.io.File(nomeArquivoPadrao()));
 
         if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
@@ -490,7 +490,7 @@ public class ReportView extends JDialog {
         if (destino.toFile().exists()) {
             int sobrescrever = JOptionPane.showConfirmDialog(this,
                     "O arquivo ja existe. Deseja substituir?",
-                    "Confirmar exportacao", JOptionPane.YES_NO_OPTION);
+                    "Confirmar exportação", JOptionPane.YES_NO_OPTION);
             if (sobrescrever != JOptionPane.YES_OPTION) {
                 return;
             }
@@ -499,7 +499,7 @@ public class ReportView extends JDialog {
         try {
             PdfReportExporter.exportar(resumoAtual, destino);
             JOptionPane.showMessageDialog(this,
-                    "Relatorio exportado com sucesso:\n" + destino,
+                    "Relatório exportado com sucesso:\n" + destino,
                     "PDF gerado", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException | IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this,
@@ -615,6 +615,6 @@ public class ReportView extends JDialog {
         if (causa instanceof IllegalArgumentException) {
             return causa.getMessage();
         }
-        return "Nao foi possivel concluir a operacao.";
+        return "Não foi possível concluir a operação.";
     }
 }

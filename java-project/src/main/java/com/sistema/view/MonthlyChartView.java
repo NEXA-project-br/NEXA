@@ -92,7 +92,7 @@ public class MonthlyChartView extends JDialog {
      * @param tipo parametro tipo
      */
     public MonthlyChartView(Frame owner, TipoTransacao tipo) {
-        super(owner, tipo == TipoTransacao.RECEITA ? "Grafico de Receita Mensal" : "Grafico de Despesa Mensal", true);
+        super(owner, tipo == TipoTransacao.RECEITA ? "Gráfico de Receita Mensal" : "Gráfico de Despesa Mensal", true);
         AppIconUtil.aplicar(this);
         this.transacaoController = new TransacaoController();
         this.tipo = tipo;
@@ -152,7 +152,7 @@ public class MonthlyChartView extends JDialog {
         painel.setBorder(new EmptyBorder(20, 24, 20, 24));
 
         if (dados.isEmpty()) {
-            JLabel vazio = new JLabel("Nao ha dados para exibir neste grafico.", SwingConstants.CENTER);
+            JLabel vazio = new JLabel("Não há dados para exibir neste gráfico.", SwingConstants.CENTER);
             vazio.setFont(new Font("Segoe UI", Font.BOLD, 16));
             vazio.setForeground(COR_MUTED);
             vazio.setOpaque(true);
@@ -272,7 +272,7 @@ public class MonthlyChartView extends JDialog {
         if (causa instanceof IllegalArgumentException) {
             return causa.getMessage();
         }
-        return "Nao foi possivel concluir a operacao.";
+        return "Não foi possível concluir a operação.";
     }
 
     /**
