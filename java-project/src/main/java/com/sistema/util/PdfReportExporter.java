@@ -58,10 +58,10 @@ public final class PdfReportExporter {
      */
     public static void exportar(ResumoFinanceiro resumo, Path destino) throws IOException {
         if (resumo == null) {
-            throw new IllegalArgumentException("Resumo financeiro nao pode ser nulo.");
+            throw new IllegalArgumentException("Resumo financeiro não pode ser nulo.");
         }
         if (destino == null) {
-            throw new IllegalArgumentException("Arquivo de destino nao pode ser nulo.");
+            throw new IllegalArgumentException("Arquivo de destino não pode ser nulo.");
         }
 
         Path parent = destino.toAbsolutePath().getParent();
@@ -80,18 +80,18 @@ public final class PdfReportExporter {
      */
     private static List<String> montarLinhas(ResumoFinanceiro resumo) {
         List<String> linhas = new ArrayList<>();
-        linhas.add("Relatorio Financeiro");
-        linhas.add("Periodo: " + resumo.inicio().format(FMT) + " a " + resumo.fim().format(FMT));
+        linhas.add("Relatório Financeiro");
+        linhas.add("Período: " + resumo.inicio().format(FMT) + " a " + resumo.fim().format(FMT));
         linhas.add("");
         linhas.add("Receitas: " + CurrencyUtil.formatar(resumo.totalReceitas()));
         linhas.add("Despesas: " + CurrencyUtil.formatar(resumo.totalDespesas()));
         linhas.add("Saldo: " + CurrencyUtil.formatar(resumo.saldo()));
         linhas.add("");
-        linhas.add("Data       Tipo      Categoria           Valor          Descricao");
+        linhas.add("Data       Tipo      Categoria           Valor          Descrição");
         linhas.add("-----------------------------------------------------------------------");
 
         if (resumo.transacoes().isEmpty()) {
-            linhas.add("Nenhuma transacao encontrada no periodo.");
+            linhas.add("Nenhuma transação encontrada no período.");
             return linhas;
         }
 

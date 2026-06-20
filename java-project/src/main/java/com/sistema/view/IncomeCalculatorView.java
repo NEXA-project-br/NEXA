@@ -231,7 +231,7 @@ public class IncomeCalculatorView extends JDialog {
             if (saldo.compareTo(BigDecimal.ZERO) <= 0
                     || taxaMensal.compareTo(BigDecimal.ZERO) < 0
                     || retirada.compareTo(BigDecimal.ZERO) <= 0) {
-                throw new IllegalArgumentException("Informe capital e retirada maiores que zero e taxa valida.");
+                throw new IllegalArgumentException("Informe capital e retirada maiores que zero e taxa válida.");
             }
 
             if (saldo.compareTo(retirada) < 0) {
@@ -270,7 +270,7 @@ public class IncomeCalculatorView extends JDialog {
             lblSaldoFinal.setText(CurrencyUtil.formatar(saldo.max(BigDecimal.ZERO)));
             chartPanel.atualizarDados("Valor restante ao longo do tempo", evolucao);
         } catch (NumberFormatException e) {
-            mostrarErro("Preencha os valores numericos corretamente.");
+            mostrarErro("Preencha os valores numéricos corretamente.");
         } catch (IllegalArgumentException e) {
             mostrarErro(e.getMessage());
         } catch (Exception e) {

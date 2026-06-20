@@ -153,13 +153,13 @@ public class CategoriaController implements GenericController<Categoria> {
             throw new IllegalArgumentException("Categoria não pode ser nula.");
         }
         if (categoria.getNome() == null || categoria.getNome().isBlank()) {
-            throw new IllegalArgumentException("O nome da categoria e obrigatorio.");
+            throw new IllegalArgumentException("O nome da categoria é obrigatório.");
         }
         if (categoria.getNome().length() > 100) {
-            throw new IllegalArgumentException("O nome da categoria nao pode ter mais de 100 caracteres.");
+            throw new IllegalArgumentException("O nome da categoria não pode ter mais de 100 caracteres.");
         }
         if (categoria.getTipo() == null) {
-            throw new IllegalArgumentException("O tipo da categoria (RECEITA/DESPESA) e obrigatorio.");
+            throw new IllegalArgumentException("O tipo da categoria (RECEITA/DESPESA) é obrigatório.");
         }
     }
 }

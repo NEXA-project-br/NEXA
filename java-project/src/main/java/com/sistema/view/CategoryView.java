@@ -468,7 +468,7 @@ public class CategoryView extends JDialog {
                 String badge = c.getTipo() == TipoTransacao.RECEITA ? "[R]" : "[D]";
                 Color  cor   = c.getTipo() == TipoTransacao.RECEITA ? COR_VERDE : COR_VERMELHO;
                 setText("<html><b><font color='" + toHex(cor) + "'>" + badge
-                        + "</font></b>  " + c.getNome() + "</html>");
+                        + "</font></b>  " + escaparHtml(c.getNome()) + "</html>");
             }
 
             setBackground(isSelected ? new Color(219, 234, 254) : Color.WHITE);
@@ -488,6 +488,24 @@ public class CategoryView extends JDialog {
          */
         private static String toHex(Color c) {
             return String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
+        }
+
+        /**
+         * Escapa texto informado pelo usuário antes de renderizar como HTML no Swing.
+         *
+         * @param texto texto original
+         * @return texto seguro para HTML
+         */
+        private static String escaparHtml(String texto) {
+            if (texto == null) {
+                return "";
+            }
+            return texto
+                    .replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                    .replace("\"", "&quot;")
+                    .replace("'", "&#39;");
         }
     }
 }

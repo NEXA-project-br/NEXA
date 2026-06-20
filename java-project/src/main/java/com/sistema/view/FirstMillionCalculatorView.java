@@ -265,7 +265,7 @@ public class FirstMillionCalculatorView extends JDialog {
             lblPatrimonio.setText(CurrencyUtil.formatar(patrimonio));
             chartPanel.atualizarDados("Evolução do patrimônio até R$ 1.000.000", evolucao);
         } catch (NumberFormatException e) {
-            mostrarErro("Preencha os valores numericos corretamente.");
+            mostrarErro("Preencha os valores numéricos corretamente.");
         } catch (IllegalArgumentException e) {
             mostrarErro(e.getMessage());
         } catch (Exception e) {

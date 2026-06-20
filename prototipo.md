@@ -1,50 +1,50 @@
-# Prototipo - NEXA
+# Protótipo - NEXA
 
 ## Objetivo
 
-O prototipo do NEXA e uma aplicacao desktop em Java Swing para controle financeiro pessoal. Ele permite testar o fluxo principal do sistema: cadastrar categorias, registrar receitas e despesas, acompanhar saldo, consultar graficos, gerar relatorios e usar calculadoras financeiras.
+O protótipo do NEXA é uma aplicação desktop em Java Swing para controle financeiro pessoal. Ele permite testar o fluxo principal do sistema: cadastrar categorias, registrar receitas e despesas, acompanhar saldo, consultar gráficos, gerar relatórios e usar calculadoras financeiras.
 
-## Telas do prototipo
+## Telas do protótipo
 
 ### Painel Financeiro
 
-Tela inicial do sistema. Apresenta saldo atual, total de receitas, total de despesas e tabela com as ultimas movimentacoes. A partir dela o usuario acessa novas transacoes, categorias, relatorios, graficos e calculadoras.
+Tela inicial do sistema. Apresenta saldo atual, total de receitas, total de despesas e tabela com as últimas movimentações. A partir dela o usuário acessa novas transações, categorias, relatórios, gráficos e calculadoras.
 
 ### Nova Receita / Nova Despesa
 
-Formulario para cadastro de movimentacoes. O usuario informa tipo, descricao, valor, data e categoria. As categorias sao filtradas conforme o tipo selecionado.
+Formulário para cadastro de movimentações. O usuário informa tipo, descrição, valor, data e categoria. As categorias são filtradas conforme o tipo selecionado.
 
-### Editar Transacao
+### Editar Transação
 
-Formulario aberto ao dar duplo clique em uma movimentacao da tabela principal. Permite atualizar dados ou excluir a transacao.
+Formulário aberto ao dar duplo clique em uma movimentação da tabela principal. Permite atualizar dados ou excluir a transação.
 
 ### Categorias
 
 Tela de gerenciamento de categorias. Permite criar categorias de receita ou despesa, listar categorias cadastradas e excluir uma categoria selecionada.
 
-### Graficos
+### Gráficos
 
-Tela de visualizacao mensal para receitas ou despesas. Ajuda o usuario a entender a evolucao financeira por periodo.
+Tela de visualização mensal para receitas ou despesas. Ajuda o usuário a entender a evolução financeira por período.
 
-### Relatorios
+### Relatórios
 
-Tela de consulta por periodo. Resume receitas, despesas, saldo e transacoes filtradas, com opcao de exportacao em PDF.
+Tela de consulta por período. Resume receitas, despesas, saldo e transações filtradas, com opção de exportação em PDF.
 
 ### Calculadoras
 
 Menu com calculadoras financeiras auxiliares:
 
 - Juros compostos.
-- Primeiro milhao.
+- Primeiro milhão.
 - Renda.
 
-## Como executar o prototipo
+## Como executar o protótipo
 
 1. Abra o projeto `java-project` no NetBeans.
 2. Execute a classe `com.sistema.Main`.
 3. Use a tela principal para navegar pelas funcionalidades.
 
-Tambem e possivel executar pelo terminal, dentro da pasta `java-project`, usando:
+Também é possível executar pelo terminal, dentro da pasta `java-project`, usando:
 
 ```bash
 mvn exec:java
